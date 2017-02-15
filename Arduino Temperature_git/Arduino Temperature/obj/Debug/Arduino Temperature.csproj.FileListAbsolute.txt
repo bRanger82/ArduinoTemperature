@@ -36,3 +36,12 @@ D:\Temp\Arduino Temperature\Arduino Temperature\obj\Debug\Arduino Temperature.cs
 C:\private\Arduino Temperature_git\Arduino Temperature\bin\Debug\Arduino Temperature.exe.config
 C:\private\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino Temperature.pdb
 C:\private\Arduino Temperature\Arduino Temperature\bin\Debug\Temperature.xml
+C:\temp\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\bin\Debug\Arduino Temperature.exe.config
+C:\temp\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino Temperature.exe
+C:\temp\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino Temperature.pdb
+C:\temp\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\bin\Debug\Temperature.xml
+C:\temp\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\bin\Debug\Arduino Temperature.exe
+C:\temp\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\bin\Debug\Arduino Temperature.pdb
+C:\temp\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino_Temperature.frmMain.resources
+C:\temp\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino_Temperature.Properties.Resources.resources
+C:\temp\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino Temperature.csproj.GenerateResource.Cache

@@ -9,3 +9,9 @@ C:\private\Arduino Temperature\TestEnvironment\bin\Debug\TestEnvironment.pdb
 C:\private\Arduino Temperature\TestEnvironment\obj\Debug\TestEnvironment.exe
 C:\private\Arduino Temperature\TestEnvironment\obj\Debug\TestEnvironment.pdb
 C:\private\Arduino Temperature\TestEnvironment\bin\Debug\System.Management.Automation.dll
+C:\temp\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\bin\Debug\TestEnvironment.exe.config
+C:\temp\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\bin\Debug\TestEnvironment.exe
+C:\temp\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\bin\Debug\TestEnvironment.pdb
+C:\temp\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\obj\Debug\TestEnvironment.csprojResolveAssemblyReference.cache
+C:\temp\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\obj\Debug\TestEnvironment.exe
+C:\temp\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\obj\Debug\TestEnvironment.pdb
