@@ -205,8 +205,8 @@ namespace Arduino_Temperature
             if (!tryConnect(ref spTisch, strPortTisch))
                 lblTempTisch.Text = reconnectText(strPortTisch);
 
-            //if (!tryConnect(ref spBoden, strPortBoden))
-            //    lblTempTisch.Text = reconnectText(strPortBoden);
+            if (!tryConnect(ref spBoden, strPortBoden))
+                lblTempBoden.Text = reconnectText(strPortBoden);
 
             writeToHTML();
         }
