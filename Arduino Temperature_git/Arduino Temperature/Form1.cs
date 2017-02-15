@@ -4,10 +4,7 @@ using System.IO.Ports;
 using System.Threading;
 using System.IO;
 using System.Collections.Generic;
-using System.Security.Principal;
 using System.Security.AccessControl;
-using System.Text;
-using System.Globalization;
 using System.Web;
 
 namespace Arduino_Temperature
@@ -393,10 +390,10 @@ namespace Arduino_Temperature
                 // --> return false: stop and report that the conenction was not successful
                 //TODO: change logic!
 
-                SerPort.StopBits = COMSettings.DefaultStopBits;
-                SerPort.DataBits = COMSettings.DefaultDataBits;
-                SerPort.BaudRate = COMSettings.DefaultBaudRate;
-                SerPort.DtrEnable = COMSettings.DefaultDtrEnable;
+                SerPort.StopBits = Common.COMSettings.DefaultStopBits;
+                SerPort.DataBits = Common.COMSettings.DefaultDataBits;
+                SerPort.BaudRate = Common.COMSettings.DefaultBaudRate;
+                SerPort.DtrEnable = Common.COMSettings.DefaultDtrEnable;
                 SerPort.PortName = portName;
                 SerPort.DataReceived -= Sp_DataReceived;
                 SerPort.DataReceived += Sp_DataReceived;
@@ -524,10 +521,6 @@ namespace Arduino_Temperature
             return Properties.Resources.html_temperature_main_template; 
         }
 
-        private void trackToDatabase()
-        {
-            AccessDatabase.TrackEnvironment("Testeintrag", (double)10.10, (double)20.20, (double)30.30, (double)40.40);
-        }
 
         private void writeToHTML()
         {
@@ -561,11 +554,6 @@ namespace Arduino_Temperature
             changeLabelFont(ref lblTempBoden);
         }
 
-        private void frmMain_DoubleClick(object sender, EventArgs e)
-        {
-            trackToDatabase();
-        }
-
         private void chkTopMost_CheckedChanged_1(object sender, EventArgs e)
         {
             this.TopMost = chkTopMost.Checked;
@@ -580,13 +568,7 @@ namespace Arduino_Temperature
 
     
     
-    public static class COMSettings
-    {
-        public static StopBits DefaultStopBits { get { return StopBits.One; } }
-        public static int DefaultDataBits = 8;
-        public static int DefaultBaudRate = 9600;
-        public static bool DefaultDtrEnable = true;
-    }
+
 
 
 }
