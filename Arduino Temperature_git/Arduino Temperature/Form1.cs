@@ -749,6 +749,7 @@ namespace Arduino_Temperature
                     sb.AppendLine("    <td>No data</td>");
                     sb.AppendLine("    <td>No data</td>");
                     sb.AppendLine("    <td>No data</td>");
+                    sb.AppendLine("    <td></td>");
                 }
 
                 sb.AppendLine("  </tr>");
