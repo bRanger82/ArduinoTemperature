@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<root>
+	<titel>Arduino Temperatur Anzeige</titel>
+	<Tisch>
+          <Aktiv>Y</Aktiv>
+	  <Bezeichnung>Tisch</Bezeichnung>
+	  <Port>COM5</Port>
+	  <LogFile>D:\Temp\log\TemperaturTisch.log</LogFile>
+	</Tisch>
+	<Boden>
+          <Aktiv>N</Aktiv>
+	  <Bezeichnung>Boden</Bezeichnung>
+	  <Port>COM3</Port>
+	  <LogFile>D:\Temp\log\TemperaturBottom.log</LogFile>
+	</Boden>
+	<FileHTML>C:\inetpub\wwwroot\temp.html</FileHTML>
+	<maxTimeDifferenceReadData>60</maxTimeDifferenceReadData>
+	<maxLogFileSize>4194304</maxLogFileSize>
+</root>

@@ -1,0 +1,31 @@
+<Title>Temperatur im Container</Title>
+<Head>Temperatur im Container (BIMIs Platz)</Head>
+<Body>
+<h2>
+&TEMP1
+</h2>
+</br>
+</br>
+<h2>
+&TEMP2
+</h2>
+</br>
+</br>
+<h5>
+Der Hitzeindex (HI) ist eine in Einheiten der Temperatur angegebene Gr&ouml;&szlig;e zur Beschreibung der gef&uuml;hlten Temperatur auf Basis der gemessenen Lufttemperatur.
+</h5>
+<h4>
+&LASTUPDATE
+</br>
+<FORM>
+<input type="button" onClick="location.reload()" value="Refresh">
+</FORM>
+</br>
+</br>
+</br>
+Gemessen mit einem DHT22 Sensor - Genauigkeit: Temperatur 0.5 Grad Celsius, Luftfeuchtigkeit 2%
+</br>
+Genauer geht es kaum :)
+</br>
+<h4>
+</Body>

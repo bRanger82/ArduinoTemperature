@@ -1,0 +1,43 @@
+<html>
+<Title>Temperatur im Container</Title>
+<meta http-equiv="refresh" content="30" >
+<Head><h1>&HTML_HEAD</h1></Head>
+<style>
+table, th, td {
+    border: 1px solid black;
+}
+</style>
+<Body>
+<h2>
+&TEMP1
+</h2>
+</br>
+</br>
+<h2>
+&TEMP2
+</h2>
+</br>
+</br>
+<h5>
+Der Hitzeindex (HI) ist eine in Einheiten der Temperatur angegebene Gr&ouml;&szlig;e zur Beschreibung der gef&uuml;hlten Temperatur auf Basis der gemessenen 
+Lufttemperatur.
+</h5>
+<h4>
+Zeitpunkt letztes Update: &LASTUPDATE
+</br>
+<FORM>
+<input type="button" onClick="location.reload()" value="Seite neu laden">
+</FORM>
+</br>
+</br>
+</br>
+Gemessen mit einem DHT22 Sensor - Genauigkeit: Temperatur 0.5 Grad Celsius, Luftfeuchtigkeit 2%
+</br>
+Genauer geht es kaum :)
+</br>
+</h4>
+</br><h1>Historische Daten:</h1>
+&TABLE_TISCH
+&TABLE_BODEN
+</Body>
+</html>

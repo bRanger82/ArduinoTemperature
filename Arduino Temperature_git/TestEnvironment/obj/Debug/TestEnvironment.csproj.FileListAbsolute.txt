@@ -1,0 +1,11 @@
+C:\Users\bimi.SDNET\Documents\Visual Studio 2015\Projects\Arduino Temperature\TestEnvironment\bin\Debug\TestEnvironment.exe.config
+C:\Users\bimi.SDNET\Documents\Visual Studio 2015\Projects\Arduino Temperature\TestEnvironment\bin\Debug\TestEnvironment.exe
+C:\Users\bimi.SDNET\Documents\Visual Studio 2015\Projects\Arduino Temperature\TestEnvironment\bin\Debug\TestEnvironment.pdb
+C:\Users\bimi.SDNET\Documents\Visual Studio 2015\Projects\Arduino Temperature\TestEnvironment\obj\Debug\TestEnvironment.exe
+C:\Users\bimi.SDNET\Documents\Visual Studio 2015\Projects\Arduino Temperature\TestEnvironment\obj\Debug\TestEnvironment.pdb
+C:\private\Arduino Temperature\TestEnvironment\bin\Debug\TestEnvironment.exe.config
+C:\private\Arduino Temperature\TestEnvironment\bin\Debug\TestEnvironment.exe
+C:\private\Arduino Temperature\TestEnvironment\bin\Debug\TestEnvironment.pdb
+C:\private\Arduino Temperature\TestEnvironment\obj\Debug\TestEnvironment.exe
+C:\private\Arduino Temperature\TestEnvironment\obj\Debug\TestEnvironment.pdb
+C:\private\Arduino Temperature\TestEnvironment\bin\Debug\System.Management.Automation.dll
