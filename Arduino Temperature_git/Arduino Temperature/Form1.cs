@@ -115,11 +115,11 @@ namespace Arduino_Temperature
 
             this.chkLogEnabled.Enabled = false;
 
-            if (HasAccess(pathTable, FileSystemRights.WriteData) &&
-                HasAccess(pathBottom, FileSystemRights.WriteData))
+            if (Permission.HasAccess(pathTable, FileSystemRights.WriteData) &&
+                Permission.HasAccess(pathBottom, FileSystemRights.WriteData))
                 this.chkLogEnabled.Enabled = true;
 
-            this.chkHTML.Enabled = HasAccess(new FileInfo(PathHTML), FileSystemRights.WriteData);
+            this.chkHTML.Enabled = Permission.HasAccess(new FileInfo(PathHTML), FileSystemRights.WriteData);
         }
 
         private void connectToDevices()
@@ -259,10 +259,10 @@ namespace Arduino_Temperature
                 if (values.Length == 7 && values[0].StartsWith("START") && values[6].StartsWith("EOF")) //Protocoll second version
                 {
                     
-                    dobj.AirPressure = replaceDecPoint(values[5].ToString());
-                    dobj.HeatIndex = replaceDecPoint(values[4].ToString());
-                    dobj.Humidity = replaceDecPoint(values[2].ToString());
-                    dobj.Temperature = replaceDecPoint(values[3].ToString());
+                    dobj.AirPressure = Common.replaceDecPoint(values[5].ToString());
+                    dobj.HeatIndex = Common.replaceDecPoint(values[4].ToString());
+                    dobj.Humidity = Common.replaceDecPoint(values[2].ToString());
+                    dobj.Temperature = Common.replaceDecPoint(values[3].ToString());
                     dobj.Timepoint = DateTime.Now;
                     dobj.DataAvailable = true;
                     dobj.AdditionalInformation = "-";
@@ -277,9 +277,9 @@ namespace Arduino_Temperature
                 {
                     
                     dobj.AirPressure = string.Empty;
-                    dobj.HeatIndex = replaceDecPoint(values[3].ToString());
-                    dobj.Humidity = replaceDecPoint(values[1].ToString());
-                    dobj.Temperature = replaceDecPoint(values[2].ToString());
+                    dobj.HeatIndex = Common.replaceDecPoint(values[3].ToString());
+                    dobj.Humidity = Common.replaceDecPoint(values[1].ToString());
+                    dobj.Temperature = Common.replaceDecPoint(values[2].ToString());
                     dobj.Timepoint = DateTime.Now;
                     dobj.DataAvailable = true;
                     dobj.AdditionalInformation = "-";
@@ -336,7 +336,7 @@ namespace Arduino_Temperature
                 tempDataTisch= tempDataTisch.Replace("\n", ".br.");
                 tempDataTisch = HttpUtility.HtmlEncode(tempDataTisch); // "TISCH</br>" + line.Replace("\n", "</br>");
                 tempDataTisch = tempDataTisch.Replace(".br.", "</br>");
-                writeToLog(getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathTisch);
+                writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathTisch);
                 addDataset(dataSource.Tisch, dobj);
             } else if (comPort == strPortBoden)
             {
@@ -347,17 +347,14 @@ namespace Arduino_Temperature
                 tempDataBoden = tempDataBoden.Replace("\n", ".br.");
                 tempDataBoden = HttpUtility.HtmlEncode(tempDataBoden); // "TISCH</br>" + line.Replace("\n", "</br>");
                 tempDataBoden = tempDataBoden.Replace(".br.", "</br>");
-                writeToLog(getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathBoden);
+                writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathBoden);
                 addDataset(dataSource.Boden, dobj);
             }
 
             checkTimeSpan();
         }
 
-        static public string getCurrentDateTimeFormatted()
-        {
-            return DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
-        }
+
 
         private bool checkReconnectionTries (ref SerialPort SerPort, string portName)
         {
@@ -483,137 +480,6 @@ namespace Arduino_Temperature
             }
         }
 
-        WindowsIdentity _currentUser = WindowsIdentity.GetCurrent();
-        WindowsPrincipal _currentPrincipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-
-        private static string getExistingPartOfPath(string testDir)
-        {
-            int lst = 0;
-            int last = 0;
-
-            while (!(lst == testDir.LastIndexOf("\\")))
-            {
-                lst = testDir.IndexOf("\\", ++lst);
-                if (!System.IO.Directory.Exists(testDir.Substring(0, lst)))
-                    break;
-
-                Console.WriteLine(testDir.Substring(0, lst));
-                last = lst;
-            }
-
-            return testDir.Substring(0, last);
-        }
-
-        public bool HasAccess(DirectoryInfo directory, FileSystemRights right)
-        {
-            // Get the collection of authorization rules that apply to the directory.
-            AuthorizationRuleCollection acl = directory.GetAccessControl()
-                .GetAccessRules(true, true, typeof(SecurityIdentifier));
-            return HasFileOrDirectoryAccess(right, acl);
-        }
-
-        public bool HasAccess(FileInfo file, FileSystemRights right)
-        {
-            string directoryName = file.DirectoryName;
-            string existingPath = getExistingPartOfPath(directoryName);
-
-            if (directoryName.Substring(directoryName.Length - 1) == "\\")
-                directoryName = directoryName.Substring(directoryName.Length - 1);
-
-            if (existingPath.Substring(existingPath.Length - 1) == "\\")
-                existingPath = existingPath.Substring(existingPath.Length - 1);
-
-            if (existingPath != directoryName)
-            {
-                return HasWritePermissionOnDir(existingPath);
-            }
-                        
-            // Get the collection of authorization rules that apply to the file.
-            AuthorizationRuleCollection acl = file.GetAccessControl().GetAccessRules(true, true, typeof(SecurityIdentifier));
-            return HasFileOrDirectoryAccess(right, acl);
-        }
-
-        private bool HasFileOrDirectoryAccess(FileSystemRights right,
-                                              AuthorizationRuleCollection acl)
-        {
-            bool allow = false;
-            bool inheritedAllow = false;
-            bool inheritedDeny = false;
-
-            for (int i = 0; i < acl.Count; i++)
-            {
-                FileSystemAccessRule currentRule = (FileSystemAccessRule)acl[i];
-                // If the current rule applies to the current user.
-                if (_currentUser.User.Equals(currentRule.IdentityReference) ||
-                    _currentPrincipal.IsInRole(
-                                    (SecurityIdentifier)currentRule.IdentityReference))
-                {
-
-                    if (currentRule.AccessControlType.Equals(AccessControlType.Deny))
-                    {
-                        if ((currentRule.FileSystemRights & right) == right)
-                        {
-                            if (currentRule.IsInherited)
-                            {
-                                inheritedDeny = true;
-                            }
-                            else
-                            { // Non inherited "deny" takes overall precedence.
-                                return false;
-                            }
-                        }
-                    }
-                    else if (currentRule.AccessControlType
-                                                    .Equals(AccessControlType.Allow))
-                    {
-                        if ((currentRule.FileSystemRights & right) == right)
-                        {
-                            if (currentRule.IsInherited)
-                            {
-                                inheritedAllow = true;
-                            }
-                            else
-                            {
-                                allow = true;
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (allow)
-            { // Non inherited "allow" takes precedence over inherited rules.
-                return true;
-            }
-            return inheritedAllow && !inheritedDeny;
-        }
-
-        public static bool HasWritePermissionOnDir(string path)
-        {
-            var writeAllow = false;
-            var writeDeny = false;
-            var accessControlList = Directory.GetAccessControl(path);
-            if (accessControlList == null)
-                return false;
-            var accessRules = accessControlList.GetAccessRules(true, true,
-                                        typeof(System.Security.Principal.SecurityIdentifier));
-            if (accessRules == null)
-                return false;
-
-            foreach (FileSystemAccessRule rule in accessRules)
-            {
-                if ((FileSystemRights.Write & rule.FileSystemRights) != FileSystemRights.Write)
-                    continue;
-
-                if (rule.AccessControlType == AccessControlType.Allow)
-                    writeAllow = true;
-                else if (rule.AccessControlType == AccessControlType.Deny)
-                    writeDeny = true;
-            }
-
-            return writeAllow && !writeDeny;
-        }
-
         private void writeToLog(string text, string path)
         {
             Console.WriteLine("writeToLog called");
@@ -625,7 +491,7 @@ namespace Arduino_Temperature
 
             FileInfo fi = new FileInfo(path);
 
-            if (!HasAccess(fi, FileSystemRights.WriteData))
+            if (!Permission.HasAccess(fi, FileSystemRights.WriteData))
             {
                 Console.WriteLine("writeToLog - Has no access to directory '" + path + "' ");
                 return;
@@ -671,41 +537,14 @@ namespace Arduino_Temperature
             if ((string.IsNullOrEmpty(tempDataTisch) && tischAktiv) || (string.IsNullOrEmpty(tempDataBoden) && bodenAktiv))
                 return;
 
-            if (!HasAccess(new FileInfo(PathHTML), FileSystemRights.WriteData))
+            if (!Permission.HasAccess(new FileInfo(PathHTML), FileSystemRights.WriteData))
                 return;
 
             try
             {
                 lblHTMLUpdated.Invoke((MethodInvoker)(() => lblHTMLUpdated.ForeColor = System.Drawing.Color.Black));
-                using (StreamWriter sw = new StreamWriter(PathHTML))
-                {
-                    string ret = Properties.Resources.html_temperature_main_template;
-                    if (tischAktiv)
-                    {
-                        ret = ret.Replace("&TEMP1", tempDataTisch);
-                        ret = ret.Replace("&TABLE_TISCH", createHTMLTableString(dataTisch, "Daten Tisch:"));
-                    }
-                    else
-                    {
-                        ret = ret.Replace("&TEMP1", "");
-                        ret = ret.Replace("&TABLE_TISCH", "");
-                    }
-                    if (bodenAktiv)
-                    {
-                        ret = ret.Replace("&TEMP2", tempDataBoden);
-                        ret = ret.Replace("&TABLE_BODEN", createHTMLTableString(dataBoden, "Daten Boden:"));
-                    }
-                    else
-                    {
-                        ret = ret.Replace("&TEMP2", "Sensor 2 nicht aktiv");
-                        ret = ret.Replace("&TABLE_BODEN", "Keine Daten fuer Sensor 2, nicht aktiv");
-                    }
-                    
-                    ret = ret.Replace("&LASTUPDATE", getCurrentDateTimeFormatted());
-                    ret = ret.Replace("&HTML_HEAD", HttpUtility.HtmlEncode(XML.HTMLHead));
-                    //ret = ret.Replace("°", "&deg;");
-                    sw.WriteLine(ret);
-                }
+
+                HTML.writeHTMLFile(PathHTML, tischAktiv, tempDataTisch, dataTisch, bodenAktiv, tempDataBoden, dataBoden);
             }
             catch (Exception ex)
             {
@@ -714,68 +553,9 @@ namespace Arduino_Temperature
                 Console.WriteLine(ex.Message);
                 MessageBox.Show(ex.Message);
             }
-            lblHTMLUpdated.Invoke((MethodInvoker)(() => lblHTMLUpdated.Text = getCurrentDateTimeFormatted()));
+            lblHTMLUpdated.Invoke((MethodInvoker)(() => lblHTMLUpdated.Text = Common.getCurrentDateTimeFormatted()));
         }
-
-        private string replaceDecPoint(string input)
-        {
-            string temp = input;
-            string decPoint = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            temp = temp.Replace(".", decPoint);
-            temp = temp.Replace(",", decPoint);
-            return temp;
-        }
-        private string createHTMLTableString(List<DataObject> lDojb, string title)
-        {
-            if (lDojb.Count < 1)
-                return "";
-
-            
-
-            StringBuilder sb = new StringBuilder();
-            sb.Clear();
-            sb.AppendLine("</br><h3>" + title + "</h3>");
-            sb.AppendLine(@"<table style=""width:100%"">");
-            sb.AppendLine("  <tr>");
-            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Datum und Uhrzeit") + "</th>");
-            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Temperatur (°C)") + "</th>");
-            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Luftfeuchtigkeit (%)") + "</th>");
-            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Heat Index (°C)") + "</th>");
-            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Luftdruck (mb)") + "</th>");
-            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Zusatz-Info") + "</th>");
-            sb.AppendLine("  </tr>");
-
-            foreach(DataObject dobj in lDojb)
-            {
-                sb.AppendLine("  <tr>");
-                sb.AppendLine("    <td>" + dobj.Timepoint.ToShortDateString() + " " + dobj.Timepoint.ToLongTimeString() + "</td>");
-
-                if (dobj.DataAvailable)
-                {
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.Temperature)) ? "No data" : HttpUtility.HtmlEncode(dobj.Temperature)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.Humidity)) ? "No data" : HttpUtility.HtmlEncode(dobj.Humidity)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.HeatIndex)) ? "No data" : HttpUtility.HtmlEncode(dobj.HeatIndex)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.AirPressure)) ? "No data" : HttpUtility.HtmlEncode(dobj.AirPressure)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.AdditionalInformation)) ? "No data" : HttpUtility.HtmlEncode(dobj.AdditionalInformation)) + "</td>");
-                }
-                else
-                {
-                    sb.AppendLine("    <td>No data</td>");
-                    sb.AppendLine("    <td>No data</td>");
-                    sb.AppendLine("    <td>No data</td>");
-                    sb.AppendLine("    <td>No data</td>");
-                    sb.AppendLine("    <td></td>");
-                }
-
-                sb.AppendLine("  </tr>");
-            }
-
-            sb.AppendLine("  </table> ");
-
-            sb.AppendLine("</br>");
-            return sb.ToString();
-        }
-
+        
         private void lblTempBoden_DoubleClick(object sender, EventArgs e)
         {
             changeLabelFont(ref lblTempBoden);
