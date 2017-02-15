@@ -86,7 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="c_temperature_folded_128px_1184170_easyicon.net.ico" />
-    <Content Include="Resources\Temperature.xml">
+    <Content Include="Temperature.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Resources\html_temperature_main_template.txt" />

@@ -19,7 +19,6 @@ D:\Arduino Temperature\Arduino Temperature\obj\Debug\Arduino Temperature.csproj.
 C:\private\Arduino Temperature\Arduino Temperature\bin\Debug\Arduino Temperature.exe.config
 C:\private\Arduino Temperature\Arduino Temperature\obj\Debug\Arduino Temperature.exe
 C:\private\Arduino Temperature\Arduino Temperature\obj\Debug\Arduino Temperature.pdb
-C:\private\Arduino Temperature\Arduino Temperature\bin\Debug\Resources\Temperature.xml
 C:\private\Arduino Temperature\Arduino Temperature\bin\Debug\Arduino Temperature.exe
 C:\private\Arduino Temperature\Arduino Temperature\bin\Debug\Arduino Temperature.pdb
 C:\private\Arduino Temperature\Arduino Temperature\obj\Debug\Arduino_Temperature.frmMain.resources
@@ -36,3 +35,4 @@ D:\Temp\Arduino Temperature\Arduino Temperature\obj\Debug\Arduino_Temperature.Pr
 D:\Temp\Arduino Temperature\Arduino Temperature\obj\Debug\Arduino Temperature.csproj.GenerateResource.Cache
 C:\private\Arduino Temperature_git\Arduino Temperature\bin\Debug\Arduino Temperature.exe.config
 C:\private\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino Temperature.pdb
+C:\private\Arduino Temperature\Arduino Temperature\bin\Debug\Temperature.xml
