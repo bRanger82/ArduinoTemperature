@@ -8,6 +8,7 @@ using System.Security.Principal;
 using System.Security.AccessControl;
 using System.Text;
 using System.Globalization;
+using System.Web;
 
 namespace Arduino_Temperature
 {
@@ -49,6 +50,31 @@ namespace Arduino_Temperature
             InitializeComponent();
         }
 
+        private void init()
+        {
+            loadSetttingsFromXML();
+
+            lblHTMLNumEntriesHist.Text = "Anzahl Einträge: " + this.numMaxEntries.Value.ToString();
+            setLabelFormat(lblTempTisch, lblTableLastUpdated);
+            setLabelFormat(lblTempBoden, lblBottomLastUpdated);
+
+            dataBoden.Clear();
+            dataTisch.Clear();
+        }
+
+        private void checkForConnection()
+        {
+            isConnected = ((tischAktiv) ? spTisch.IsOpen : true && (bodenAktiv) ? spBoden.IsOpen : true);
+
+            if (isConnected)
+            {
+                tmr.Interval = 10000;
+                tmr.Elapsed += Tmr_Elapsed;
+                tmr.Enabled = true;
+                tmr.Start();
+            }
+        }
+
         private void frmMain_Load(object sender, EventArgs e)
         {
 
@@ -62,42 +88,24 @@ namespace Arduino_Temperature
                     return;
                 }
 
-                loadSetttingsFromXML();
-
-                lblHTMLNumEntriesHist.Text = "Anzahl Einträge: " + this.numMaxEntries.Value.ToString();
-                setLabelFormat(lblTempTisch, lblTableLastUpdated);
-                setLabelFormat(lblTempBoden, lblBottomLastUpdated);
-
-                dataBoden.Clear();
-                dataTisch.Clear();
-
+                init();
+                checkAccessRights();
                 connectToDevices();
-
-                isConnected = ((tischAktiv) ? spTisch.IsOpen : true && (bodenAktiv) ? spBoden.IsOpen : true);
-
-                if (isConnected)
-                {
-                    tmr.Interval = 10000;
-                    tmr.Elapsed += Tmr_Elapsed;
-                    tmr.Enabled = true;
-                    tmr.Start();
-                }
-
+                checkForConnection();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 isConnected = false;
                 spTisch.DataReceived -= Sp_DataReceived;
                 spBoden.DataReceived -= Sp_DataReceived;
                 tmr.Enabled = false;
                 tmr.Stop();
+                MessageBox.Show(ex.Message, "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
-        private void connectToDevices()
+        private void checkAccessRights()
         {
-
             this.chkLogEnabled.Checked = false;
             this.chkHTML.Checked = false;
 
@@ -112,32 +120,28 @@ namespace Arduino_Temperature
                 this.chkLogEnabled.Enabled = true;
 
             this.chkHTML.Enabled = HasAccess(new FileInfo(PathHTML), FileSystemRights.WriteData);
+        }
 
-            if (tischAktiv)
+        private void connectToDevices()
+        {
+            connectDevice(ref spTisch, ref lblTableLastUpdated, strPortTisch, tischAktiv);
+            connectDevice(ref spBoden, ref lblBottomLastUpdated, strPortBoden, bodenAktiv);
+        }
+
+        private void connectDevice(ref SerialPort comPort, ref Label lblUpdate, string strPort, bool active)
+        {
+            if (!active)
             {
-                lblTableLastUpdated.Text = "Verbindungsaufbau ...";
-                if (tryConnect(ref spTisch, strPortTisch))
-                    lblTableLastUpdated.Text = "Warte auf Daten ...";
-                else
-                    lblTableLastUpdated.Text = "Verbindungsaufbau fehlgeschlagen";
-            }
-            else
-            {
-                lblTableLastUpdated.Text = "Nicht verwendet (in der Konfiguration inaktiv gesetzt)";
+                lblUpdate.Text = "Nicht verwendet (in der Konfiguration inaktiv gesetzt)";
+                return;
             }
 
-            if (bodenAktiv)
-            {
-                lblBottomLastUpdated.Text = "Verbindungsaufbau ...";
-                if (tryConnect(ref spBoden, strPortBoden))
-                    lblBottomLastUpdated.Text = "Warte auf Daten ...";
-                else
-                    lblBottomLastUpdated.Text = "Verbindungsaufbau fehlgeschlagen";
-            }
+            lblUpdate.Text = "Verbindungsaufbau ...";
+
+            if (tryConnect(ref comPort, strPort))
+                lblUpdate.Text = "Warte auf Daten ...";
             else
-            {
-                lblBottomLastUpdated.Text = "Nicht verwendet (in der Konfiguration inaktiv gesetzt)";
-            }
+                lblUpdate.Text = "Verbindungsaufbau fehlgeschlagen";
 
         }
 
@@ -255,10 +259,10 @@ namespace Arduino_Temperature
                 if (values.Length == 7 && values[0].StartsWith("START") && values[6].StartsWith("EOF")) //Protocoll second version
                 {
                     
-                    dobj.AirPressure = values[5].ToString();
-                    dobj.HeatIndex = values[4].ToString();
-                    dobj.Humidity = values[2].ToString();
-                    dobj.Temperature = values[3].ToString();
+                    dobj.AirPressure = replaceDecPoint(values[5].ToString());
+                    dobj.HeatIndex = replaceDecPoint(values[4].ToString());
+                    dobj.Humidity = replaceDecPoint(values[2].ToString());
+                    dobj.Temperature = replaceDecPoint(values[3].ToString());
                     dobj.Timepoint = DateTime.Now;
                     dobj.DataAvailable = true;
                     dobj.AdditionalInformation = "-";
@@ -273,9 +277,9 @@ namespace Arduino_Temperature
                 {
                     
                     dobj.AirPressure = string.Empty;
-                    dobj.HeatIndex = values[3].ToString();
-                    dobj.Humidity = values[1].ToString();
-                    dobj.Temperature = values[2].ToString();
+                    dobj.HeatIndex = replaceDecPoint(values[3].ToString());
+                    dobj.Humidity = replaceDecPoint(values[1].ToString());
+                    dobj.Temperature = replaceDecPoint(values[2].ToString());
                     dobj.Timepoint = DateTime.Now;
                     dobj.DataAvailable = true;
                     dobj.AdditionalInformation = "-";
@@ -328,7 +332,10 @@ namespace Arduino_Temperature
                 timeStampLastUpdateTisch = DateTime.Now;
                 lblTempTisch.Text = XML.TischBezeichnung + " (" + strPortTisch + ")\n" + line;
                 lblTableLastUpdated.Text = "Aktualisiert: " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
-                tempDataTisch = "TISCH</br>" + line.Replace("\n", "</br>");
+                tempDataTisch = lblTempTisch.Text;
+                tempDataTisch= tempDataTisch.Replace("\n", ".br.");
+                tempDataTisch = HttpUtility.HtmlEncode(tempDataTisch); // "TISCH</br>" + line.Replace("\n", "</br>");
+                tempDataTisch = tempDataTisch.Replace(".br.", "</br>");
                 writeToLog(getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathTisch);
                 addDataset(dataSource.Tisch, dobj);
             } else if (comPort == strPortBoden)
@@ -336,7 +343,10 @@ namespace Arduino_Temperature
                 timeStampLastUpdateBoden = DateTime.Now;
                 lblTempBoden.Text = XML.BodenBezeichnung + " (" + strPortBoden + ")\n" + line;
                 lblBottomLastUpdated.Text = "Aktualisiert: " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
-                tempDataBoden = "BODEN</br>" + line.Replace("\n", "</br>");
+                tempDataBoden = lblTempBoden.Text;
+                tempDataBoden = tempDataBoden.Replace("\n", ".br.");
+                tempDataBoden = HttpUtility.HtmlEncode(tempDataBoden); // "TISCH</br>" + line.Replace("\n", "</br>");
+                tempDataBoden = tempDataBoden.Replace(".br.", "</br>");
                 writeToLog(getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathBoden);
                 addDataset(dataSource.Boden, dobj);
             }
@@ -692,8 +702,8 @@ namespace Arduino_Temperature
                     }
                     
                     ret = ret.Replace("&LASTUPDATE", getCurrentDateTimeFormatted());
-                    ret = ret.Replace("&HTML_HEAD", XML.HTMLHead);
-                    ret = ret.Replace("°", "&deg;");
+                    ret = ret.Replace("&HTML_HEAD", HttpUtility.HtmlEncode(XML.HTMLHead));
+                    //ret = ret.Replace("°", "&deg;");
                     sw.WriteLine(ret);
                 }
             }
@@ -707,24 +717,32 @@ namespace Arduino_Temperature
             lblHTMLUpdated.Invoke((MethodInvoker)(() => lblHTMLUpdated.Text = getCurrentDateTimeFormatted()));
         }
 
+        private string replaceDecPoint(string input)
+        {
+            string temp = input;
+            string decPoint = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            temp = temp.Replace(".", decPoint);
+            temp = temp.Replace(",", decPoint);
+            return temp;
+        }
         private string createHTMLTableString(List<DataObject> lDojb, string title)
         {
             if (lDojb.Count < 1)
                 return "";
 
-            string decPoint = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+            
 
             StringBuilder sb = new StringBuilder();
             sb.Clear();
             sb.AppendLine("</br><h3>" + title + "</h3>");
             sb.AppendLine(@"<table style=""width:100%"">");
             sb.AppendLine("  <tr>");
-            sb.AppendLine("    <th>Datum und Uhrzeit</th>");
-            sb.AppendLine("    <th>Temperatur (°C)</th>");
-            sb.AppendLine("    <th>Luftfeuchtigkeit (%)</th>");
-            sb.AppendLine("    <th>Heat Index (°C)</th>");
-            sb.AppendLine("    <th>Luftdruck (mb)</th>");
-            sb.AppendLine("    <th>Zusatz-Info</th>");
+            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Datum und Uhrzeit") + "</th>");
+            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Temperatur (°C)") + "</th>");
+            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Luftfeuchtigkeit (%)") + "</th>");
+            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Heat Index (°C)") + "</th>");
+            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Luftdruck (mb)") + "</th>");
+            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Zusatz-Info") + "</th>");
             sb.AppendLine("  </tr>");
 
             foreach(DataObject dobj in lDojb)
@@ -734,11 +752,11 @@ namespace Arduino_Temperature
 
                 if (dobj.DataAvailable)
                 {
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.Temperature)) ? "No data" : dobj.Temperature.Replace(".", decPoint)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.Humidity)) ? "No data" : dobj.Humidity.Replace(".", decPoint)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.HeatIndex)) ? "No data" : dobj.HeatIndex.Replace(".", decPoint)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.AirPressure)) ? "No data" : dobj.AirPressure.Replace(".", decPoint)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.AdditionalInformation)) ? "No data" : dobj.AdditionalInformation.Replace(".", decPoint)) + "</td>");
+                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.Temperature)) ? "No data" : HttpUtility.HtmlEncode(dobj.Temperature)) + "</td>");
+                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.Humidity)) ? "No data" : HttpUtility.HtmlEncode(dobj.Humidity)) + "</td>");
+                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.HeatIndex)) ? "No data" : HttpUtility.HtmlEncode(dobj.HeatIndex)) + "</td>");
+                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.AirPressure)) ? "No data" : HttpUtility.HtmlEncode(dobj.AirPressure)) + "</td>");
+                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.AdditionalInformation)) ? "No data" : HttpUtility.HtmlEncode(dobj.AdditionalInformation)) + "</td>");
                 }
                 else
                 {

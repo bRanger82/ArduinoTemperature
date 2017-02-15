@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Management.Automation.Runspaces;
 using System.Management.Automation;
+using System.Web;
+
 
 namespace TestEnvironment
 {
@@ -19,6 +21,8 @@ namespace TestEnvironment
 
         static int Main(string[] args)
         {
+            htmlconvert();
+            Console.ReadKey();
 
             if (HasAccess(new FileInfo(@"C:\inetpub\wwwroot\temp.html"), FileSystemRights.WriteData))
                 Console.WriteLine("HTML: Has access");
@@ -33,6 +37,22 @@ namespace TestEnvironment
             Console.WriteLine();
             Console.ReadKey();
             return 0;
+        }
+
+        public static void htmlconvert()
+        {
+            String myString;
+            Console.WriteLine("Enter a string having '&' or '\"'  in it: ");
+            myString = Console.ReadLine();
+            String myEncodedString;
+            // Encode the string.
+            myEncodedString = HttpUtility.HtmlEncode(myString);
+            Console.WriteLine("HTML Encoded string is " + myEncodedString);
+            StringWriter myWriter = new StringWriter();
+            // Decode the encoded string.
+            HttpUtility.HtmlDecode(myEncodedString, myWriter);
+            Console.Write("Decoded string of the above encoded string is " +
+                           myWriter.ToString());
         }
 
         public static bool trycreatefile(FileInfo file)
