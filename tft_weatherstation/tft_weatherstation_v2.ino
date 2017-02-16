@@ -28,6 +28,12 @@
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
 
+//cycle will be increased in the loop(), if cycle == CYCLE_UPDATE_TFT --> update TFT and reset cycle to 0
+//this will avoid updating the TFT each time when a serial data is sent (no need to update the TFT that often)
+#define CYCLE_UPDATE_TFT 6 
+int cycle = CYCLE_UPDATE_TFT;
+
+#define DELAY_TIME 10000 //Delay Time between each processData() call
 
 MCUFRIEND_kbv tft;
 DHT dht(DHTPIN, DHTTYPE);
@@ -41,7 +47,7 @@ unsigned long writeTextToTFT(double temp, double humanity, double heatindex, dou
   tft.setTextSize(1);
   tft.println(" ");
   tft.setTextSize(3);
-  tft.setTextColor(YELLOW);
+  tft.setTextColor(GREEN);
   tft.println("Sensor INNEN:");
   tft.println(" ");
   tft.setTextSize(2);
@@ -216,10 +222,12 @@ void processData()
   int sensorWert = analogRead(LDR); //Lichtwert auslesen --> TODO: LUX Modul bestellen und verwenden statt LDR
   double p0 = 0; //Wert fuer Luftdruck
   bool pressAvailable = getPressure(&p0); //Luftdruck lesen
+  static bool errorOccured = false;
   
   if (isnan(t) || isnan(h) || isnan(r) || !pressAvailable) //Fehler beim Lesen eines der Daten
   {
     showError();
+    errorOccured = true;
     if (Serial)
     {
       Serial.println("Fehler: Daten konnten gelesen werden!");
@@ -228,17 +236,31 @@ void processData()
   } 
   else
   {
-    writeTextToTFT(t, h, r, p0, sensorWert);
+    //update TFT only the CYCLE_UPDATE_TFT times when a processData is called
+    //to avoid each time update of the TFT
+    //or if an error occured, update the TFT the next OK time
+    if (cycle == CYCLE_UPDATE_TFT || errorOccured) 
+    {
+      writeTextToTFT(t, h, r, p0, sensorWert);
+      errorOccured = false;
+    }
+    
     if (Serial)
     {
       writeSerialProtocolV2(h, t, r, p0);  
     }
+  }
+  
+  if (cycle == CYCLE_UPDATE_TFT)  //otherwise, if it this is done within the else block above AND
+  {                               //in case an error occurs and persists a longer time, the cycle will increase more and more 
+    cycle = 1;                    //which could then cause an overflow of the cycle value
   }
 }
 
 void loop(void) 
 {
   processData();
-  delay(10000);
+  delay(DELAY_TIME);
+  cycle++;
 }
 
