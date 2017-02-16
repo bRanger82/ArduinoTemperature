@@ -180,7 +180,6 @@
             this.Text = "Arduino Temperature Watcher";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             this.Load += new System.EventHandler(this.frmMain_Load);
-            this.DoubleClick += new System.EventHandler(this.frmMain_DoubleClick);
             this.grpSettings.ResumeLayout(false);
             this.grpSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMaxEntries)).EndInit();
