@@ -33,7 +33,8 @@ MCUFRIEND_kbv tft;
 DHT dht(DHTPIN, DHTTYPE);
 SFE_BMP180 pressure;
 
-unsigned long testText(double temp, double humanity, double heatindex, double airpressure, byte lightvalue) {
+unsigned long writeTextToTFT(double temp, double humanity, double heatindex, double airpressure, byte lightvalue) 
+{
   tft.fillScreen(BLACK);
   unsigned long start = micros();
   tft.setCursor(0, 0);
@@ -68,7 +69,8 @@ unsigned long testText(double temp, double humanity, double heatindex, double ai
 }
 
 
-void setup(void) {
+void setup(void) 
+{
   Serial.begin(9600);
   Serial.flush();
   
@@ -226,7 +228,7 @@ void processData()
   } 
   else
   {
-    testText(t, h, r, p0, sensorWert);
+    writeTextToTFT(t, h, r, p0, sensorWert);
     if (Serial)
     {
       writeSerialProtocolV2(h, t, r, p0);  
