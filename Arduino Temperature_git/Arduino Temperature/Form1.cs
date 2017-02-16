@@ -199,11 +199,13 @@ namespace Arduino_Temperature
 
         private void Tmr_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            if (!tryConnect(ref spTisch, strPortTisch))
-                lblTempTisch.Text = reconnectText(strPortTisch);
+            if (tischAktiv)
+                if (!tryConnect(ref spTisch, strPortTisch))
+                    lblTempTisch.Text = reconnectText(strPortTisch);
 
-            if (!tryConnect(ref spBoden, strPortBoden))
-                lblTempBoden.Text = reconnectText(strPortBoden);
+            if (bodenAktiv)
+                if (!tryConnect(ref spBoden, strPortBoden))
+                    lblTempBoden.Text = reconnectText(strPortBoden);
 
             writeToHTML();
         }
