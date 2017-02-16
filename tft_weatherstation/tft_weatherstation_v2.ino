@@ -115,7 +115,7 @@ void showError(void)
   tft.println("gelesen werden!");
 }
 
-void writeSerialProtocolOne(float humanity, float temperature, float heatIndex)
+void writeSerialProtocolV1(float humanity, float temperature, float heatIndex)
 {
   digitalWrite(PIN_LED, HIGH);
   Serial.print("START");
@@ -132,7 +132,7 @@ void writeSerialProtocolOne(float humanity, float temperature, float heatIndex)
   digitalWrite(PIN_LED, LOW);  
 }
 
-void writeSerialProtocolTwo(float humanity, float temperature, float heatIndex, double airPressure)
+void writeSerialProtocolV2(float humanity, float temperature, float heatIndex, double airPressure)
 {
   digitalWrite(PIN_LED, HIGH);
   Serial.print("START");
@@ -153,9 +153,32 @@ void writeSerialProtocolTwo(float humanity, float temperature, float heatIndex, 
   digitalWrite(PIN_LED, LOW);
 }
 
+void writeSerialProtocolV3(float humanity, float temperature, float heatIndex, double airPressure, int lux)
+{
+  digitalWrite(PIN_LED, HIGH);
+  Serial.print("START");
+  Serial.print("|"); // delim
+  Serial.print("LEN:5"); //5 Werte werden uebertragen
+  Serial.print("|"); // delim
+  Serial.print(humanity); // Luftfeuchte
+  Serial.print("|"); // delim
+  Serial.print(temperature); // Temperatur
+  Serial.print("|"); // delim
+  Serial.print(heatIndex); // HeatIndex
+  Serial.print("|"); // delim
+  Serial.print(airPressure); //Luftdruck millibar
+  Serial.print("|"); // delim
+  Serial.print(lux); // Lichtstaerke
+  Serial.print("|"); // delim
+  Serial.println("EOF");
+  Serial.flush();
+  delay(SERIALWAIT);
+  digitalWrite(PIN_LED, LOW);
+}
+
 bool getPressure(double * value)
 {
-  double T,P,p0;
+  double T,P;
   char st;
 
   st = pressure.startTemperature();
@@ -183,29 +206,37 @@ bool getPressure(double * value)
   return false;
 }
 
-void loop(void) 
+void processData()
 {
   float h = dht.readHumidity();     //Luftfeuchte auslesen
   float t = dht.readTemperature();  //Temperatur auslesen
-  float r = dht.computeHeatIndex(t, h, false);
-  int sensorWert = analogRead(LDR);
-  double p0 = 0;
-  bool pressAvailable = getPressure(&p0);
+  float r = dht.computeHeatIndex(t, h, false); //Heat-Index berechnen
+  int sensorWert = analogRead(LDR); //Lichtwert auslesen --> TODO: LUX Modul bestellen und verwenden statt LDR
+  double p0 = 0; //Wert fuer Luftdruck
+  bool pressAvailable = getPressure(&p0); //Luftdruck lesen
   
-  if (Serial)
+  if (isnan(t) || isnan(h) || isnan(r) || !pressAvailable) //Fehler beim Lesen eines der Daten
   {
-    if (isnan(t) || isnan(h) || isnan(r) || !pressAvailable) 
+    showError();
+    if (Serial)
     {
       Serial.println("Fehler: Daten konnten gelesen werden!");
       Serial.flush();
-      showError();
-    } 
-    else
+    }
+  } 
+  else
+  {
+    testText(t, h, r, p0, sensorWert);
+    if (Serial)
     {
-      writeSerialProtocolTwo(h, t, r, p0);
-      testText(t, h, r, p0, sensorWert);
+      writeSerialProtocolV2(h, t, r, p0);  
     }
   }
-  
+}
+
+void loop(void) 
+{
+  processData();
   delay(10000);
 }
+
