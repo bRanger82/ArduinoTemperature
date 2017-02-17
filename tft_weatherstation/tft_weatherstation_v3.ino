@@ -306,6 +306,12 @@ void printIPInfoOnTFT(void)
   tft.println("127.0.0.1");
   tft.println("Signal Staerke:");
   tft.println("-71 dBm");
+  
+  tft.println("Ser. Schnittstelle:");
+  if (Serial)
+    tft.println(" verfuegbar:"); 
+  else
+    tft.println(" NICHT verfuegbar:");
 }
 
 void ledTest(void)
