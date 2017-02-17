@@ -17,6 +17,7 @@
 #define DHTTYPE DHT22
 #define PIN_LED 24 //Serial Data LED
 #define SERIALWAIT 200
+#define interruptPin 19
 
 // Assign human-readable names to some common 16-bit color values:
 #define BLACK   0x0000
@@ -27,6 +28,16 @@
 #define MAGENTA 0xF81F
 #define YELLOW  0xFFE0
 #define WHITE   0xFFFF
+
+//RGB LED
+#define LEDblau 44 // Farbe blau an Pin 3
+#define LEDrot 45 // Farbe rot an Pin 5
+#define LEDgruen 46 // Farbe gruen an Pin 6
+#define delayRGB 1000 // p ist eine Pause mit 1000ms also 1 Sekunde
+#define brightness1a 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
+#define brightness1b 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
+#define brightness1c 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
+#define dunkel 0 // Zahlenwert 0 bedeutet Spannung 0V – also LED aus.
 
 //cycle will be increased in the loop(), if cycle == CYCLE_UPDATE_TFT --> update TFT and reset cycle to 0
 //this will avoid updating the TFT each time when a serial data is sent (no need to update the TFT that often)
@@ -106,6 +117,11 @@ void setup(void)
   
   pinMode(PIN_LED, OUTPUT);
   digitalWrite(PIN_LED, LOW);
+  attachInterrupt(digitalPinToInterrupt(interruptPin), interruptCall, RISING); 
+  
+  pinMode(LEDblau, OUTPUT);
+  pinMode(LEDgruen, OUTPUT);
+  pinMode(LEDrot, OUTPUT);
 }
 
 void showError(void)
@@ -255,6 +271,52 @@ void processData()
   {                               //in case an error occurs and persists a longer time, the cycle will increase more and more 
     cycle = 1;                    //which could then cause an overflow of the cycle value
   }
+}
+
+void printIPInfoOnTFT(void)
+{
+  tft.fillScreen(BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextSize(1);
+  tft.println(" ");
+  tft.setTextSize(2);
+  tft.setTextColor(WHITE);
+  tft.println("IP:");
+  tft.println("127.0.0.1");
+  tft.println("Signal Staerke:");
+  tft.println("-71 dBm");
+}
+
+void ledTest(void)
+{
+  unsigned long currentTime = millis();
+  
+  analogWrite(LEDblau, brightness1a); // blau einschalten
+  
+  while(millis() - currentTime > delayRGB);
+  currentTime = millis();
+  
+  analogWrite(LEDblau, dunkel); // blau ausschalten
+
+  return;
+  analogWrite(LEDrot, brightness1b); // rot einschalten
+  
+  while(millis() - currentTime > delayRGB);
+  currentTime = millis();
+  
+  analogWrite(LEDrot, dunkel); // rotausschalten
+  analogWrite(LEDgruen, brightness1c); // gruen einschalten
+  
+  while(millis() - currentTime > delayRGB);
+  currentTime = millis();
+  
+  analogWrite(LEDgruen, dunkel); // gruenausschalten
+}
+
+void interruptCall(void)
+{
+  printIPInfoOnTFT();
+  //ledTest();
 }
 
 void loop(void) 
