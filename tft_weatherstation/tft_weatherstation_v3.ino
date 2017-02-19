@@ -1,6 +1,6 @@
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_TFTLCD.h> // Hardware-specific library
-
+#include "TSL2561.h"
 #include <SFE_BMP180.h>
 #include <Wire.h>
 #include "DHT.h"
@@ -45,12 +45,63 @@
 int cycle = CYCLE_UPDATE_TFT;
 
 #define DELAY_TIME 10000 //Delay Time between each processData() call
-
+TSL2561 tsl(TSL2561_ADDR_FLOAT); 
 MCUFRIEND_kbv tft;
 DHT dht(DHTPIN, DHTTYPE);
 SFE_BMP180 pressure;
+volatile bool ledTestRun = false;
 
-unsigned long writeTextToTFT(double temp, double humanity, double heatindex, double airpressure, byte lightvalue) 
+void setup(void) 
+{
+  Serial.begin(9600);
+  Serial.flush();  
+  dht.begin();
+  pressure.begin();  
+  tsl.begin();
+  tft.reset();
+ tsl.setGain(TSL2561_GAIN_16X);
+ tsl.setTiming(TSL2561_INTEGRATIONTIME_13MS);
+  uint16_t identifier = tft.readID();
+  if(identifier == 0x9325) {
+  } else if(identifier == 0x9328) {
+  } else if(identifier == 0x4535) {
+  } else if(identifier == 0x7575) {
+  } else if(identifier == 0x9341) {
+  } else if(identifier == 0x7783) {
+  } else if(identifier == 0x8230) {
+  } else if(identifier == 0x8357) {
+  } else if(identifier==0x0101)
+  {     
+    identifier=0x9341;
+  } else {
+    identifier=0x9341;
+  }
+  
+  tft.begin(identifier);
+  tft.setRotation(1);  
+  pinMode(PIN_LED, OUTPUT);
+  digitalWrite(PIN_LED, LOW);
+  attachInterrupt(digitalPinToInterrupt(interruptPin), interruptCall, RISING); 
+  pinMode(LEDblau, OUTPUT);
+  pinMode(LEDgruen, OUTPUT);
+  pinMode(LEDrot, OUTPUT);
+  ledTest();
+}
+
+void loop(void) 
+{
+  if (ledTestRun)
+  {
+    ledTest();
+    ledTestRun = false;
+  }
+
+  processData();
+  delay(DELAY_TIME);
+  cycle++;
+}
+
+unsigned long writeTextToTFT(double temp, double humanity, double heatindex, double airpressure, uint32_t lightvalue) 
 {
   tft.fillScreen(BLACK);
   unsigned long start = micros();
@@ -83,66 +134,6 @@ unsigned long writeTextToTFT(double temp, double humanity, double heatindex, dou
   tft.println(" Lux");
   tft.println(" ");
   return micros() - start;
-}
-
-void initTFTDisplay(void)
-{
-  tft.reset();
-
-  uint16_t identifier = tft.readID();
-  if(identifier == 0x9325) {
-  } else if(identifier == 0x9328) {
-  } else if(identifier == 0x4535) {
-  } else if(identifier == 0x7575) {
-  } else if(identifier == 0x9341) {
-  } else if(identifier == 0x7783) {
-  } else if(identifier == 0x8230) {
-  } else if(identifier == 0x8357) {
-  } else if(identifier==0x0101)
-  {     
-    identifier=0x9341;
-  } else {
-    identifier=0x9341;
-  }
-  
-  tft.begin(identifier);
-  tft.setRotation(1);  
-}
-
-void initRGB(void)
-{
-  pinMode(LEDblau, OUTPUT);
-  pinMode(LEDgruen, OUTPUT);
-  pinMode(LEDrot, OUTPUT);
-  ledTest();
-}
-
-void initSensors(void)
-{
-  dht.begin();
-  pressure.begin();  
-}
-
-void initIOs(void)
-{
-  pinMode(PIN_LED, OUTPUT);
-  digitalWrite(PIN_LED, LOW);
-  attachInterrupt(digitalPinToInterrupt(interruptPin), interruptCall, RISING); 
-}
-
-void initSerial(void)
-{
-  Serial.begin(9600);
-  Serial.flush();  
-}
-
-void setup(void) 
-{
-  initSerial();
-  initSensors();
-  initTFTDisplay();
-  initIOs();
-  initRGB();
 }
 
 void showError(void)
@@ -256,10 +247,15 @@ void processData()
   float h = dht.readHumidity();     //Luftfeuchte auslesen
   float t = dht.readTemperature();  //Temperatur auslesen
   float r = dht.computeHeatIndex(t, h, false); //Heat-Index berechnen
-  int sensorWert = analogRead(LDR); //Lichtwert auslesen --> TODO: LUX Modul bestellen und verwenden statt LDR
   double p0 = 0; //Wert fuer Luftdruck
   bool pressAvailable = getPressure(&p0); //Luftdruck lesen
   static bool errorOccured = false;
+  uint16_t x = tsl.getLuminosity(TSL2561_VISIBLE);
+  uint32_t lum = tsl.getFullLuminosity();
+  uint16_t ir, full;
+  ir = lum >> 16;
+  full = lum & 0xFFFF;
+  uint32_t lux = tsl.calculateLux(full, ir);
   
   if (isnan(t) || isnan(h) || isnan(r) || !pressAvailable) //Fehler beim Lesen eines der Daten
   {
@@ -278,7 +274,7 @@ void processData()
     //or if an error occured, update the TFT the next OK time
     if (cycle == CYCLE_UPDATE_TFT || errorOccured) 
     {
-      writeTextToTFT(t, h, r, p0, sensorWert);
+      writeTextToTFT(t, h, r, p0, lux);
       errorOccured = false;
     }
     
@@ -329,13 +325,9 @@ void ledTest(void)
 
 void interruptCall(void)
 {
-  printIPInfoOnTFT();
+  //printIPInfoOnTFT();
+  ledTestRun = true;
 }
 
-void loop(void) 
-{
-  processData();
-  delay(DELAY_TIME);
-  cycle++;
-}
+
 
