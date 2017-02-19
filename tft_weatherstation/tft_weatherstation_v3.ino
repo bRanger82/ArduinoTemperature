@@ -31,9 +31,9 @@
 
 //RGB LED
 #define LEDblau 44 // Farbe blau an Pin 3
-#define LEDrot 45 // Farbe rot an Pin 5
-#define LEDgruen 46 // Farbe gruen an Pin 6
-#define delayRGB 1000 // p ist eine Pause mit 1000ms also 1 Sekunde
+#define LEDrot 46 // Farbe rot an Pin 5
+#define LEDgruen 45 // Farbe gruen an Pin 6
+#define delayRGB 500 // p ist eine Pause mit 1000ms also 1 Sekunde
 #define brightness1a 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
 #define brightness1b 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
 #define brightness1c 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
@@ -59,8 +59,8 @@ void setup(void)
   pressure.begin();  
   tsl.begin();
   tft.reset();
- tsl.setGain(TSL2561_GAIN_16X);
- tsl.setTiming(TSL2561_INTEGRATIONTIME_13MS);
+  tsl.setGain(TSL2561_GAIN_16X);
+  tsl.setTiming(TSL2561_INTEGRATIONTIME_13MS);
   uint16_t identifier = tft.readID();
   if(identifier == 0x9325) {
   } else if(identifier == 0x9328) {
@@ -90,12 +90,6 @@ void setup(void)
 
 void loop(void) 
 {
-  if (ledTestRun)
-  {
-    ledTest();
-    ledTestRun = false;
-  }
-
   processData();
   delay(DELAY_TIME);
   cycle++;
@@ -132,7 +126,12 @@ unsigned long writeTextToTFT(double temp, double humanity, double heatindex, dou
   tft.print("Lichtwert: ");
   tft.print(lightvalue);
   tft.println(" Lux");
+  tft.setTextSize(1);
   tft.println(" ");
+  if (Serial)
+    tft.println("Serial connected");
+  else
+    tft.println("Serial _not_ connected");
   return micros() - start;
 }
 
@@ -153,7 +152,7 @@ void showError(void)
 
 void writeSerialProtocolV1(float humanity, float temperature, float heatIndex)
 {
-  digitalWrite(PIN_LED, HIGH);
+  digitalWrite(LEDgruen, HIGH);
   Serial.print("START");
   Serial.print("|"); // delim
   Serial.print(humanity); // Luftfeuchte
@@ -165,12 +164,12 @@ void writeSerialProtocolV1(float humanity, float temperature, float heatIndex)
   Serial.println("EOF");
   Serial.flush();
   delay(SERIALWAIT);
-  digitalWrite(PIN_LED, LOW);  
+  digitalWrite(LEDgruen, LOW);  
 }
 
 void writeSerialProtocolV2(float humanity, float temperature, float heatIndex, double airPressure)
 {
-  digitalWrite(PIN_LED, HIGH);
+  digitalWrite(LEDgruen, HIGH);
   Serial.print("START");
   Serial.print("|"); // delim
   Serial.print("LEN:4"); //4 Werte werden uebertragen
@@ -186,12 +185,12 @@ void writeSerialProtocolV2(float humanity, float temperature, float heatIndex, d
   Serial.println("EOF");
   Serial.flush();
   delay(SERIALWAIT);
-  digitalWrite(PIN_LED, LOW);
+  digitalWrite(LEDgruen, LOW);
 }
 
 void writeSerialProtocolV3(float humanity, float temperature, float heatIndex, double airPressure, int lux)
 {
-  digitalWrite(PIN_LED, HIGH);
+  digitalWrite(LEDgruen, HIGH);
   Serial.print("START");
   Serial.print("|"); // delim
   Serial.print("LEN:5"); //5 Werte werden uebertragen
@@ -209,7 +208,7 @@ void writeSerialProtocolV3(float humanity, float temperature, float heatIndex, d
   Serial.println("EOF");
   Serial.flush();
   delay(SERIALWAIT);
-  digitalWrite(PIN_LED, LOW);
+  digitalWrite(LEDgruen, LOW);
 }
 
 bool getPressure(double * value)
@@ -272,7 +271,7 @@ void processData()
     //update TFT only the CYCLE_UPDATE_TFT times when a processData is called
     //to avoid each time update of the TFT
     //or if an error occured, update the TFT the next OK time
-    if (cycle == CYCLE_UPDATE_TFT || errorOccured) 
+    if (cycle >= CYCLE_UPDATE_TFT || errorOccured) 
     {
       writeTextToTFT(t, h, r, p0, lux);
       errorOccured = false;
@@ -284,7 +283,7 @@ void processData()
     }
   }
   
-  if (cycle == CYCLE_UPDATE_TFT)  //otherwise, if it this is done within the else block above AND
+  if (cycle >= CYCLE_UPDATE_TFT)  //otherwise, if it this is done within the else block above AND
   {                               //in case an error occurs and persists a longer time, the cycle will increase more and more 
     cycle = 1;                    //which could then cause an overflow of the cycle value
   }
@@ -325,8 +324,7 @@ void ledTest(void)
 
 void interruptCall(void)
 {
-  //printIPInfoOnTFT();
-  ledTestRun = true;
+  cycle = CYCLE_UPDATE_TFT;
 }
 
 
