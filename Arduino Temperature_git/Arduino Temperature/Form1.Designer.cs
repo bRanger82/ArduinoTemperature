@@ -67,8 +67,8 @@
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.lblSensorOneHumidityName = new System.Windows.Forms.Label();
-            this.lblHumidityValueMaxTime = new System.Windows.Forms.Label();
-            this.lblHumidityValueMinTime = new System.Windows.Forms.Label();
+            this.lblSensorOneHumidityValueMaxTime = new System.Windows.Forms.Label();
+            this.lblSensorOneHumidityValueMinTime = new System.Windows.Forms.Label();
             this.lblSensorOneHumidityValueMax = new System.Windows.Forms.Label();
             this.lblSensorOneHumidityValueMin = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -493,8 +493,8 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.lblSensorOneHumidityName);
-            this.groupBox2.Controls.Add(this.lblHumidityValueMaxTime);
-            this.groupBox2.Controls.Add(this.lblHumidityValueMinTime);
+            this.groupBox2.Controls.Add(this.lblSensorOneHumidityValueMaxTime);
+            this.groupBox2.Controls.Add(this.lblSensorOneHumidityValueMinTime);
             this.groupBox2.Controls.Add(this.lblSensorOneHumidityValueMax);
             this.groupBox2.Controls.Add(this.lblSensorOneHumidityValueMin);
             this.groupBox2.Controls.Add(this.label14);
@@ -517,23 +517,23 @@
             this.lblSensorOneHumidityName.TabIndex = 23;
             this.lblSensorOneHumidityName.Text = "Luftfeuchtigkeit";
             // 
-            // lblHumidityValueMaxTime
+            // lblSensorOneHumidityValueMaxTime
             // 
-            this.lblHumidityValueMaxTime.AutoSize = true;
-            this.lblHumidityValueMaxTime.Location = new System.Drawing.Point(119, 107);
-            this.lblHumidityValueMaxTime.Name = "lblHumidityValueMaxTime";
-            this.lblHumidityValueMaxTime.Size = new System.Drawing.Size(91, 13);
-            this.lblHumidityValueMaxTime.TabIndex = 22;
-            this.lblHumidityValueMaxTime.Text = "01.01.2017 17:45";
+            this.lblSensorOneHumidityValueMaxTime.AutoSize = true;
+            this.lblSensorOneHumidityValueMaxTime.Location = new System.Drawing.Point(119, 107);
+            this.lblSensorOneHumidityValueMaxTime.Name = "lblSensorOneHumidityValueMaxTime";
+            this.lblSensorOneHumidityValueMaxTime.Size = new System.Drawing.Size(91, 13);
+            this.lblSensorOneHumidityValueMaxTime.TabIndex = 22;
+            this.lblSensorOneHumidityValueMaxTime.Text = "01.01.2017 17:45";
             // 
-            // lblHumidityValueMinTime
+            // lblSensorOneHumidityValueMinTime
             // 
-            this.lblHumidityValueMinTime.AutoSize = true;
-            this.lblHumidityValueMinTime.Location = new System.Drawing.Point(119, 87);
-            this.lblHumidityValueMinTime.Name = "lblHumidityValueMinTime";
-            this.lblHumidityValueMinTime.Size = new System.Drawing.Size(91, 13);
-            this.lblHumidityValueMinTime.TabIndex = 21;
-            this.lblHumidityValueMinTime.Text = "01.01.2017 17:45";
+            this.lblSensorOneHumidityValueMinTime.AutoSize = true;
+            this.lblSensorOneHumidityValueMinTime.Location = new System.Drawing.Point(119, 87);
+            this.lblSensorOneHumidityValueMinTime.Name = "lblSensorOneHumidityValueMinTime";
+            this.lblSensorOneHumidityValueMinTime.Size = new System.Drawing.Size(91, 13);
+            this.lblSensorOneHumidityValueMinTime.TabIndex = 21;
+            this.lblSensorOneHumidityValueMinTime.Text = "01.01.2017 17:45";
             // 
             // lblSensorOneHumidityValueMax
             // 
@@ -1217,8 +1217,8 @@
         private System.Windows.Forms.PictureBox pictureBox4;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label lblSensorOneHumidityName;
-        private System.Windows.Forms.Label lblHumidityValueMaxTime;
-        private System.Windows.Forms.Label lblHumidityValueMinTime;
+        private System.Windows.Forms.Label lblSensorOneHumidityValueMaxTime;
+        private System.Windows.Forms.Label lblSensorOneHumidityValueMinTime;
         private System.Windows.Forms.Label lblSensorOneHumidityValueMax;
         private System.Windows.Forms.Label lblSensorOneHumidityValueMin;
         private System.Windows.Forms.Label label14;

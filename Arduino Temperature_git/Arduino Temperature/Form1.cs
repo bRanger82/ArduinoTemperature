@@ -360,8 +360,47 @@ namespace Arduino_Temperature
                 addDataset(dataSource.Tisch, dobj);
                 if (dobj.DataAvailable)
                 {
+                    double val;
+
                     lblSensorOneHumidityValue.Text = dobj.Humidity + " %";
+                    if (double.TryParse(dobj.Humidity, out val))
+                    {
+                        if (val < dobj.HumidityDetail.MinValue)
+                        {
+                            dobj.HumidityDetail.MinValue = val;
+                            dobj.HumidityDetail.MinTimepoint = DateTime.Now;
+                            lblSensorOneHumidityValueMin.Text = dobj.HumidityDetail.MinValue.ToString("#.##") + " %";
+                            lblSensorOneHumidityValueMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.HumidityDetail.MinTimepoint);
+                        }
+                        if (val > dobj.HumidityDetail.MaxValue)
+                        {
+                            dobj.HumidityDetail.MaxValue = val;
+                            dobj.HumidityDetail.MinTimepoint = DateTime.Now;
+                            lblSensorOneHumidityValueMax.Text = dobj.HumidityDetail.MaxValue.ToString("#.##") + " %";
+                            lblSensorOneHumidityValueMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.HumidityDetail.MaxTimepoint);
+                        }
+                    }
+
+
                     lblSensorOneTempValue.Text = dobj.Temperature + " °C";
+                    if (double.TryParse(dobj.Temperature, out val))
+                    {
+                        if (val < dobj.TemperatureDetail.MinValue)
+                        {
+                            dobj.TemperatureDetail.MinValue = val;
+                            dobj.TemperatureDetail.MinTimepoint = DateTime.Now;
+                            lblSensorOneTempMin.Text = dobj.TemperatureDetail.MinValue.ToString("#.##") + " °C";
+                            lblSensorOneTempMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.TemperatureDetail.MinTimepoint);
+                        }
+                        if (val > dobj.TemperatureDetail.MaxValue)
+                        {
+                            dobj.TemperatureDetail.MaxValue = val;
+                            dobj.TemperatureDetail.MaxTimepoint = DateTime.Now;
+                            lblSensorOneTempMax.Text = dobj.TemperatureDetail.MaxValue.ToString("#.##") + " °C";
+                            lblSensorOneTempMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.TemperatureDetail.MaxTimepoint);
+                        }
+                    }
+
                     if (dobj.Protocol == DataObjectProtocol.PROTOCOL_ONE)
                     {
                         lblSensorOneLuxValue.Text = "N/A";
@@ -371,11 +410,63 @@ namespace Arduino_Temperature
                     {
                         lblSensorOneLuxValue.Text = "N/A";
                         lblSensorOnePressureValue.Text = dobj.AirPressure + " mb";
+                        if (double.TryParse(dobj.AirPressure, out val))
+                        {
+                            if (val < dobj.AirPressureDetail.MinValue)
+                            {
+                                dobj.AirPressureDetail.MinValue = val;
+                                dobj.AirPressureDetail.MinTimepoint = DateTime.Now;
+                                lblSensorOnePressureMin.Text = dobj.AirPressureDetail.MinValue.ToString("#.##") + " mb";
+                                lblSensorOnePressureMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.AirPressureDetail.MinTimepoint);
+                            }
+                            if (val > dobj.AirPressureDetail.MaxValue)
+                            {
+                                dobj.AirPressureDetail.MaxValue = val;
+                                dobj.AirPressureDetail.MaxTimepoint = DateTime.Now;
+                                lblSensorOnePressureMax.Text = dobj.AirPressureDetail.MaxValue.ToString("#.##") + " mb";
+                                lblSensorOnePressureMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.AirPressureDetail.MaxTimepoint);
+                            }
+                        }
                     }
                     else if (dobj.Protocol == DataObjectProtocol.PROTOCOL_THREE)
                     {
                         lblSensorOneLuxValue.Text = dobj.LUX + " lux";
+                        if (double.TryParse(dobj.LUX, out val))
+                        {
+                            if (val < dobj.LUXDetail.MinValue) //Kann nicht funktionieren, da dobj immer neu angelegt wird!
+                            {
+                                dobj.LUXDetail.MinValue = val;
+                                dobj.LUXDetail.MinTimepoint = DateTime.Now;
+                                lblSensorOneLuxMin.Text = dobj.LUXDetail.MinValue.ToString("#.##") + " lux";
+                                lblSensorOneLuxMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.LUXDetail.MinTimepoint);
+                            }
+                            if (val > dobj.LUXDetail.MaxValue)
+                            {
+                                dobj.LUXDetail.MaxValue = val;
+                                dobj.LUXDetail.MaxTimepoint = DateTime.Now;
+                                lblSensorOneLuxMax.Text = dobj.LUXDetail.MaxValue.ToString("#.##") + " lux";
+                                lblSensorOneLuxMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.LUXDetail.MaxTimepoint);
+                            }
+                        }
+
                         lblSensorOnePressureValue.Text = dobj.AirPressure + " mb";
+                        if (double.TryParse(dobj.AirPressure, out val))
+                        {
+                            if (val < dobj.AirPressureDetail.MinValue)
+                            {
+                                dobj.AirPressureDetail.MinValue = val;
+                                dobj.AirPressureDetail.MinTimepoint = DateTime.Now;
+                                lblSensorOnePressureMin.Text = dobj.AirPressureDetail.MinValue.ToString("#.##") + " mb";
+                                lblSensorOnePressureMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.AirPressureDetail.MinTimepoint);
+                            }
+                            if (val > dobj.AirPressureDetail.MaxValue)
+                            {
+                                dobj.AirPressureDetail.MaxValue = val;
+                                dobj.AirPressureDetail.MaxTimepoint = DateTime.Now;
+                                lblSensorOnePressureMax.Text = dobj.AirPressureDetail.MaxValue.ToString("#.##") + " mb";
+                                lblSensorOnePressureMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.AirPressureDetail.MaxTimepoint);
+                            }
+                        }
                     }
                 }
                 else

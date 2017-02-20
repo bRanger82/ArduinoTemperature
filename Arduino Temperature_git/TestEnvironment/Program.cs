@@ -21,6 +21,10 @@ namespace TestEnvironment
 
         static int Main(string[] args)
         {
+            DataObject dojb = new DataObject();
+
+            Console.WriteLine(dojb.TemperatureDetail.MinValue);
+
             htmlconvert();
             Console.ReadKey();
 

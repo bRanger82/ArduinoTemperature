@@ -15,6 +15,11 @@ namespace Arduino_Temperature
             return DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
         }
 
+        static public string getCurrentDateTimeFormattedNoSec(DateTime dtValue)
+        {
+            return dtValue.ToString("dd.MM.yyyy HH:mm");
+        }
+
         static public string replaceDecPoint(string input)
         {
             string temp = input;
