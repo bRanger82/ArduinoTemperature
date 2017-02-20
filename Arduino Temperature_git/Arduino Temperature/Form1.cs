@@ -59,6 +59,13 @@ namespace Arduino_Temperature
             dataTisch.Clear();
         }
 
+        private void initNewFromObjects()
+        {
+            lblSensorOne.Text = XML.TischBezeichnung;
+            lblSensorTwo.Text = XML.BodenBezeichnung;
+
+        }
+
         private void checkForConnection()
         {
             isConnected = ((tischAktiv) ? spTisch.IsOpen : true && (bodenAktiv) ? spBoden.IsOpen : true);
@@ -86,6 +93,7 @@ namespace Arduino_Temperature
                 }
 
                 init();
+                initNewFromObjects();
                 checkAccessRights();
                 connectToDevices();
                 checkForConnection();
@@ -257,11 +265,11 @@ namespace Arduino_Temperature
 
                 if (values.Length == 7 && values[0].StartsWith("START") && values[6].StartsWith("EOF")) //Protocoll second version
                 {
-                    
-                    dobj.AirPressure = Common.replaceDecPoint(values[5].ToString());
-                    dobj.HeatIndex = Common.replaceDecPoint(values[4].ToString());
+                    dobj.LUX = string.Empty;
                     dobj.Humidity = Common.replaceDecPoint(values[2].ToString());
                     dobj.Temperature = Common.replaceDecPoint(values[3].ToString());
+                    dobj.HeatIndex = Common.replaceDecPoint(values[4].ToString());
+                    dobj.AirPressure = Common.replaceDecPoint(values[5].ToString());
                     dobj.Timepoint = DateTime.Now;
                     dobj.DataAvailable = true;
                     dobj.AdditionalInformation = "-";
@@ -276,9 +284,10 @@ namespace Arduino_Temperature
                 {
                     
                     dobj.AirPressure = string.Empty;
-                    dobj.HeatIndex = Common.replaceDecPoint(values[3].ToString());
+                    dobj.LUX = string.Empty;
                     dobj.Humidity = Common.replaceDecPoint(values[1].ToString());
                     dobj.Temperature = Common.replaceDecPoint(values[2].ToString());
+                    dobj.HeatIndex = Common.replaceDecPoint(values[3].ToString());
                     dobj.Timepoint = DateTime.Now;
                     dobj.DataAvailable = true;
                     dobj.AdditionalInformation = "-";
@@ -287,6 +296,18 @@ namespace Arduino_Temperature
                     returnValue = "Luftfeuchtigkeit: " + values[1].ToString() + " %\n" +
                            "Temperatur: " + values[2].ToString() + " °C\n" +
                            "'Heat Index': " + values[3].ToString() + " °C\n";
+                } else if (values.Length == 8 && values[0].StartsWith("START") && values[7].StartsWith("EOF")) //Protocol third version
+                {
+                    dobj.Humidity = Common.replaceDecPoint(values[2].ToString());
+                    dobj.Temperature = Common.replaceDecPoint(values[3].ToString());
+                    dobj.HeatIndex = Common.replaceDecPoint(values[4].ToString());
+                    dobj.AirPressure = Common.replaceDecPoint(values[5].ToString());
+                    dobj.LUX = Common.replaceDecPoint(values[6].ToString());
+                    
+                    dobj.Timepoint = DateTime.Now;
+                    dobj.DataAvailable = true;
+                    dobj.AdditionalInformation = "-";
+                    dobj.Protocol = DataObjectProtocol.PROTOCOL_THREE;
                 }
                 else
                 {
@@ -318,25 +339,68 @@ namespace Arduino_Temperature
 
             return returnValue;
         }
+        
 
         private void LineReceived(string newline, string comPort)
         {
 
             DataObject dobj = new DataObject();
-
             string line = getLineFromData(newline, out dobj);
             
             if (comPort == strPortTisch)
             {
                 timeStampLastUpdateTisch = DateTime.Now;
                 lblTempTisch.Text = XML.TischBezeichnung + " (" + strPortTisch + ")\n" + line;
-                lblTableLastUpdated.Text = "Aktualisiert: " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
+                lblTableLastUpdated.Text = "Aktualisiert: " + Common.getCurrentDateTimeFormatted();
                 tempDataTisch = lblTempTisch.Text;
                 tempDataTisch= tempDataTisch.Replace("\n", ".br.");
                 tempDataTisch = HttpUtility.HtmlEncode(tempDataTisch); // "TISCH</br>" + line.Replace("\n", "</br>");
                 tempDataTisch = tempDataTisch.Replace(".br.", "</br>");
                 writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathTisch);
                 addDataset(dataSource.Tisch, dobj);
+                if (dobj.DataAvailable)
+                {
+                    lblSensorOneHumidityValue.Text = dobj.Humidity + " %";
+                    lblSensorOneTempValue.Text = dobj.Temperature + " °C";
+                    if (dobj.Protocol == DataObjectProtocol.PROTOCOL_ONE)
+                    {
+                        lblSensorOneLuxValue.Text = "N/A";
+                        lblSensorOnePressureValue.Text = "N/A";
+                    }
+                    else if (dobj.Protocol == DataObjectProtocol.PROTOCOL_TWO)
+                    {
+                        lblSensorOneLuxValue.Text = "N/A";
+                        lblSensorOnePressureValue.Text = dobj.AirPressure + " mb";
+                    }
+                    else if (dobj.Protocol == DataObjectProtocol.PROTOCOL_THREE)
+                    {
+                        lblSensorOneLuxValue.Text = dobj.LUX + " lux";
+                        lblSensorOnePressureValue.Text = dobj.AirPressure + " mb";
+                    }
+                }
+                else
+                {
+                    lblSensorOneHumidityValue.Text = "Fehler";
+                    lblSensorOneTempValue.Text = "Fehler";
+                    if (dobj.Protocol == DataObjectProtocol.PROTOCOL_ONE)
+                    {
+                        lblSensorOneLuxValue.Text = "N/A";
+                        lblSensorOnePressureValue.Text = "N/A";
+                    }
+                    else if (dobj.Protocol == DataObjectProtocol.PROTOCOL_TWO)
+                    {
+                        lblSensorOneLuxValue.Text = "N/A";
+                        lblSensorOnePressureValue.Text = "Fehler";
+                    }
+                    else if (dobj.Protocol == DataObjectProtocol.PROTOCOL_THREE)
+                    {
+                        lblSensorOneLuxValue.Text = "Fehler";
+                        lblSensorOnePressureValue.Text = "Fehler";
+                    }
+                }
+
+                lblSensorOneLastUpdated.Text = "Aktualisiert: " + Common.getCurrentDateTimeFormatted();
+
             } else if (comPort == strPortBoden)
             {
                 timeStampLastUpdateBoden = DateTime.Now;
