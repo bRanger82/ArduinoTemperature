@@ -39,8 +39,10 @@ namespace Arduino_Temperature
         private static List<DataObject> dataBoden = new List<DataObject>();
         private static List<DataObject> dataTisch = new List<DataObject>();
         private const int maxLenDataObjects = 4;
-
+        private DataObjectExt dObjTisch = new DataObjectExt();
+        private DataObjectExt dObjBoden = new DataObjectExt();
         private Dictionary<string, int> di = new Dictionary<string, int>(); //Anzahl Verbindungsversuche pro Port
+        private DataObjectDetails dobjDetail = new DataObjectDetails();
 
         public frmMain()
         {
@@ -59,10 +61,19 @@ namespace Arduino_Temperature
             dataTisch.Clear();
         }
 
+        
         private void initNewFromObjects()
         {
             lblSensorOne.Text = XML.TischBezeichnung;
-            lblSensorTwo.Text = XML.BodenBezeichnung;
+
+            dObjTisch.Name = XML.TischBezeichnung;
+            dObjTisch.Active = XML.TischAktiv;
+            dObjTisch.Items.Clear();
+            dObjTisch.DataAvailable = false;
+            dObjBoden.Name = XML.BodenBezeichnung;
+            dObjBoden.Active = XML.BodenAktiv;
+            dObjBoden.Items.Clear();
+            dObjBoden.DataAvailable = false;
 
         }
 
@@ -76,6 +87,24 @@ namespace Arduino_Temperature
                 tmr.Elapsed += Tmr_Elapsed;
                 tmr.Enabled = true;
                 tmr.Start();
+            }
+        }
+
+        private void loadSensorToComboBox()
+        {
+            if (XML.TischAktiv)
+                this.cboSensors.Items.Add(XML.TischBezeichnung);
+
+            if (XML.BodenAktiv)
+                this.cboSensors.Items.Add(XML.BodenBezeichnung);
+
+            if (this.cboSensors.Items.Count > 0)
+            {
+                this.cboSensors.SelectedIndex = 0;
+            }
+            else
+            {
+                MessageBox.Show("Es sind keine Sensoren aktiv gesetzt!", "Konfigurationsfehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -96,6 +125,7 @@ namespace Arduino_Temperature
                 initNewFromObjects();
                 checkAccessRights();
                 connectToDevices();
+                loadSensorToComboBox();
                 checkForConnection();
             }
             catch (Exception ex)
@@ -150,11 +180,11 @@ namespace Arduino_Temperature
 
         }
 
-        private void setLabelFormat(Label lblParent, Label lblUpdate)
+        private void setLabelFormat(Control Parent, Label lblUpdate)
         {
             System.Drawing.Point pos = this.PointToScreen(lblUpdate.Location);
-            pos = lblParent.PointToClient(pos);
-            lblUpdate.Parent = lblParent;
+            pos = Parent.PointToClient(pos);
+            lblUpdate.Parent = Parent;
             lblUpdate.Location = pos;
             lblUpdate.BackColor = System.Drawing.Color.Transparent;
         }
@@ -230,6 +260,96 @@ namespace Arduino_Temperature
         }
 
         private delegate void LineReceivedEvent(string line, string comPort);
+
+        private string getLineFromDataExt(string line, ref DataObjectExt dobj)
+        {
+            dobj.DataAvailable = false;
+            dobj.Protocol = DataObjectProtocol.NONE;
+            string returnValue = string.Empty;
+
+            if (line.Contains("|"))
+            {
+                string[] values = line.Split('|');
+                //Format: START|humidity|temperature|heatindex|....|EOF
+                //This format was defined within the Arduino Sketch
+                //  e.g. (random numbers): START|40.30|25.50|26.54|EOF 
+                // START: Indicates a Start of a data-frame
+                //  40.30 --> 40.30% Humidity (relative)
+                //  25.50 --> 25.50°C Temperature
+                //  26.54 --> 26.54°C Temperature/Heat-Index
+                // EOF: End of Frame
+
+                if (values.Length == 7 && values[0].StartsWith("START") && values[6].StartsWith("EOF")) //Protocoll second version
+                {
+                    dobj.addDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(values[2].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
+                    dobj.addDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(values[3].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
+                    dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(values[4].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
+                    dobj.addDataItem(DataObjectCategory.AirPressure.Value, double.Parse(Common.replaceDecPoint(values[5].ToString())), DataObjectCategory.AirPressure, Common.SensorValueType.AirPressure);
+                    dobj.LastUpdated = DateTime.Now;
+                    dobj.DataAvailable = true;
+                    dobj.AdditionalInformation = "-";
+                    dobj.Protocol = DataObjectProtocol.PROTOCOL_TWO;
+
+                    returnValue = "Luftfeuchtigkeit: " + values[2].ToString() + " %\n" +
+                           "Temperatur: " + values[3].ToString() + " °C\n" +
+                           "'Heat Index': " + values[4].ToString() + " °C\n" +
+                           "Luftdruck: " + values[5].ToString() + " mb\n";
+
+                }
+                else if (values.Length == 5 && values[0].StartsWith("START") && values[4].StartsWith("EOF")) //Protocol first version
+                {
+                    dobj.addDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(values[1].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
+                    dobj.addDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(values[2].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
+                    dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(values[3].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
+                    dobj.LastUpdated = DateTime.Now;
+                    dobj.DataAvailable = true;
+                    dobj.AdditionalInformation = "-";
+                    dobj.Protocol = DataObjectProtocol.PROTOCOL_ONE;
+
+                    returnValue = "Luftfeuchtigkeit: " + values[1].ToString() + " %\n" +
+                           "Temperatur: " + values[2].ToString() + " °C\n" +
+                           "'Heat Index': " + values[3].ToString() + " °C\n";
+                }
+                else if (values.Length == 8 && values[0].StartsWith("START") && values[7].StartsWith("EOF")) //Protocol third version
+                {
+                    dobj.addDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(values[2].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
+                    dobj.addDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(values[3].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
+                    dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(values[4].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
+                    dobj.addDataItem(DataObjectCategory.AirPressure.Value, double.Parse(Common.replaceDecPoint(values[5].ToString())), DataObjectCategory.AirPressure, Common.SensorValueType.AirPressure);
+                    dobj.addDataItem(DataObjectCategory.LUX.Value, double.Parse(Common.replaceDecPoint(values[6].ToString())), DataObjectCategory.LUX, Common.SensorValueType.LUX);
+
+                    dobj.LastUpdated = DateTime.Now;
+                    dobj.DataAvailable = true;
+                    dobj.AdditionalInformation = "-";
+                    dobj.Protocol = DataObjectProtocol.PROTOCOL_THREE;
+                    returnValue = "Luftfeuchtigkeit: " + values[2].ToString() + " %\n" +
+                           "Temperatur: " + values[3].ToString() + " °C\n" +
+                           "'Heat Index': " + values[4].ToString() + " °C\n" +
+                           "Luftdruck: " + values[5].ToString() + " mb\n" +
+                           "LUX: " + values[6].ToString() + " lux\n";
+
+                }
+                else
+                {
+                    dobj.LastUpdated = DateTime.Now;
+                    dobj.DataAvailable = false;
+                    dobj.AdditionalInformation = "-";
+                    dobj.Protocol = DataObjectProtocol.NONE;
+
+                    returnValue = "Fehler beim Lesen der Daten";
+                }
+            }
+            else
+            {
+                dobj.DataAvailable = false;
+                dobj.AdditionalInformation = "-";
+                dobj.Protocol = DataObjectProtocol.NONE;
+
+                returnValue = line;
+            }
+
+            return returnValue;
+        }
 
         private string getLineFromData(string line, out DataObject dobj)
         {
@@ -339,7 +459,55 @@ namespace Arduino_Temperature
 
             return returnValue;
         }
-        
+
+        private void loopGrpBox(GroupBox grp)
+        {
+            foreach(Control ctr in grp.Controls)
+            {
+                Console.WriteLine("GrpBox.Name :: Control.Name {0} {1}", grp.Name, ctr.Name);
+                if (ctr is GroupBox)
+                    loopGrpBox((GroupBox)ctr);
+            }
+        }
+
+        private void test(Label lblValue, Label lblMin, Label lblMax, string value, string unit)
+        {
+            double val;
+            lblValue.Text = value + unit;
+            if (double.TryParse(value, out val))
+            {
+                if (val < dobjDetail.HumidityDetail.MinValue)
+                {
+                    dobjDetail.HumidityDetail.MinValue = val;
+                    dobjDetail.HumidityDetail.MinTimepoint = DateTime.Now;
+                    lblSensorOneHumidityValueMin.Text = dobjDetail.HumidityDetail.MinValue.ToString("#.00") + Common.getSensorValueUnit(Common.SensorValueType.Humidity);
+                    lblSensorOneHumidityValueMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobjDetail.HumidityDetail.MinTimepoint);
+                }
+                if (val > dobjDetail.HumidityDetail.MaxValue)
+                {
+                    dobjDetail.HumidityDetail.MaxValue = val;
+                    dobjDetail.HumidityDetail.MinTimepoint = DateTime.Now;
+                    lblSensorOneHumidityValueMax.Text = dobjDetail.HumidityDetail.MaxValue.ToString("#.00") + Common.getSensorValueUnit(Common.SensorValueType.Humidity);
+                    lblSensorOneHumidityValueMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobjDetail.HumidityDetail.MaxTimepoint);
+                }
+
+            }
+        }
+
+        private void setLabelInformation(Label lblValue, Label lblMinValue, Label lblMaxValue, Label lblMinTime, Label lblMaxTime, DataObjectExt dObjExt, DataObjectCategory dobjcat)
+        {
+            if (dObjExt.ItemExists(dobjcat) && DataObjectCapabilities.HasCapability(dObjExt.Items[dobjcat.Value].DataObjCategory, dObjExt.Protocol))
+            {
+                string unit = Common.getSensorValueUnit(dObjExt.Items[dobjcat.Value].SensorType);
+
+                lblValue.Text = dObjExt.Items[dobjcat.Value].Value.ToString("#.#0") + unit;
+                lblMinValue.Text = dObjExt.Items[dobjcat.Value].MinValue.ToString("#.#0") + unit;
+                lblMaxValue.Text = dObjExt.Items[dobjcat.Value].MaxValue.ToString("#.#0") + unit;
+                lblMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MinTimepoint);
+                lblMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MaxTimepoint);
+            }
+        }
+
 
         private void LineReceived(string newline, string comPort)
         {
@@ -349,6 +517,7 @@ namespace Arduino_Temperature
             
             if (comPort == strPortTisch)
             {
+                line = getLineFromDataExt(newline, ref dObjTisch);
                 timeStampLastUpdateTisch = DateTime.Now;
                 lblTempTisch.Text = XML.TischBezeichnung + " (" + strPortTisch + ")\n" + line;
                 lblTableLastUpdated.Text = "Aktualisiert: " + Common.getCurrentDateTimeFormatted();
@@ -360,114 +529,11 @@ namespace Arduino_Temperature
                 addDataset(dataSource.Tisch, dobj);
                 if (dobj.DataAvailable)
                 {
-                    double val;
-
-                    lblSensorOneHumidityValue.Text = dobj.Humidity + " %";
-                    if (double.TryParse(dobj.Humidity, out val))
-                    {
-                        if (val < dobj.HumidityDetail.MinValue)
-                        {
-                            dobj.HumidityDetail.MinValue = val;
-                            dobj.HumidityDetail.MinTimepoint = DateTime.Now;
-                            lblSensorOneHumidityValueMin.Text = dobj.HumidityDetail.MinValue.ToString("#.##") + " %";
-                            lblSensorOneHumidityValueMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.HumidityDetail.MinTimepoint);
-                        }
-                        if (val > dobj.HumidityDetail.MaxValue)
-                        {
-                            dobj.HumidityDetail.MaxValue = val;
-                            dobj.HumidityDetail.MinTimepoint = DateTime.Now;
-                            lblSensorOneHumidityValueMax.Text = dobj.HumidityDetail.MaxValue.ToString("#.##") + " %";
-                            lblSensorOneHumidityValueMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.HumidityDetail.MaxTimepoint);
-                        }
-                    }
-
-
-                    lblSensorOneTempValue.Text = dobj.Temperature + " °C";
-                    if (double.TryParse(dobj.Temperature, out val))
-                    {
-                        if (val < dobj.TemperatureDetail.MinValue)
-                        {
-                            dobj.TemperatureDetail.MinValue = val;
-                            dobj.TemperatureDetail.MinTimepoint = DateTime.Now;
-                            lblSensorOneTempMin.Text = dobj.TemperatureDetail.MinValue.ToString("#.##") + " °C";
-                            lblSensorOneTempMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.TemperatureDetail.MinTimepoint);
-                        }
-                        if (val > dobj.TemperatureDetail.MaxValue)
-                        {
-                            dobj.TemperatureDetail.MaxValue = val;
-                            dobj.TemperatureDetail.MaxTimepoint = DateTime.Now;
-                            lblSensorOneTempMax.Text = dobj.TemperatureDetail.MaxValue.ToString("#.##") + " °C";
-                            lblSensorOneTempMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.TemperatureDetail.MaxTimepoint);
-                        }
-                    }
-
-                    if (dobj.Protocol == DataObjectProtocol.PROTOCOL_ONE)
-                    {
-                        lblSensorOneLuxValue.Text = "N/A";
-                        lblSensorOnePressureValue.Text = "N/A";
-                    }
-                    else if (dobj.Protocol == DataObjectProtocol.PROTOCOL_TWO)
-                    {
-                        lblSensorOneLuxValue.Text = "N/A";
-                        lblSensorOnePressureValue.Text = dobj.AirPressure + " mb";
-                        if (double.TryParse(dobj.AirPressure, out val))
-                        {
-                            if (val < dobj.AirPressureDetail.MinValue)
-                            {
-                                dobj.AirPressureDetail.MinValue = val;
-                                dobj.AirPressureDetail.MinTimepoint = DateTime.Now;
-                                lblSensorOnePressureMin.Text = dobj.AirPressureDetail.MinValue.ToString("#.##") + " mb";
-                                lblSensorOnePressureMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.AirPressureDetail.MinTimepoint);
-                            }
-                            if (val > dobj.AirPressureDetail.MaxValue)
-                            { //TODO
-                                dobj.AirPressureDetail.MaxValue = val;
-                                dobj.AirPressureDetail.MaxTimepoint = DateTime.Now;
-                                lblSensorOnePressureMax.Text = dobj.AirPressureDetail.MaxValue.ToString("#.##") + " mb";
-                                lblSensorOnePressureMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.AirPressureDetail.MaxTimepoint);
-                            }
-                        }
-                    }
-                    else if (dobj.Protocol == DataObjectProtocol.PROTOCOL_THREE)
-                    {
-                        lblSensorOneLuxValue.Text = dobj.LUX + " lux";
-                        if (double.TryParse(dobj.LUX, out val))
-                        {
-                            if (val < dobj.LUXDetail.MinValue) //Kann nicht funktionieren, da dobj immer neu angelegt wird!
-                            {
-                                dobj.LUXDetail.MinValue = val;
-                                dobj.LUXDetail.MinTimepoint = DateTime.Now;
-                                lblSensorOneLuxMin.Text = dobj.LUXDetail.MinValue.ToString("#.##") + " lux";
-                                lblSensorOneLuxMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.LUXDetail.MinTimepoint);
-                            }
-                            if (val > dobj.LUXDetail.MaxValue)
-                            {
-                                dobj.LUXDetail.MaxValue = val;
-                                dobj.LUXDetail.MaxTimepoint = DateTime.Now;
-                                lblSensorOneLuxMax.Text = dobj.LUXDetail.MaxValue.ToString("#.##") + " lux";
-                                lblSensorOneLuxMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.LUXDetail.MaxTimepoint);
-                            }
-                        }
-
-                        lblSensorOnePressureValue.Text = dobj.AirPressure + " mb";
-                        if (double.TryParse(dobj.AirPressure, out val))
-                        {
-                            if (val < dobj.AirPressureDetail.MinValue)
-                            {
-                                dobj.AirPressureDetail.MinValue = val;
-                                dobj.AirPressureDetail.MinTimepoint = DateTime.Now;
-                                lblSensorOnePressureMin.Text = dobj.AirPressureDetail.MinValue.ToString("#.##") + " mb";
-                                lblSensorOnePressureMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.AirPressureDetail.MinTimepoint);
-                            }
-                            if (val > dobj.AirPressureDetail.MaxValue)
-                            {
-                                dobj.AirPressureDetail.MaxValue = val;
-                                dobj.AirPressureDetail.MaxTimepoint = DateTime.Now;
-                                lblSensorOnePressureMax.Text = dobj.AirPressureDetail.MaxValue.ToString("#.##") + " mb";
-                                lblSensorOnePressureMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dobj.AirPressureDetail.MaxTimepoint);
-                            }
-                        }
-                    }
+                    setLabelInformation(lblSensorOneTempValue, lblSensorOneTempMin, lblSensorOneTempMax, lblSensorOneTempMinTime, lblSensorOneTempMaxTime, dObjTisch, DataObjectCategory.Temperature);
+                    setLabelInformation(lblSensorOneLuxValue, lblSensorOneLuxMin, lblSensorOneLuxMax, lblSensorOneLuxMinTime, lblSensorOneLuxMaxTime, dObjTisch, DataObjectCategory.LUX);
+                    setLabelInformation(lblSensorOneHumidityValue, lblSensorOneHumidityValueMin, lblSensorOneHumidityValueMax, lblSensorOneHumidityValueMinTime, lblSensorOneHumidityValueMaxTime, dObjTisch, DataObjectCategory.Humidity);
+                    setLabelInformation(lblSensorOnePressureValue, lblSensorOnePressureMin, lblSensorOnePressureMax, lblSensorOnePressureMinTime, lblSensorOnePressureMaxTime, dObjTisch, DataObjectCategory.AirPressure);
+                    setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMinTime, dObjTisch, DataObjectCategory.HeatIndex);
                 }
                 else
                 {
@@ -494,6 +560,7 @@ namespace Arduino_Temperature
 
             } else if (comPort == strPortBoden)
             {
+                line = getLineFromDataExt(newline, ref dObjBoden);
                 timeStampLastUpdateBoden = DateTime.Now;
                 lblTempBoden.Text = XML.BodenBezeichnung + " (" + strPortBoden + ")\n" + line;
                 lblBottomLastUpdated.Text = "Aktualisiert: " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
@@ -721,6 +788,7 @@ namespace Arduino_Temperature
             this.toolTip1.SetToolTip(numMaxEntries, numMaxEntries.Value.ToString());
             lblHTMLNumEntriesHist.Text = "Anzahl Einträge: " + this.numMaxEntries.Value.ToString();
         }
+
     }
 
     

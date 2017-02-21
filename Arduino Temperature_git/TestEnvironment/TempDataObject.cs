@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 
 namespace TestEnvironment
 {
+    public class DataObjectExt
+    {
+        public Dictionary<string, double> SensorData = new Dictionary<string, double>();
+    }
+
     public class DataObject
     {
         private DetailsTimePoint _TemperatureDetail = new DetailsTimePoint();
