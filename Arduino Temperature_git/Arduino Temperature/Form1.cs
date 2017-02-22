@@ -208,13 +208,13 @@ namespace Arduino_Temperature
         {
             strPortTisch = XML.TischPort;
 
-            dObjTisch.ComPort.PortName = XML.TischPort;
+            dObjTisch.PortName = XML.TischPort;
             dObjTisch.Name = XML.TischBezeichnung;
             dObjTisch.Active = XML.TischAktiv;
 
             strPortBoden = XML.BodenPort;
 
-            dObjBoden.ComPort.PortName = XML.BodenPort;
+            dObjBoden.PortName = XML.BodenPort;
             dObjBoden.Name = XML.BodenBezeichnung;
             dObjBoden.Active = XML.BodenAktiv;
 
@@ -568,7 +568,7 @@ namespace Arduino_Temperature
             {
                 string line = getLineFromDataExt(newline, ref dObjTisch);
                 
-                tempDataTisch = dObjTisch.Name + " (" + dObjTisch.ComPort.PortName + ")\n" + line;
+                tempDataTisch = dObjTisch.Name + " (" + dObjTisch.PortName + ")\n" + line;
                 tempDataTisch = tempDataTisch.Replace("\n", ".br.");
                 tempDataTisch = HttpUtility.HtmlEncode(tempDataTisch); // "TISCH</br>" + line.Replace("\n", "</br>");
                 tempDataTisch = tempDataTisch.Replace(".br.", "</br>");
@@ -578,7 +578,7 @@ namespace Arduino_Temperature
             } else if (comPort == strPortBoden)
             {
                 string line = getLineFromDataExt(newline, ref dObjBoden);
-                tempDataBoden = dObjBoden.Name + " (" + dObjBoden.ComPort.PortName + ")\n" + line; 
+                tempDataBoden = dObjBoden.Name + " (" + dObjBoden.PortName + ")\n" + line; 
                 tempDataBoden = tempDataBoden.Replace("\n", ".br.");
                 tempDataBoden = HttpUtility.HtmlEncode(tempDataBoden); // "TISCH</br>" + line.Replace("\n", "</br>");
                 tempDataBoden = tempDataBoden.Replace(".br.", "</br>");

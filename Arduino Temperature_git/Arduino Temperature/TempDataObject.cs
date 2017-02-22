@@ -31,7 +31,7 @@ namespace Arduino_Temperature
         public static DataObjectCategory LUX { get { return new DataObjectCategory("LUX"); } }
     }
 
-    public class DataObjectExt
+    public class DataObjectExt : SerialPort
     {
         private Dictionary<string, DetailsTimePointExt> _Items = new Dictionary<string, DetailsTimePointExt>();
         public string Name { get; set; }
@@ -42,8 +42,7 @@ namespace Arduino_Temperature
         public DataObjectProtocol Protocol { get; set; }
         public string AdditionalInformation { get; set; }
         public DateTime LastUpdated { get; set; }
-
-        public SerialPort ComPort = new SerialPort();
+        
 
         private bool _IsDataUpToDate = true;
         public bool IsDataUpToDate { get { return _IsDataUpToDate;  } set { _IsDataUpToDate = value; } }
