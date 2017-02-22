@@ -496,25 +496,69 @@ namespace Arduino_Temperature
 
         private void setLabelInformation(Label lblValue, Label lblMinValue, Label lblMaxValue, Label lblMinTime, Label lblMaxTime, DataObjectExt dObjExt, DataObjectCategory dobjcat)
         {
+            
+
             if (dObjExt.ItemExists(dobjcat) && DataObjectCapabilities.HasCapability(dObjExt.Items[dobjcat.Value].DataObjCategory, dObjExt.Protocol))
             {
                 string unit = Common.getSensorValueUnit(dObjExt.Items[dobjcat.Value].SensorType);
-
                 lblValue.Text = dObjExt.Items[dobjcat.Value].Value.ToString("#.#0") + unit;
                 lblMinValue.Text = dObjExt.Items[dobjcat.Value].MinValue.ToString("#.#0") + unit;
                 lblMaxValue.Text = dObjExt.Items[dobjcat.Value].MaxValue.ToString("#.#0") + unit;
                 lblMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MinTimepoint);
                 lblMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MaxTimepoint);
             }
+            else
+            {
+                lblValue.Text = " --- ";
+                lblMinValue.Text = " --- ";
+                lblMaxValue.Text = " --- ";
+                lblMinTime.Text = " --- "; 
+                lblMaxTime.Text = " --- ";
+            }
         }
 
+        private void showData(DataObjectExt dobjExt)
+        {
+            if (dobjExt.DataAvailable)
+            {
+                setLabelInformation(lblSensorOneTempValue, lblSensorOneTempMin, lblSensorOneTempMax, lblSensorOneTempMinTime, lblSensorOneTempMaxTime, dobjExt, DataObjectCategory.Temperature);
+                setLabelInformation(lblSensorOneLuxValue, lblSensorOneLuxMin, lblSensorOneLuxMax, lblSensorOneLuxMinTime, lblSensorOneLuxMaxTime, dobjExt, DataObjectCategory.LUX);
+                setLabelInformation(lblSensorOneHumidityValue, lblSensorOneHumidityValueMin, lblSensorOneHumidityValueMax, lblSensorOneHumidityValueMinTime, lblSensorOneHumidityValueMaxTime, dobjExt, DataObjectCategory.Humidity);
+                setLabelInformation(lblSensorOnePressureValue, lblSensorOnePressureMin, lblSensorOnePressureMax, lblSensorOnePressureMinTime, lblSensorOnePressureMaxTime, dobjExt, DataObjectCategory.AirPressure);
+                setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobjExt, DataObjectCategory.HeatIndex);
+            }
+            else
+            {
+                lblSensorOneHumidityValue.Text = "Fehler";
+                lblSensorOneTempValue.Text = "Fehler";
+                if (dobjExt.Protocol == DataObjectProtocol.PROTOCOL_ONE)
+                {
+                    lblSensorOneLuxValue.Text = "N/A";
+                    lblSensorOnePressureValue.Text = "N/A";
+                }
+                else if (dobjExt.Protocol == DataObjectProtocol.PROTOCOL_TWO)
+                {
+                    lblSensorOneLuxValue.Text = "N/A";
+                    lblSensorOnePressureValue.Text = "Fehler";
+                }
+                else if (dobjExt.Protocol == DataObjectProtocol.PROTOCOL_THREE)
+                {
+                    lblSensorOneLuxValue.Text = "Fehler";
+                    lblSensorOnePressureValue.Text = "Fehler";
+                }
+            }
+
+            lblSensorOneLastUpdated.Text = "Aktualisiert: " + Common.getCurrentDateTimeFormatted();
+        }
 
         private void LineReceived(string newline, string comPort)
         {
 
             DataObject dobj = new DataObject();
             string line = getLineFromData(newline, out dobj);
+
             
+
             if (comPort == strPortTisch)
             {
                 line = getLineFromDataExt(newline, ref dObjTisch);
@@ -527,36 +571,7 @@ namespace Arduino_Temperature
                 tempDataTisch = tempDataTisch.Replace(".br.", "</br>");
                 writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathTisch);
                 addDataset(dataSource.Tisch, dobj);
-                if (dobj.DataAvailable)
-                {
-                    setLabelInformation(lblSensorOneTempValue, lblSensorOneTempMin, lblSensorOneTempMax, lblSensorOneTempMinTime, lblSensorOneTempMaxTime, dObjTisch, DataObjectCategory.Temperature);
-                    setLabelInformation(lblSensorOneLuxValue, lblSensorOneLuxMin, lblSensorOneLuxMax, lblSensorOneLuxMinTime, lblSensorOneLuxMaxTime, dObjTisch, DataObjectCategory.LUX);
-                    setLabelInformation(lblSensorOneHumidityValue, lblSensorOneHumidityValueMin, lblSensorOneHumidityValueMax, lblSensorOneHumidityValueMinTime, lblSensorOneHumidityValueMaxTime, dObjTisch, DataObjectCategory.Humidity);
-                    setLabelInformation(lblSensorOnePressureValue, lblSensorOnePressureMin, lblSensorOnePressureMax, lblSensorOnePressureMinTime, lblSensorOnePressureMaxTime, dObjTisch, DataObjectCategory.AirPressure);
-                    setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dObjTisch, DataObjectCategory.HeatIndex);
-                }
-                else
-                {
-                    lblSensorOneHumidityValue.Text = "Fehler";
-                    lblSensorOneTempValue.Text = "Fehler";
-                    if (dobj.Protocol == DataObjectProtocol.PROTOCOL_ONE)
-                    {
-                        lblSensorOneLuxValue.Text = "N/A";
-                        lblSensorOnePressureValue.Text = "N/A";
-                    }
-                    else if (dobj.Protocol == DataObjectProtocol.PROTOCOL_TWO)
-                    {
-                        lblSensorOneLuxValue.Text = "N/A";
-                        lblSensorOnePressureValue.Text = "Fehler";
-                    }
-                    else if (dobj.Protocol == DataObjectProtocol.PROTOCOL_THREE)
-                    {
-                        lblSensorOneLuxValue.Text = "Fehler";
-                        lblSensorOnePressureValue.Text = "Fehler";
-                    }
-                }
-
-                lblSensorOneLastUpdated.Text = "Aktualisiert: " + Common.getCurrentDateTimeFormatted();
+                cboChange();
 
             } else if (comPort == strPortBoden)
             {
@@ -570,8 +585,9 @@ namespace Arduino_Temperature
                 tempDataBoden = tempDataBoden.Replace(".br.", "</br>");
                 writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathBoden);
                 addDataset(dataSource.Boden, dobj);
+                cboChange();
             }
-
+            
             checkTimeSpan();
         }
 
@@ -789,6 +805,40 @@ namespace Arduino_Temperature
             lblHTMLNumEntriesHist.Text = "Anzahl Einträge: " + this.numMaxEntries.Value.ToString();
         }
 
+        private void checkCabability(DataObjectExt dobjExt)
+        {
+            grpBoxAirPressure.Enabled = DataObjectCapabilities.HasAirPressure(dobjExt.Protocol);
+            grpBoxHeatIndex.Enabled = DataObjectCapabilities.HasHeatIndex(dobjExt.Protocol);
+            grpBoxHumidity.Enabled = DataObjectCapabilities.HasHumidity(dobjExt.Protocol);
+            grpBoxLUX.Enabled = DataObjectCapabilities.HasLUX(dobjExt.Protocol);
+            grpBoxTemperature.Enabled = DataObjectCapabilities.HasTemperature(dobjExt.Protocol);
+        }
+
+        private void checkAvailableData(DataObjectExt dobjExt)
+        {
+            if (dobjExt.DataAvailable)
+            {
+                lblSensorOne.Text = this.cboSensors.GetItemText(this.cboSensors.SelectedItem);
+                checkCabability(dobjExt);
+                showData(dobjExt);
+            }
+        }
+
+        private void cboChange()
+        {
+            //Temporal, has to be adapted to be more generic
+            switch (cboSensors.SelectedIndex)
+            {
+                case 0: checkAvailableData(dObjTisch); break;
+                case 1: checkAvailableData(dObjBoden); break;
+                default: MessageBox.Show("Nicht definierter Eintrag!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error); break;
+            }
+        }
+
+        private void cboSensors_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cboChange();
+        }
     }
 
     

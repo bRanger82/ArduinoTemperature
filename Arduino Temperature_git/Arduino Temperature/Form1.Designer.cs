@@ -45,7 +45,7 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grpBoxSensorOne = new System.Windows.Forms.GroupBox();
             this.cboSensors = new System.Windows.Forms.ComboBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.grpBoxHeatIndex = new System.Windows.Forms.GroupBox();
             this.lblSensorHeatIndexName = new System.Windows.Forms.Label();
             this.lblSensorHeatIndexMaxTime = new System.Windows.Forms.Label();
             this.lblSensorHeatIndexMinTime = new System.Windows.Forms.Label();
@@ -57,7 +57,7 @@
             this.pictureBox9 = new System.Windows.Forms.PictureBox();
             this.lblSensorOneLastUpdated = new System.Windows.Forms.Label();
             this.lblSensorOne = new System.Windows.Forms.Label();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.grpBoxLUX = new System.Windows.Forms.GroupBox();
             this.lblSensorOneLuxName = new System.Windows.Forms.Label();
             this.lblSensorOneLuxMaxTime = new System.Windows.Forms.Label();
             this.lblSensorOneLuxMinTime = new System.Windows.Forms.Label();
@@ -67,7 +67,7 @@
             this.label23 = new System.Windows.Forms.Label();
             this.lblSensorOneLuxValue = new System.Windows.Forms.Label();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.grpBoxAirPressure = new System.Windows.Forms.GroupBox();
             this.lblSensorOnePressureName = new System.Windows.Forms.Label();
             this.lblSensorOnePressureMaxTime = new System.Windows.Forms.Label();
             this.lblSensorOnePressureMinTime = new System.Windows.Forms.Label();
@@ -77,7 +77,7 @@
             this.label31 = new System.Windows.Forms.Label();
             this.lblSensorOnePressureValue = new System.Windows.Forms.Label();
             this.pictureBox4 = new System.Windows.Forms.PictureBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.grpBoxHumidity = new System.Windows.Forms.GroupBox();
             this.lblSensorOneHumidityName = new System.Windows.Forms.Label();
             this.lblSensorOneHumidityValueMaxTime = new System.Windows.Forms.Label();
             this.lblSensorOneHumidityValueMinTime = new System.Windows.Forms.Label();
@@ -100,13 +100,13 @@
             this.grpSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMaxEntries)).BeginInit();
             this.grpBoxSensorOne.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.grpBoxHeatIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
-            this.groupBox3.SuspendLayout();
+            this.grpBoxLUX.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
-            this.groupBox4.SuspendLayout();
+            this.grpBoxAirPressure.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
-            this.groupBox2.SuspendLayout();
+            this.grpBoxHumidity.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.grpBoxTemperature.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -231,12 +231,12 @@
             // grpBoxSensorOne
             // 
             this.grpBoxSensorOne.Controls.Add(this.cboSensors);
-            this.grpBoxSensorOne.Controls.Add(this.groupBox1);
+            this.grpBoxSensorOne.Controls.Add(this.grpBoxHeatIndex);
             this.grpBoxSensorOne.Controls.Add(this.lblSensorOneLastUpdated);
             this.grpBoxSensorOne.Controls.Add(this.lblSensorOne);
-            this.grpBoxSensorOne.Controls.Add(this.groupBox3);
-            this.grpBoxSensorOne.Controls.Add(this.groupBox4);
-            this.grpBoxSensorOne.Controls.Add(this.groupBox2);
+            this.grpBoxSensorOne.Controls.Add(this.grpBoxLUX);
+            this.grpBoxSensorOne.Controls.Add(this.grpBoxAirPressure);
+            this.grpBoxSensorOne.Controls.Add(this.grpBoxHumidity);
             this.grpBoxSensorOne.Controls.Add(this.grpBoxTemperature);
             this.grpBoxSensorOne.Location = new System.Drawing.Point(12, 12);
             this.grpBoxSensorOne.Name = "grpBoxSensorOne";
@@ -252,23 +252,24 @@
             this.cboSensors.Name = "cboSensors";
             this.cboSensors.Size = new System.Drawing.Size(225, 21);
             this.cboSensors.TabIndex = 35;
+            this.cboSensors.SelectedIndexChanged += new System.EventHandler(this.cboSensors_SelectedIndexChanged);
             // 
-            // groupBox1
+            // grpBoxHeatIndex
             // 
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexName);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMaxTime);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMinTime);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMax);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMin);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMaxName);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMinName);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexValue);
-            this.groupBox1.Controls.Add(this.pictureBox9);
-            this.groupBox1.Location = new System.Drawing.Point(238, 39);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(225, 110);
-            this.groupBox1.TabIndex = 30;
-            this.groupBox1.TabStop = false;
+            this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexName);
+            this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexMaxTime);
+            this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexMinTime);
+            this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexMax);
+            this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexMin);
+            this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexMaxName);
+            this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexMinName);
+            this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexValue);
+            this.grpBoxHeatIndex.Controls.Add(this.pictureBox9);
+            this.grpBoxHeatIndex.Location = new System.Drawing.Point(238, 39);
+            this.grpBoxHeatIndex.Name = "grpBoxHeatIndex";
+            this.grpBoxHeatIndex.Size = new System.Drawing.Size(225, 110);
+            this.grpBoxHeatIndex.TabIndex = 30;
+            this.grpBoxHeatIndex.TabStop = false;
             // 
             // lblSensorHeatIndexName
             // 
@@ -374,22 +375,22 @@
             this.lblSensorOne.TabIndex = 31;
             this.lblSensorOne.Text = "Sensor xxxx";
             // 
-            // groupBox3
+            // grpBoxLUX
             // 
-            this.groupBox3.Controls.Add(this.lblSensorOneLuxName);
-            this.groupBox3.Controls.Add(this.lblSensorOneLuxMaxTime);
-            this.groupBox3.Controls.Add(this.lblSensorOneLuxMinTime);
-            this.groupBox3.Controls.Add(this.lblSensorOneLuxMax);
-            this.groupBox3.Controls.Add(this.lblSensorOneLuxMin);
-            this.groupBox3.Controls.Add(this.label22);
-            this.groupBox3.Controls.Add(this.label23);
-            this.groupBox3.Controls.Add(this.lblSensorOneLuxValue);
-            this.groupBox3.Controls.Add(this.pictureBox3);
-            this.groupBox3.Location = new System.Drawing.Point(6, 271);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(225, 110);
-            this.groupBox3.TabIndex = 30;
-            this.groupBox3.TabStop = false;
+            this.grpBoxLUX.Controls.Add(this.lblSensorOneLuxName);
+            this.grpBoxLUX.Controls.Add(this.lblSensorOneLuxMaxTime);
+            this.grpBoxLUX.Controls.Add(this.lblSensorOneLuxMinTime);
+            this.grpBoxLUX.Controls.Add(this.lblSensorOneLuxMax);
+            this.grpBoxLUX.Controls.Add(this.lblSensorOneLuxMin);
+            this.grpBoxLUX.Controls.Add(this.label22);
+            this.grpBoxLUX.Controls.Add(this.label23);
+            this.grpBoxLUX.Controls.Add(this.lblSensorOneLuxValue);
+            this.grpBoxLUX.Controls.Add(this.pictureBox3);
+            this.grpBoxLUX.Location = new System.Drawing.Point(6, 271);
+            this.grpBoxLUX.Name = "grpBoxLUX";
+            this.grpBoxLUX.Size = new System.Drawing.Size(225, 110);
+            this.grpBoxLUX.TabIndex = 30;
+            this.grpBoxLUX.TabStop = false;
             // 
             // lblSensorOneLuxName
             // 
@@ -475,22 +476,22 @@
             this.pictureBox3.TabIndex = 0;
             this.pictureBox3.TabStop = false;
             // 
-            // groupBox4
+            // grpBoxAirPressure
             // 
-            this.groupBox4.Controls.Add(this.lblSensorOnePressureName);
-            this.groupBox4.Controls.Add(this.lblSensorOnePressureMaxTime);
-            this.groupBox4.Controls.Add(this.lblSensorOnePressureMinTime);
-            this.groupBox4.Controls.Add(this.lblSensorOnePressureMax);
-            this.groupBox4.Controls.Add(this.lblSensorOnePressureMin);
-            this.groupBox4.Controls.Add(this.label30);
-            this.groupBox4.Controls.Add(this.label31);
-            this.groupBox4.Controls.Add(this.lblSensorOnePressureValue);
-            this.groupBox4.Controls.Add(this.pictureBox4);
-            this.groupBox4.Location = new System.Drawing.Point(6, 155);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(225, 110);
-            this.groupBox4.TabIndex = 29;
-            this.groupBox4.TabStop = false;
+            this.grpBoxAirPressure.Controls.Add(this.lblSensorOnePressureName);
+            this.grpBoxAirPressure.Controls.Add(this.lblSensorOnePressureMaxTime);
+            this.grpBoxAirPressure.Controls.Add(this.lblSensorOnePressureMinTime);
+            this.grpBoxAirPressure.Controls.Add(this.lblSensorOnePressureMax);
+            this.grpBoxAirPressure.Controls.Add(this.lblSensorOnePressureMin);
+            this.grpBoxAirPressure.Controls.Add(this.label30);
+            this.grpBoxAirPressure.Controls.Add(this.label31);
+            this.grpBoxAirPressure.Controls.Add(this.lblSensorOnePressureValue);
+            this.grpBoxAirPressure.Controls.Add(this.pictureBox4);
+            this.grpBoxAirPressure.Location = new System.Drawing.Point(6, 155);
+            this.grpBoxAirPressure.Name = "grpBoxAirPressure";
+            this.grpBoxAirPressure.Size = new System.Drawing.Size(225, 110);
+            this.grpBoxAirPressure.TabIndex = 29;
+            this.grpBoxAirPressure.TabStop = false;
             // 
             // lblSensorOnePressureName
             // 
@@ -576,22 +577,22 @@
             this.pictureBox4.TabIndex = 0;
             this.pictureBox4.TabStop = false;
             // 
-            // groupBox2
+            // grpBoxHumidity
             // 
-            this.groupBox2.Controls.Add(this.lblSensorOneHumidityName);
-            this.groupBox2.Controls.Add(this.lblSensorOneHumidityValueMaxTime);
-            this.groupBox2.Controls.Add(this.lblSensorOneHumidityValueMinTime);
-            this.groupBox2.Controls.Add(this.lblSensorOneHumidityValueMax);
-            this.groupBox2.Controls.Add(this.lblSensorOneHumidityValueMin);
-            this.groupBox2.Controls.Add(this.label14);
-            this.groupBox2.Controls.Add(this.label15);
-            this.groupBox2.Controls.Add(this.lblSensorOneHumidityValue);
-            this.groupBox2.Controls.Add(this.pictureBox2);
-            this.groupBox2.Location = new System.Drawing.Point(237, 155);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(225, 110);
-            this.groupBox2.TabIndex = 28;
-            this.groupBox2.TabStop = false;
+            this.grpBoxHumidity.Controls.Add(this.lblSensorOneHumidityName);
+            this.grpBoxHumidity.Controls.Add(this.lblSensorOneHumidityValueMaxTime);
+            this.grpBoxHumidity.Controls.Add(this.lblSensorOneHumidityValueMinTime);
+            this.grpBoxHumidity.Controls.Add(this.lblSensorOneHumidityValueMax);
+            this.grpBoxHumidity.Controls.Add(this.lblSensorOneHumidityValueMin);
+            this.grpBoxHumidity.Controls.Add(this.label14);
+            this.grpBoxHumidity.Controls.Add(this.label15);
+            this.grpBoxHumidity.Controls.Add(this.lblSensorOneHumidityValue);
+            this.grpBoxHumidity.Controls.Add(this.pictureBox2);
+            this.grpBoxHumidity.Location = new System.Drawing.Point(237, 155);
+            this.grpBoxHumidity.Name = "grpBoxHumidity";
+            this.grpBoxHumidity.Size = new System.Drawing.Size(225, 110);
+            this.grpBoxHumidity.TabIndex = 28;
+            this.grpBoxHumidity.TabStop = false;
             // 
             // lblSensorOneHumidityName
             // 
@@ -801,17 +802,17 @@
             ((System.ComponentModel.ISupportInitialize)(this.numMaxEntries)).EndInit();
             this.grpBoxSensorOne.ResumeLayout(false);
             this.grpBoxSensorOne.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.grpBoxHeatIndex.ResumeLayout(false);
+            this.grpBoxHeatIndex.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
+            this.grpBoxLUX.ResumeLayout(false);
+            this.grpBoxLUX.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
+            this.grpBoxAirPressure.ResumeLayout(false);
+            this.grpBoxAirPressure.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.grpBoxHumidity.ResumeLayout(false);
+            this.grpBoxHumidity.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.grpBoxTemperature.ResumeLayout(false);
             this.grpBoxTemperature.PerformLayout();
@@ -838,7 +839,7 @@
         private System.Windows.Forms.Label lblHTMLNumEntriesHist;
         private System.Windows.Forms.GroupBox grpBoxSensorOne;
         private System.Windows.Forms.Label lblSensorOne;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox grpBoxLUX;
         private System.Windows.Forms.Label lblSensorOneLuxName;
         private System.Windows.Forms.Label lblSensorOneLuxMaxTime;
         private System.Windows.Forms.Label lblSensorOneLuxMinTime;
@@ -848,7 +849,7 @@
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label lblSensorOneLuxValue;
         private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.GroupBox grpBoxAirPressure;
         private System.Windows.Forms.Label lblSensorOnePressureName;
         private System.Windows.Forms.Label lblSensorOnePressureMaxTime;
         private System.Windows.Forms.Label lblSensorOnePressureMinTime;
@@ -858,7 +859,7 @@
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Label lblSensorOnePressureValue;
         private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox grpBoxHumidity;
         private System.Windows.Forms.Label lblSensorOneHumidityName;
         private System.Windows.Forms.Label lblSensorOneHumidityValueMaxTime;
         private System.Windows.Forms.Label lblSensorOneHumidityValueMinTime;
@@ -879,7 +880,7 @@
         private System.Windows.Forms.Label lblSensorOneTempValue;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label lblSensorOneLastUpdated;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grpBoxHeatIndex;
         private System.Windows.Forms.Label lblSensorHeatIndexName;
         private System.Windows.Forms.Label lblSensorHeatIndexMaxTime;
         private System.Windows.Forms.Label lblSensorHeatIndexMinTime;
