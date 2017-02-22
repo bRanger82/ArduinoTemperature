@@ -116,7 +116,7 @@
             // 
             this.lblTempTisch.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lblTempTisch.Font = new System.Drawing.Font("Nirmala UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTempTisch.Location = new System.Drawing.Point(486, 15);
+            this.lblTempTisch.Location = new System.Drawing.Point(516, 24);
             this.lblTempTisch.Name = "lblTempTisch";
             this.lblTempTisch.Size = new System.Drawing.Size(410, 180);
             this.lblTempTisch.TabIndex = 0;
@@ -126,7 +126,7 @@
             // 
             this.lblTempBoden.BackColor = System.Drawing.SystemColors.ControlLight;
             this.lblTempBoden.Font = new System.Drawing.Font("Nirmala UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTempBoden.Location = new System.Drawing.Point(486, 218);
+            this.lblTempBoden.Location = new System.Drawing.Point(516, 227);
             this.lblTempBoden.Name = "lblTempBoden";
             this.lblTempBoden.Size = new System.Drawing.Size(410, 180);
             this.lblTempBoden.TabIndex = 4;
@@ -211,7 +211,7 @@
             this.lblTableLastUpdated.AutoSize = true;
             this.lblTableLastUpdated.BackColor = System.Drawing.Color.Transparent;
             this.lblTableLastUpdated.Font = new System.Drawing.Font("Lucida Console", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTableLastUpdated.Location = new System.Drawing.Point(484, 183);
+            this.lblTableLastUpdated.Location = new System.Drawing.Point(514, 192);
             this.lblTableLastUpdated.Name = "lblTableLastUpdated";
             this.lblTableLastUpdated.Size = new System.Drawing.Size(292, 12);
             this.lblTableLastUpdated.TabIndex = 8;
@@ -222,7 +222,7 @@
             this.lblBottomLastUpdated.AutoSize = true;
             this.lblBottomLastUpdated.BackColor = System.Drawing.Color.Transparent;
             this.lblBottomLastUpdated.Font = new System.Drawing.Font("Lucida Console", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBottomLastUpdated.Location = new System.Drawing.Point(484, 386);
+            this.lblBottomLastUpdated.Location = new System.Drawing.Point(514, 395);
             this.lblBottomLastUpdated.Name = "lblBottomLastUpdated";
             this.lblBottomLastUpdated.Size = new System.Drawing.Size(292, 12);
             this.lblBottomLastUpdated.TabIndex = 9;
@@ -783,7 +783,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(969, 561);
+            this.ClientSize = new System.Drawing.Size(490, 561);
             this.Controls.Add(this.grpBoxSensorOne);
             this.Controls.Add(this.lblBottomLastUpdated);
             this.Controls.Add(this.lblTableLastUpdated);
