@@ -841,6 +841,30 @@ namespace Arduino_Temperature
         {
             cboChange();
         }
+
+        private void beendenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void optionenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            optionProperties _optionProperties = new optionProperties();
+            _optionProperties.numEntries = 25;
+            _optionProperties.propLogToFile = false;
+            _optionProperties.propWriteHTML = true;
+            _optionProperties.propTopMost = true;
+
+            frmOptions fOpt = new frmOptions(_optionProperties);
+            fOpt.ShowDialog(fOpt);
+
+            //exit if canceled
+            if (fOpt.Cancel == true)
+                return;
+
+            //if not canceled -> proceed and set local properties
+
+        }
     }
 
     
