@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,9 +42,29 @@ namespace Arduino_Temperature
         public DataObjectProtocol Protocol { get; set; }
         public string AdditionalInformation { get; set; }
         public DateTime LastUpdated { get; set; }
+
+        public SerialPort ComPort = new SerialPort();
+
+        private bool _IsDataUpToDate = true;
+        public bool IsDataUpToDate { get { return _IsDataUpToDate;  } set { _IsDataUpToDate = value; } }
+
+        private int _numConnRetries = 0;
+        public int NumConnRetries { get { return _numConnRetries; } set { _numConnRetries = value; } }
+
+        private string _LogPath = string.Empty;
+        public string LogPath { get { return _LogPath; } set { _LogPath = value; } }
+
         public bool ItemExists(DataObjectCategory dobjCat)
         {
             return _Items.ContainsKey(dobjCat.Value);
+        }
+
+        public double getItem(DataObjectCategory dobjCat)
+        {
+            if (!ItemExists(dobjCat))
+                return double.MinValue;
+
+            return _Items[dobjCat.Value].Value;
         }
 
         public void addDataItem(string name, double value, DataObjectCategory dObjCat, Common.SensorValueType SensorType)

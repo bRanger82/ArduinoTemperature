@@ -22,8 +22,6 @@ namespace Arduino_Temperature
         private bool isConnected = false;
         private string tempDataTisch = string.Empty;
         private string tempDataBoden = string.Empty;
-        private DateTime timeStampLastUpdateTisch = new DateTime();
-        private DateTime timeStampLastUpdateBoden = new DateTime();
         private System.Timers.Timer tmr = new System.Timers.Timer();
         private const int maxConnRetries = 10;
         private const int maxConnRetriesInitValue = 0;
@@ -36,8 +34,8 @@ namespace Arduino_Temperature
         private static string PathHTML;
         private static bool bodenAktiv;
         private static bool tischAktiv;
-        private static List<DataObject> dataBoden = new List<DataObject>();
-        private static List<DataObject> dataTisch = new List<DataObject>();
+        private static List<DataObjectExt> dataBoden = new List<DataObjectExt>();
+        private static List<DataObjectExt> dataTisch = new List<DataObjectExt>();
         private const int maxLenDataObjects = 4;
         private DataObjectExt dObjTisch = new DataObjectExt();
         private DataObjectExt dObjBoden = new DataObjectExt();
@@ -65,16 +63,11 @@ namespace Arduino_Temperature
         private void initNewFromObjects()
         {
             lblSensorOne.Text = XML.TischBezeichnung;
-
-            dObjTisch.Name = XML.TischBezeichnung;
-            dObjTisch.Active = XML.TischAktiv;
+            
             dObjTisch.Items.Clear();
             dObjTisch.DataAvailable = false;
-            dObjBoden.Name = XML.BodenBezeichnung;
-            dObjBoden.Active = XML.BodenAktiv;
             dObjBoden.Items.Clear();
             dObjBoden.DataAvailable = false;
-
         }
 
         private void checkForConnection()
@@ -189,7 +182,7 @@ namespace Arduino_Temperature
             lblUpdate.BackColor = System.Drawing.Color.Transparent;
         }
 
-        private void addDataset(dataSource ds, DataObject dobj)
+        private void addDataset(dataSource ds, DataObjectExt dobj)
         {
             switch(ds)
             {
@@ -198,7 +191,7 @@ namespace Arduino_Temperature
             }
         }
 
-        private void genericAddDataToList(List<DataObject> lst, DataObject dobj, int maxLen)
+        private void genericAddDataToList(List<DataObjectExt> lst, DataObjectExt dobj, int maxLen)
         {
             if (maxLen < 1) return;
             
@@ -214,7 +207,17 @@ namespace Arduino_Temperature
         private void loadSetttingsFromXML()
         {
             strPortTisch = XML.TischPort;
+
+            dObjTisch.ComPort.PortName = XML.TischPort;
+            dObjTisch.Name = XML.TischBezeichnung;
+            dObjTisch.Active = XML.TischAktiv;
+
             strPortBoden = XML.BodenPort;
+
+            dObjBoden.ComPort.PortName = XML.BodenPort;
+            dObjBoden.Name = XML.BodenBezeichnung;
+            dObjBoden.Active = XML.BodenAktiv;
+
             maxTimeDifferenceReadData = XML.maxTimeDifferenceReadData; 
             maxLogFileSize = XML.maxLogFileSize;
             logPathTisch = XML.TischLogfile;
@@ -416,6 +419,7 @@ namespace Arduino_Temperature
                     returnValue = "Luftfeuchtigkeit: " + values[1].ToString() + " %\n" +
                            "Temperatur: " + values[2].ToString() + " °C\n" +
                            "'Heat Index': " + values[3].ToString() + " °C\n";
+
                 } else if (values.Length == 8 && values[0].StartsWith("START") && values[7].StartsWith("EOF")) //Protocol third version
                 {
                     dobj.Humidity = Common.replaceDecPoint(values[2].ToString());
@@ -428,6 +432,13 @@ namespace Arduino_Temperature
                     dobj.DataAvailable = true;
                     dobj.AdditionalInformation = "-";
                     dobj.Protocol = DataObjectProtocol.PROTOCOL_THREE;
+
+                    returnValue = "Luftfeuchtigkeit: " + values[2].ToString() + " %\n" +
+                           "Temperatur: " + values[3].ToString() + " °C\n" +
+                           "'Heat Index': " + values[4].ToString() + " °C\n" +
+                           "Luftdruck: " + values[5].ToString() + " mb\n"+
+                           "Lichtwert: " + values[6].ToString() + " mb\n";
+
                 }
                 else
                 {
@@ -552,41 +563,30 @@ namespace Arduino_Temperature
         }
 
         private void LineReceived(string newline, string comPort)
-        {
-
-            DataObject dobj = new DataObject();
-            string line = getLineFromData(newline, out dobj);
-
-            
-
+        {            
             if (comPort == strPortTisch)
             {
-                line = getLineFromDataExt(newline, ref dObjTisch);
-                timeStampLastUpdateTisch = DateTime.Now;
-                lblTempTisch.Text = XML.TischBezeichnung + " (" + strPortTisch + ")\n" + line;
-                lblTableLastUpdated.Text = "Aktualisiert: " + Common.getCurrentDateTimeFormatted();
-                tempDataTisch = lblTempTisch.Text;
-                tempDataTisch= tempDataTisch.Replace("\n", ".br.");
+                string line = getLineFromDataExt(newline, ref dObjTisch);
+                
+                tempDataTisch = dObjTisch.Name + " (" + dObjTisch.ComPort.PortName + ")\n" + line;
+                tempDataTisch = tempDataTisch.Replace("\n", ".br.");
                 tempDataTisch = HttpUtility.HtmlEncode(tempDataTisch); // "TISCH</br>" + line.Replace("\n", "</br>");
                 tempDataTisch = tempDataTisch.Replace(".br.", "</br>");
                 writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathTisch);
-                addDataset(dataSource.Tisch, dobj);
+                addDataset(dataSource.Tisch, dObjTisch);
                 cboChange();
-
             } else if (comPort == strPortBoden)
             {
-                line = getLineFromDataExt(newline, ref dObjBoden);
-                timeStampLastUpdateBoden = DateTime.Now;
-                lblTempBoden.Text = XML.BodenBezeichnung + " (" + strPortBoden + ")\n" + line;
-                lblBottomLastUpdated.Text = "Aktualisiert: " + DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
-                tempDataBoden = lblTempBoden.Text;
+                string line = getLineFromDataExt(newline, ref dObjBoden);
+                tempDataBoden = dObjBoden.Name + " (" + dObjBoden.ComPort.PortName + ")\n" + line; 
                 tempDataBoden = tempDataBoden.Replace("\n", ".br.");
                 tempDataBoden = HttpUtility.HtmlEncode(tempDataBoden); // "TISCH</br>" + line.Replace("\n", "</br>");
                 tempDataBoden = tempDataBoden.Replace(".br.", "</br>");
                 writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathBoden);
-                addDataset(dataSource.Boden, dobj);
+                addDataset(dataSource.Boden, dObjBoden);
                 cboChange();
             }
+
             
             checkTimeSpan();
         }
@@ -680,19 +680,21 @@ namespace Arduino_Temperature
         private void checkTimeSpan()
         {
             //if one of them is not active return as a compare is not possible/reasonable
-            if (!tischAktiv || !bodenAktiv) return;
-
-            TimeSpan ts = timeStampLastUpdateBoden.Subtract(timeStampLastUpdateTisch);
+            if (!dObjTisch.Active || !dObjBoden.Active) return;
+            
+            TimeSpan ts = dObjTisch.LastUpdated.Subtract(dObjBoden.LastUpdated);
             double diff = ts.TotalSeconds;
-            if (diff < 0) diff *= -1; //must be a positiv number, if A<B than A-B could be -60 so -60 * -1 = 60
             if (diff > maxTimeDifferenceReadData)            //if there is a greater difference then notify user
             {
-                lblTempTisch.ForeColor = System.Drawing.Color.Red;
-                lblTempBoden.ForeColor = System.Drawing.Color.Red;
-            } else
+                dObjBoden.IsDataUpToDate = false;
+            } else if (diff < (maxTimeDifferenceReadData*-1))
             {
-                lblTempTisch.ForeColor = System.Drawing.Color.Black;
-                lblTempBoden.ForeColor = System.Drawing.Color.Black;
+                dObjTisch.IsDataUpToDate = false;
+            }
+            else
+            {
+                dObjTisch.IsDataUpToDate = true;
+                dObjBoden.IsDataUpToDate = true;
             }
             
         }

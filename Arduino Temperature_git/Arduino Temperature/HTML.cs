@@ -11,7 +11,7 @@ namespace Arduino_Temperature
 {
     static class HTML
     {
-        public static void writeHTMLFile(string PathHTML, bool tischAktiv, string tempDataTisch, List<DataObject> dataTisch, bool bodenAktiv, string tempDataBoden, List<DataObject> dataBoden)
+        public static void writeHTMLFile(string PathHTML, bool tischAktiv, string tempDataTisch, List<DataObjectExt> dataTisch, bool bodenAktiv, string tempDataBoden, List<DataObjectExt> dataBoden)
         {
             using (StreamWriter sw = new StreamWriter(PathHTML))
             {
@@ -44,8 +44,17 @@ namespace Arduino_Temperature
             }
         }
 
+        private static string getData(DataObjectExt dobjExt, DataObjectCategory dobjCat)
+        {
+            double temp = dobjExt.getItem(dobjCat);
+            if (temp == double.MinValue)
+                return "Keine Daten";
 
-        private static string createHTMLTableString(List<DataObject> lDojb, string title)
+            return HttpUtility.HtmlEncode(temp.ToString());
+
+        }
+
+        private static string createHTMLTableString(List<DataObjectExt> lDojb, string title)
         {
             if (lDojb.Count < 1)
                 return "";
@@ -65,18 +74,18 @@ namespace Arduino_Temperature
             sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Zusatz-Info") + "</th>");
             sb.AppendLine("  </tr>");
 
-            foreach (DataObject dobj in lDojb)
+            foreach (DataObjectExt dobj in lDojb)
             {
                 sb.AppendLine("  <tr>");
-                sb.AppendLine("    <td>" + dobj.Timepoint.ToShortDateString() + " " + dobj.Timepoint.ToLongTimeString() + "</td>");
+                sb.AppendLine("    <td>" + dobj.LastUpdated.ToShortDateString() + " " + dobj.LastUpdated.ToLongTimeString() + "</td>");
 
                 if (dobj.DataAvailable)
                 {
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.Temperature)) ? "No data" : HttpUtility.HtmlEncode(dobj.Temperature)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.Humidity)) ? "No data" : HttpUtility.HtmlEncode(dobj.Humidity)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.HeatIndex)) ? "No data" : HttpUtility.HtmlEncode(dobj.HeatIndex)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.AirPressure)) ? "No data" : HttpUtility.HtmlEncode(dobj.AirPressure)) + "</td>");
-                    sb.AppendLine("    <td>" + ((string.IsNullOrEmpty(dobj.AdditionalInformation)) ? "No data" : HttpUtility.HtmlEncode(dobj.AdditionalInformation)) + "</td>");
+                    sb.AppendLine("    <td>" + getData(dobj, DataObjectCategory.Temperature) + "</td>");
+                    sb.AppendLine("    <td>" + getData(dobj, DataObjectCategory.Humidity) + "</td>"); 
+                    sb.AppendLine("    <td>" + getData(dobj, DataObjectCategory.HeatIndex) + "</td>");
+                    sb.AppendLine("    <td>" + getData(dobj, DataObjectCategory.AirPressure) + "</td>"); 
+                    sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.AdditionalInformation) + "</td>"); 
                 }
                 else
                 {
