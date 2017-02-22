@@ -66,3 +66,6 @@ D:\GitHub\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Deb
 D:\GitHub\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino_Temperature.frmMain.resources
 D:\GitHub\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino_Temperature.Properties.Resources.resources
 D:\GitHub\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino Temperature.csproj.GenerateResource.Cache
+C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\bin\Debug\Arduino Temperature.exe.config
+C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino Temperature.exe
+C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino Temperature.pdb

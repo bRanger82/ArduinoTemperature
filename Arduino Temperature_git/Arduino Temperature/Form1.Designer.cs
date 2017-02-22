@@ -44,6 +44,17 @@
             this.lblBottomLastUpdated = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grpBoxSensorOne = new System.Windows.Forms.GroupBox();
+            this.cboSensors = new System.Windows.Forms.ComboBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.lblSensorHeatIndexName = new System.Windows.Forms.Label();
+            this.lblSensorHeatIndexMaxTime = new System.Windows.Forms.Label();
+            this.lblSensorHeatIndexMinTime = new System.Windows.Forms.Label();
+            this.lblSensorHeatIndexMax = new System.Windows.Forms.Label();
+            this.lblSensorHeatIndexMin = new System.Windows.Forms.Label();
+            this.lblSensorHeatIndexMaxName = new System.Windows.Forms.Label();
+            this.lblSensorHeatIndexMinName = new System.Windows.Forms.Label();
+            this.lblSensorHeatIndexValue = new System.Windows.Forms.Label();
+            this.pictureBox9 = new System.Windows.Forms.PictureBox();
             this.lblSensorOneLastUpdated = new System.Windows.Forms.Label();
             this.lblSensorOne = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
@@ -86,20 +97,11 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lblSensorOneTempValue = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.lblSensorHeatIndexName = new System.Windows.Forms.Label();
-            this.lblSensorHeatIndexMaxTime = new System.Windows.Forms.Label();
-            this.lblSensorHeatIndexMinTime = new System.Windows.Forms.Label();
-            this.lblSensorHeatIndexMax = new System.Windows.Forms.Label();
-            this.lblSensorHeatIndexMin = new System.Windows.Forms.Label();
-            this.lblSensorHeatIndexMaxName = new System.Windows.Forms.Label();
-            this.lblSensorHeatIndexMinName = new System.Windows.Forms.Label();
-            this.lblSensorHeatIndexValue = new System.Windows.Forms.Label();
-            this.pictureBox9 = new System.Windows.Forms.PictureBox();
-            this.cboSensors = new System.Windows.Forms.ComboBox();
             this.grpSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMaxEntries)).BeginInit();
             this.grpBoxSensorOne.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
             this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.groupBox4.SuspendLayout();
@@ -108,14 +110,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.grpBoxTemperature.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTempTisch
             // 
             this.lblTempTisch.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.lblTempTisch.Font = new System.Drawing.Font("Nirmala UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTempTisch.Font = new System.Drawing.Font("Nirmala UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTempTisch.Location = new System.Drawing.Point(486, 15);
             this.lblTempTisch.Name = "lblTempTisch";
             this.lblTempTisch.Size = new System.Drawing.Size(410, 180);
@@ -125,7 +125,7 @@
             // lblTempBoden
             // 
             this.lblTempBoden.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.lblTempBoden.Font = new System.Drawing.Font("Nirmala UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTempBoden.Font = new System.Drawing.Font("Nirmala UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblTempBoden.Location = new System.Drawing.Point(486, 218);
             this.lblTempBoden.Name = "lblTempBoden";
             this.lblTempBoden.Size = new System.Drawing.Size(410, 180);
@@ -243,6 +243,116 @@
             this.grpBoxSensorOne.Size = new System.Drawing.Size(463, 406);
             this.grpBoxSensorOne.TabIndex = 27;
             this.grpBoxSensorOne.TabStop = false;
+            // 
+            // cboSensors
+            // 
+            this.cboSensors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboSensors.FormattingEnabled = true;
+            this.cboSensors.Location = new System.Drawing.Point(235, 12);
+            this.cboSensors.Name = "cboSensors";
+            this.cboSensors.Size = new System.Drawing.Size(225, 21);
+            this.cboSensors.TabIndex = 35;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.lblSensorHeatIndexName);
+            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMaxTime);
+            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMinTime);
+            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMax);
+            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMin);
+            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMaxName);
+            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMinName);
+            this.groupBox1.Controls.Add(this.lblSensorHeatIndexValue);
+            this.groupBox1.Controls.Add(this.pictureBox9);
+            this.groupBox1.Location = new System.Drawing.Point(238, 39);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(225, 110);
+            this.groupBox1.TabIndex = 30;
+            this.groupBox1.TabStop = false;
+            // 
+            // lblSensorHeatIndexName
+            // 
+            this.lblSensorHeatIndexName.AutoSize = true;
+            this.lblSensorHeatIndexName.BackColor = System.Drawing.Color.Transparent;
+            this.lblSensorHeatIndexName.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSensorHeatIndexName.Location = new System.Drawing.Point(2, 6);
+            this.lblSensorHeatIndexName.Name = "lblSensorHeatIndexName";
+            this.lblSensorHeatIndexName.Size = new System.Drawing.Size(139, 29);
+            this.lblSensorHeatIndexName.TabIndex = 23;
+            this.lblSensorHeatIndexName.Text = "Heat-Index";
+            // 
+            // lblSensorHeatIndexMaxTime
+            // 
+            this.lblSensorHeatIndexMaxTime.AutoSize = true;
+            this.lblSensorHeatIndexMaxTime.Location = new System.Drawing.Point(119, 89);
+            this.lblSensorHeatIndexMaxTime.Name = "lblSensorHeatIndexMaxTime";
+            this.lblSensorHeatIndexMaxTime.Size = new System.Drawing.Size(54, 13);
+            this.lblSensorHeatIndexMaxTime.TabIndex = 22;
+            this.lblSensorHeatIndexMaxTime.Text = "Kein Wert";
+            // 
+            // lblSensorHeatIndexMinTime
+            // 
+            this.lblSensorHeatIndexMinTime.AutoSize = true;
+            this.lblSensorHeatIndexMinTime.Location = new System.Drawing.Point(119, 69);
+            this.lblSensorHeatIndexMinTime.Name = "lblSensorHeatIndexMinTime";
+            this.lblSensorHeatIndexMinTime.Size = new System.Drawing.Size(54, 13);
+            this.lblSensorHeatIndexMinTime.TabIndex = 21;
+            this.lblSensorHeatIndexMinTime.Text = "Kein Wert";
+            // 
+            // lblSensorHeatIndexMax
+            // 
+            this.lblSensorHeatIndexMax.AutoSize = true;
+            this.lblSensorHeatIndexMax.Location = new System.Drawing.Point(59, 89);
+            this.lblSensorHeatIndexMax.Name = "lblSensorHeatIndexMax";
+            this.lblSensorHeatIndexMax.Size = new System.Drawing.Size(54, 13);
+            this.lblSensorHeatIndexMax.TabIndex = 20;
+            this.lblSensorHeatIndexMax.Text = "Kein Wert";
+            // 
+            // lblSensorHeatIndexMin
+            // 
+            this.lblSensorHeatIndexMin.AutoSize = true;
+            this.lblSensorHeatIndexMin.Location = new System.Drawing.Point(59, 69);
+            this.lblSensorHeatIndexMin.Name = "lblSensorHeatIndexMin";
+            this.lblSensorHeatIndexMin.Size = new System.Drawing.Size(54, 13);
+            this.lblSensorHeatIndexMin.TabIndex = 19;
+            this.lblSensorHeatIndexMin.Text = "Kein Wert";
+            // 
+            // lblSensorHeatIndexMaxName
+            // 
+            this.lblSensorHeatIndexMaxName.AutoSize = true;
+            this.lblSensorHeatIndexMaxName.Location = new System.Drawing.Point(10, 89);
+            this.lblSensorHeatIndexMaxName.Name = "lblSensorHeatIndexMaxName";
+            this.lblSensorHeatIndexMaxName.Size = new System.Drawing.Size(27, 13);
+            this.lblSensorHeatIndexMaxName.TabIndex = 18;
+            this.lblSensorHeatIndexMaxName.Text = "Max";
+            // 
+            // lblSensorHeatIndexMinName
+            // 
+            this.lblSensorHeatIndexMinName.AutoSize = true;
+            this.lblSensorHeatIndexMinName.Location = new System.Drawing.Point(10, 69);
+            this.lblSensorHeatIndexMinName.Name = "lblSensorHeatIndexMinName";
+            this.lblSensorHeatIndexMinName.Size = new System.Drawing.Size(24, 13);
+            this.lblSensorHeatIndexMinName.TabIndex = 17;
+            this.lblSensorHeatIndexMinName.Text = "Min";
+            // 
+            // lblSensorHeatIndexValue
+            // 
+            this.lblSensorHeatIndexValue.AutoSize = true;
+            this.lblSensorHeatIndexValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSensorHeatIndexValue.Location = new System.Drawing.Point(57, 36);
+            this.lblSensorHeatIndexValue.Name = "lblSensorHeatIndexValue";
+            this.lblSensorHeatIndexValue.Size = new System.Drawing.Size(118, 29);
+            this.lblSensorHeatIndexValue.TabIndex = 1;
+            this.lblSensorHeatIndexValue.Text = "Kein Wert";
+            // 
+            // pictureBox9
+            // 
+            this.pictureBox9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.pictureBox9.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox9.Name = "pictureBox9";
+            this.pictureBox9.Size = new System.Drawing.Size(225, 5);
+            this.pictureBox9.TabIndex = 0;
+            this.pictureBox9.TabStop = false;
             // 
             // lblSensorOneLastUpdated
             // 
@@ -668,116 +778,6 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexName);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMaxTime);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMinTime);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMax);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMin);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMaxName);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexMinName);
-            this.groupBox1.Controls.Add(this.lblSensorHeatIndexValue);
-            this.groupBox1.Controls.Add(this.pictureBox9);
-            this.groupBox1.Location = new System.Drawing.Point(238, 39);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(225, 110);
-            this.groupBox1.TabIndex = 30;
-            this.groupBox1.TabStop = false;
-            // 
-            // lblSensorHeatIndexName
-            // 
-            this.lblSensorHeatIndexName.AutoSize = true;
-            this.lblSensorHeatIndexName.BackColor = System.Drawing.Color.Transparent;
-            this.lblSensorHeatIndexName.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSensorHeatIndexName.Location = new System.Drawing.Point(2, 6);
-            this.lblSensorHeatIndexName.Name = "lblSensorHeatIndexName";
-            this.lblSensorHeatIndexName.Size = new System.Drawing.Size(139, 29);
-            this.lblSensorHeatIndexName.TabIndex = 23;
-            this.lblSensorHeatIndexName.Text = "Heat-Index";
-            // 
-            // lblSensorHeatIndexMaxTime
-            // 
-            this.lblSensorHeatIndexMaxTime.AutoSize = true;
-            this.lblSensorHeatIndexMaxTime.Location = new System.Drawing.Point(119, 89);
-            this.lblSensorHeatIndexMaxTime.Name = "lblSensorHeatIndexMaxTime";
-            this.lblSensorHeatIndexMaxTime.Size = new System.Drawing.Size(54, 13);
-            this.lblSensorHeatIndexMaxTime.TabIndex = 22;
-            this.lblSensorHeatIndexMaxTime.Text = "Kein Wert";
-            // 
-            // lblSensorHeatIndexMinTime
-            // 
-            this.lblSensorHeatIndexMinTime.AutoSize = true;
-            this.lblSensorHeatIndexMinTime.Location = new System.Drawing.Point(119, 69);
-            this.lblSensorHeatIndexMinTime.Name = "lblSensorHeatIndexMinTime";
-            this.lblSensorHeatIndexMinTime.Size = new System.Drawing.Size(54, 13);
-            this.lblSensorHeatIndexMinTime.TabIndex = 21;
-            this.lblSensorHeatIndexMinTime.Text = "Kein Wert";
-            // 
-            // lblSensorHeatIndexMax
-            // 
-            this.lblSensorHeatIndexMax.AutoSize = true;
-            this.lblSensorHeatIndexMax.Location = new System.Drawing.Point(59, 89);
-            this.lblSensorHeatIndexMax.Name = "lblSensorHeatIndexMax";
-            this.lblSensorHeatIndexMax.Size = new System.Drawing.Size(54, 13);
-            this.lblSensorHeatIndexMax.TabIndex = 20;
-            this.lblSensorHeatIndexMax.Text = "Kein Wert";
-            // 
-            // lblSensorHeatIndexMin
-            // 
-            this.lblSensorHeatIndexMin.AutoSize = true;
-            this.lblSensorHeatIndexMin.Location = new System.Drawing.Point(59, 69);
-            this.lblSensorHeatIndexMin.Name = "lblSensorHeatIndexMin";
-            this.lblSensorHeatIndexMin.Size = new System.Drawing.Size(54, 13);
-            this.lblSensorHeatIndexMin.TabIndex = 19;
-            this.lblSensorHeatIndexMin.Text = "Kein Wert";
-            // 
-            // lblSensorHeatIndexMaxName
-            // 
-            this.lblSensorHeatIndexMaxName.AutoSize = true;
-            this.lblSensorHeatIndexMaxName.Location = new System.Drawing.Point(10, 89);
-            this.lblSensorHeatIndexMaxName.Name = "lblSensorHeatIndexMaxName";
-            this.lblSensorHeatIndexMaxName.Size = new System.Drawing.Size(27, 13);
-            this.lblSensorHeatIndexMaxName.TabIndex = 18;
-            this.lblSensorHeatIndexMaxName.Text = "Max";
-            // 
-            // lblSensorHeatIndexMinName
-            // 
-            this.lblSensorHeatIndexMinName.AutoSize = true;
-            this.lblSensorHeatIndexMinName.Location = new System.Drawing.Point(10, 69);
-            this.lblSensorHeatIndexMinName.Name = "lblSensorHeatIndexMinName";
-            this.lblSensorHeatIndexMinName.Size = new System.Drawing.Size(24, 13);
-            this.lblSensorHeatIndexMinName.TabIndex = 17;
-            this.lblSensorHeatIndexMinName.Text = "Min";
-            // 
-            // lblSensorHeatIndexValue
-            // 
-            this.lblSensorHeatIndexValue.AutoSize = true;
-            this.lblSensorHeatIndexValue.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSensorHeatIndexValue.Location = new System.Drawing.Point(57, 36);
-            this.lblSensorHeatIndexValue.Name = "lblSensorHeatIndexValue";
-            this.lblSensorHeatIndexValue.Size = new System.Drawing.Size(118, 29);
-            this.lblSensorHeatIndexValue.TabIndex = 1;
-            this.lblSensorHeatIndexValue.Text = "Kein Wert";
-            // 
-            // pictureBox9
-            // 
-            this.pictureBox9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.pictureBox9.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox9.Name = "pictureBox9";
-            this.pictureBox9.Size = new System.Drawing.Size(225, 5);
-            this.pictureBox9.TabIndex = 0;
-            this.pictureBox9.TabStop = false;
-            // 
-            // cboSensors
-            // 
-            this.cboSensors.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboSensors.FormattingEnabled = true;
-            this.cboSensors.Location = new System.Drawing.Point(235, 12);
-            this.cboSensors.Name = "cboSensors";
-            this.cboSensors.Size = new System.Drawing.Size(225, 21);
-            this.cboSensors.TabIndex = 35;
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -801,6 +801,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.numMaxEntries)).EndInit();
             this.grpBoxSensorOne.ResumeLayout(false);
             this.grpBoxSensorOne.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
@@ -813,9 +816,6 @@
             this.grpBoxTemperature.ResumeLayout(false);
             this.grpBoxTemperature.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

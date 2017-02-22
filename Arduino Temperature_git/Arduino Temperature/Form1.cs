@@ -533,7 +533,7 @@ namespace Arduino_Temperature
                     setLabelInformation(lblSensorOneLuxValue, lblSensorOneLuxMin, lblSensorOneLuxMax, lblSensorOneLuxMinTime, lblSensorOneLuxMaxTime, dObjTisch, DataObjectCategory.LUX);
                     setLabelInformation(lblSensorOneHumidityValue, lblSensorOneHumidityValueMin, lblSensorOneHumidityValueMax, lblSensorOneHumidityValueMinTime, lblSensorOneHumidityValueMaxTime, dObjTisch, DataObjectCategory.Humidity);
                     setLabelInformation(lblSensorOnePressureValue, lblSensorOnePressureMin, lblSensorOnePressureMax, lblSensorOnePressureMinTime, lblSensorOnePressureMaxTime, dObjTisch, DataObjectCategory.AirPressure);
-                    setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMinTime, dObjTisch, DataObjectCategory.HeatIndex);
+                    setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dObjTisch, DataObjectCategory.HeatIndex);
                 }
                 else
                 {
