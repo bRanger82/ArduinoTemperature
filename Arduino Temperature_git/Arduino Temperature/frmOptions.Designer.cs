@@ -32,7 +32,6 @@
             this.lblHTMLNumEntriesHist = new System.Windows.Forms.Label();
             this.numMaxEntries = new System.Windows.Forms.TrackBar();
             this.chkHTML = new System.Windows.Forms.CheckBox();
-            this.lblHTMLUpdated = new System.Windows.Forms.Label();
             this.chkLogEnabled = new System.Windows.Forms.CheckBox();
             this.chkTopMost = new System.Windows.Forms.CheckBox();
             this.btnOptionsOK = new System.Windows.Forms.Button();
@@ -46,12 +45,11 @@
             this.grpSettings.Controls.Add(this.lblHTMLNumEntriesHist);
             this.grpSettings.Controls.Add(this.numMaxEntries);
             this.grpSettings.Controls.Add(this.chkHTML);
-            this.grpSettings.Controls.Add(this.lblHTMLUpdated);
             this.grpSettings.Controls.Add(this.chkLogEnabled);
             this.grpSettings.Controls.Add(this.chkTopMost);
             this.grpSettings.Location = new System.Drawing.Point(12, 12);
             this.grpSettings.Name = "grpSettings";
-            this.grpSettings.Size = new System.Drawing.Size(459, 146);
+            this.grpSettings.Size = new System.Drawing.Size(413, 146);
             this.grpSettings.TabIndex = 8;
             this.grpSettings.TabStop = false;
             // 
@@ -73,6 +71,7 @@
             this.numMaxEntries.Size = new System.Drawing.Size(392, 45);
             this.numMaxEntries.TabIndex = 11;
             this.numMaxEntries.Value = 5;
+            this.numMaxEntries.Scroll += new System.EventHandler(this.numMaxEntries_Scroll);
             // 
             // chkHTML
             // 
@@ -83,15 +82,6 @@
             this.chkHTML.TabIndex = 10;
             this.chkHTML.Text = "HTML";
             this.chkHTML.UseVisualStyleBackColor = true;
-            // 
-            // lblHTMLUpdated
-            // 
-            this.lblHTMLUpdated.AutoSize = true;
-            this.lblHTMLUpdated.Location = new System.Drawing.Point(80, 63);
-            this.lblHTMLUpdated.Name = "lblHTMLUpdated";
-            this.lblHTMLUpdated.Size = new System.Drawing.Size(108, 13);
-            this.lblHTMLUpdated.TabIndex = 9;
-            this.lblHTMLUpdated.Text = "HTML letztes Update";
             // 
             // chkLogEnabled
             // 
@@ -115,7 +105,7 @@
             // 
             // btnOptionsOK
             // 
-            this.btnOptionsOK.Location = new System.Drawing.Point(305, 176);
+            this.btnOptionsOK.Location = new System.Drawing.Point(258, 164);
             this.btnOptionsOK.Name = "btnOptionsOK";
             this.btnOptionsOK.Size = new System.Drawing.Size(75, 23);
             this.btnOptionsOK.TabIndex = 9;
@@ -126,7 +116,7 @@
             // btnOptionsCancel
             // 
             this.btnOptionsCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnOptionsCancel.Location = new System.Drawing.Point(396, 176);
+            this.btnOptionsCancel.Location = new System.Drawing.Point(349, 164);
             this.btnOptionsCancel.Name = "btnOptionsCancel";
             this.btnOptionsCancel.Size = new System.Drawing.Size(75, 23);
             this.btnOptionsCancel.TabIndex = 10;
@@ -140,13 +130,16 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOptionsCancel;
-            this.ClientSize = new System.Drawing.Size(479, 211);
+            this.ClientSize = new System.Drawing.Size(439, 206);
             this.Controls.Add(this.btnOptionsCancel);
             this.Controls.Add(this.btnOptionsOK);
             this.Controls.Add(this.grpSettings);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.Name = "frmOptions";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Optionen";
             this.Load += new System.EventHandler(this.frmOptions_Load);
             this.grpSettings.ResumeLayout(false);
@@ -162,7 +155,6 @@
         private System.Windows.Forms.Label lblHTMLNumEntriesHist;
         private System.Windows.Forms.TrackBar numMaxEntries;
         private System.Windows.Forms.CheckBox chkHTML;
-        private System.Windows.Forms.Label lblHTMLUpdated;
         private System.Windows.Forms.CheckBox chkLogEnabled;
         private System.Windows.Forms.CheckBox chkTopMost;
         private System.Windows.Forms.Button btnOptionsOK;

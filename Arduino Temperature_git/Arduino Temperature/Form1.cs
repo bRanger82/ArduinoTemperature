@@ -842,12 +842,13 @@ namespace Arduino_Temperature
             cboChange();
         }
 
-        private void beendenToolStripMenuItem_Click(object sender, EventArgs e)
+
+        private void beendenToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             this.Close();
         }
 
-        private void optionenToolStripMenuItem_Click(object sender, EventArgs e)
+        private void optionenToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             optionProperties _optionProperties = new optionProperties();
             _optionProperties.numEntries = 25;
@@ -856,14 +857,13 @@ namespace Arduino_Temperature
             _optionProperties.propTopMost = true;
 
             frmOptions fOpt = new frmOptions(_optionProperties);
-            fOpt.ShowDialog(fOpt);
+            fOpt.ShowDialog();
 
             //exit if canceled
             if (fOpt.Cancel == true)
                 return;
 
             //if not canceled -> proceed and set local properties
-
         }
     }
 

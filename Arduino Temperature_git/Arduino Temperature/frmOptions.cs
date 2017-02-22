@@ -47,6 +47,13 @@ namespace Arduino_Temperature
             this.chkLogEnabled.Checked = OptionProp.propLogToFile;
             this.chkTopMost.Checked = OptionProp.propTopMost;
             this.numMaxEntries.Value = OptionProp.numEntries;
+            this.lblHTMLNumEntriesHist.Text = "Anzahl Einträge: " + this.numMaxEntries.Value.ToString();
+
+        }
+
+        private void numMaxEntries_Scroll(object sender, EventArgs e)
+        {
+            this.lblHTMLNumEntriesHist.Text = "Anzahl Einträge: " + this.numMaxEntries.Value.ToString();
         }
     }
 

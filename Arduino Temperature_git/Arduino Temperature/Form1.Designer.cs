@@ -97,10 +97,11 @@
             this.label3 = new System.Windows.Forms.Label();
             this.lblSensorOneTempValue = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.optionenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.beendenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.optionenToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.optionenToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.beendenToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.grpSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numMaxEntries)).BeginInit();
             this.grpBoxSensorOne.SuspendLayout();
@@ -114,7 +115,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.grpBoxTemperature.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.contextMenuStrip1.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTempTisch
@@ -145,9 +146,9 @@
             this.grpSettings.Controls.Add(this.lblHTMLUpdated);
             this.grpSettings.Controls.Add(this.chkLogEnabled);
             this.grpSettings.Controls.Add(this.chkTopMost);
-            this.grpSettings.Location = new System.Drawing.Point(16, 424);
+            this.grpSettings.Location = new System.Drawing.Point(16, 441);
             this.grpSettings.Name = "grpSettings";
-            this.grpSettings.Size = new System.Drawing.Size(459, 131);
+            this.grpSettings.Size = new System.Drawing.Size(459, 140);
             this.grpSettings.TabIndex = 7;
             this.grpSettings.TabStop = false;
             // 
@@ -243,7 +244,7 @@
             this.grpBoxSensorOne.Controls.Add(this.grpBoxAirPressure);
             this.grpBoxSensorOne.Controls.Add(this.grpBoxHumidity);
             this.grpBoxSensorOne.Controls.Add(this.grpBoxTemperature);
-            this.grpBoxSensorOne.Location = new System.Drawing.Point(12, 12);
+            this.grpBoxSensorOne.Location = new System.Drawing.Point(12, 29);
             this.grpBoxSensorOne.Name = "grpBoxSensorOne";
             this.grpBoxSensorOne.Size = new System.Drawing.Size(463, 406);
             this.grpBoxSensorOne.TabIndex = 27;
@@ -784,39 +785,51 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
-            // contextMenuStrip1
+            // menuStrip1
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.optionenToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.beendenToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 76);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.optionenToolStripMenuItem1});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(490, 24);
+            this.menuStrip1.TabIndex = 29;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // optionenToolStripMenuItem
+            // optionenToolStripMenuItem1
             // 
-            this.optionenToolStripMenuItem.Name = "optionenToolStripMenuItem";
-            this.optionenToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.optionenToolStripMenuItem.Text = "Optionen";
-            this.optionenToolStripMenuItem.Click += new System.EventHandler(this.optionenToolStripMenuItem_Click);
+            this.optionenToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.optionenToolStripMenuItem2,
+            this.toolStripMenuItem1,
+            this.beendenToolStripMenuItem1});
+            this.optionenToolStripMenuItem1.Name = "optionenToolStripMenuItem1";
+            this.optionenToolStripMenuItem1.Size = new System.Drawing.Size(50, 20);
+            this.optionenToolStripMenuItem1.Text = "Menu";
             // 
-            // toolStripSeparator1
+            // optionenToolStripMenuItem2
             // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
+            this.optionenToolStripMenuItem2.Name = "optionenToolStripMenuItem2";
+            this.optionenToolStripMenuItem2.Size = new System.Drawing.Size(124, 22);
+            this.optionenToolStripMenuItem2.Text = "Optionen";
+            this.optionenToolStripMenuItem2.Click += new System.EventHandler(this.optionenToolStripMenuItem2_Click);
             // 
-            // beendenToolStripMenuItem
+            // toolStripMenuItem1
             // 
-            this.beendenToolStripMenuItem.Name = "beendenToolStripMenuItem";
-            this.beendenToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.beendenToolStripMenuItem.Text = "Beenden";
-            this.beendenToolStripMenuItem.Click += new System.EventHandler(this.beendenToolStripMenuItem_Click);
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(121, 6);
+            // 
+            // beendenToolStripMenuItem1
+            // 
+            this.beendenToolStripMenuItem1.Name = "beendenToolStripMenuItem1";
+            this.beendenToolStripMenuItem1.Size = new System.Drawing.Size(124, 22);
+            this.beendenToolStripMenuItem1.Text = "Beenden";
+            this.beendenToolStripMenuItem1.Click += new System.EventHandler(this.beendenToolStripMenuItem1_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(490, 561);
+            this.ClientSize = new System.Drawing.Size(490, 588);
+            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.grpBoxSensorOne);
             this.Controls.Add(this.lblBottomLastUpdated);
             this.Controls.Add(this.lblTableLastUpdated);
@@ -825,6 +838,7 @@
             this.Controls.Add(this.lblTempTisch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "frmMain";
             this.Text = "Arduino Temperature Watcher";
@@ -850,7 +864,8 @@
             this.grpBoxTemperature.ResumeLayout(false);
             this.grpBoxTemperature.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.contextMenuStrip1.ResumeLayout(false);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -925,10 +940,11 @@
         private System.Windows.Forms.Label lblSensorHeatIndexValue;
         private System.Windows.Forms.PictureBox pictureBox9;
         private System.Windows.Forms.ComboBox cboSensors;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem optionenToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem beendenToolStripMenuItem;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem optionenToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem optionenToolStripMenuItem2;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem beendenToolStripMenuItem1;
     }
 }
 
