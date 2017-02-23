@@ -50,7 +50,7 @@
             this.lblSensorHeatIndexMaxName = new System.Windows.Forms.Label();
             this.lblSensorHeatIndexMinName = new System.Windows.Forms.Label();
             this.lblSensorHeatIndexValue = new System.Windows.Forms.Label();
-            this.pictureBox9 = new System.Windows.Forms.PictureBox();
+            this.picColHeatIndex = new System.Windows.Forms.PictureBox();
             this.lblSensorOneLastUpdated = new System.Windows.Forms.Label();
             this.lblSensorOne = new System.Windows.Forms.Label();
             this.grpBoxLUX = new System.Windows.Forms.GroupBox();
@@ -62,7 +62,7 @@
             this.label22 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.lblSensorOneLuxValue = new System.Windows.Forms.Label();
-            this.pictureBox3 = new System.Windows.Forms.PictureBox();
+            this.picColLUX = new System.Windows.Forms.PictureBox();
             this.grpBoxAirPressure = new System.Windows.Forms.GroupBox();
             this.lblSensorOnePressureName = new System.Windows.Forms.Label();
             this.lblSensorOnePressureMaxTime = new System.Windows.Forms.Label();
@@ -72,7 +72,7 @@
             this.label30 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.lblSensorOnePressureValue = new System.Windows.Forms.Label();
-            this.pictureBox4 = new System.Windows.Forms.PictureBox();
+            this.picColAirPressure = new System.Windows.Forms.PictureBox();
             this.grpBoxHumidity = new System.Windows.Forms.GroupBox();
             this.lblSensorOneHumidityName = new System.Windows.Forms.Label();
             this.lblSensorOneHumidityValueMaxTime = new System.Windows.Forms.Label();
@@ -82,7 +82,7 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.lblSensorOneHumidityValue = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.picColHumidity = new System.Windows.Forms.PictureBox();
             this.grpBoxTemperature = new System.Windows.Forms.GroupBox();
             this.lblSensorOneTempName = new System.Windows.Forms.Label();
             this.lblSensorOneTempMaxTime = new System.Windows.Forms.Label();
@@ -92,27 +92,27 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.lblSensorOneTempValue = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.picColTemp = new System.Windows.Forms.PictureBox();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.optionenToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.optionenToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.beendenToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.chartValues = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.button1 = new System.Windows.Forms.Button();
             this.grpBoxSensorOne.SuspendLayout();
             this.grpBoxHeatIndex.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).BeginInit();
             this.grpBoxLUX.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColLUX)).BeginInit();
             this.grpBoxAirPressure.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColAirPressure)).BeginInit();
             this.grpBoxHumidity.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColHumidity)).BeginInit();
             this.grpBoxTemperature.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColTemp)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartValues)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTempTisch
@@ -193,7 +193,7 @@
             this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexMaxName);
             this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexMinName);
             this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexValue);
-            this.grpBoxHeatIndex.Controls.Add(this.pictureBox9);
+            this.grpBoxHeatIndex.Controls.Add(this.picColHeatIndex);
             this.grpBoxHeatIndex.Location = new System.Drawing.Point(238, 39);
             this.grpBoxHeatIndex.Name = "grpBoxHeatIndex";
             this.grpBoxHeatIndex.Size = new System.Drawing.Size(225, 110);
@@ -275,14 +275,14 @@
             this.lblSensorHeatIndexValue.TabIndex = 1;
             this.lblSensorHeatIndexValue.Text = "Kein Wert";
             // 
-            // pictureBox9
+            // picColHeatIndex
             // 
-            this.pictureBox9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.pictureBox9.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox9.Name = "pictureBox9";
-            this.pictureBox9.Size = new System.Drawing.Size(225, 5);
-            this.pictureBox9.TabIndex = 0;
-            this.pictureBox9.TabStop = false;
+            this.picColHeatIndex.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.picColHeatIndex.Location = new System.Drawing.Point(0, 0);
+            this.picColHeatIndex.Name = "picColHeatIndex";
+            this.picColHeatIndex.Size = new System.Drawing.Size(225, 5);
+            this.picColHeatIndex.TabIndex = 0;
+            this.picColHeatIndex.TabStop = false;
             // 
             // lblSensorOneLastUpdated
             // 
@@ -314,7 +314,7 @@
             this.grpBoxLUX.Controls.Add(this.label22);
             this.grpBoxLUX.Controls.Add(this.label23);
             this.grpBoxLUX.Controls.Add(this.lblSensorOneLuxValue);
-            this.grpBoxLUX.Controls.Add(this.pictureBox3);
+            this.grpBoxLUX.Controls.Add(this.picColLUX);
             this.grpBoxLUX.Location = new System.Drawing.Point(6, 271);
             this.grpBoxLUX.Name = "grpBoxLUX";
             this.grpBoxLUX.Size = new System.Drawing.Size(225, 110);
@@ -396,14 +396,14 @@
             this.lblSensorOneLuxValue.TabIndex = 1;
             this.lblSensorOneLuxValue.Text = "Kein Wert";
             // 
-            // pictureBox3
+            // picColLUX
             // 
-            this.pictureBox3.BackColor = System.Drawing.Color.Aqua;
-            this.pictureBox3.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(225, 5);
-            this.pictureBox3.TabIndex = 0;
-            this.pictureBox3.TabStop = false;
+            this.picColLUX.BackColor = System.Drawing.Color.Aqua;
+            this.picColLUX.Location = new System.Drawing.Point(0, 0);
+            this.picColLUX.Name = "picColLUX";
+            this.picColLUX.Size = new System.Drawing.Size(225, 5);
+            this.picColLUX.TabIndex = 0;
+            this.picColLUX.TabStop = false;
             // 
             // grpBoxAirPressure
             // 
@@ -415,7 +415,7 @@
             this.grpBoxAirPressure.Controls.Add(this.label30);
             this.grpBoxAirPressure.Controls.Add(this.label31);
             this.grpBoxAirPressure.Controls.Add(this.lblSensorOnePressureValue);
-            this.grpBoxAirPressure.Controls.Add(this.pictureBox4);
+            this.grpBoxAirPressure.Controls.Add(this.picColAirPressure);
             this.grpBoxAirPressure.Location = new System.Drawing.Point(6, 155);
             this.grpBoxAirPressure.Name = "grpBoxAirPressure";
             this.grpBoxAirPressure.Size = new System.Drawing.Size(225, 110);
@@ -497,14 +497,14 @@
             this.lblSensorOnePressureValue.TabIndex = 1;
             this.lblSensorOnePressureValue.Text = "Kein Wert";
             // 
-            // pictureBox4
+            // picColAirPressure
             // 
-            this.pictureBox4.BackColor = System.Drawing.Color.Blue;
-            this.pictureBox4.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(225, 5);
-            this.pictureBox4.TabIndex = 0;
-            this.pictureBox4.TabStop = false;
+            this.picColAirPressure.BackColor = System.Drawing.Color.Blue;
+            this.picColAirPressure.Location = new System.Drawing.Point(0, 0);
+            this.picColAirPressure.Name = "picColAirPressure";
+            this.picColAirPressure.Size = new System.Drawing.Size(225, 5);
+            this.picColAirPressure.TabIndex = 0;
+            this.picColAirPressure.TabStop = false;
             // 
             // grpBoxHumidity
             // 
@@ -516,7 +516,7 @@
             this.grpBoxHumidity.Controls.Add(this.label14);
             this.grpBoxHumidity.Controls.Add(this.label15);
             this.grpBoxHumidity.Controls.Add(this.lblSensorOneHumidityValue);
-            this.grpBoxHumidity.Controls.Add(this.pictureBox2);
+            this.grpBoxHumidity.Controls.Add(this.picColHumidity);
             this.grpBoxHumidity.Location = new System.Drawing.Point(237, 155);
             this.grpBoxHumidity.Name = "grpBoxHumidity";
             this.grpBoxHumidity.Size = new System.Drawing.Size(225, 110);
@@ -598,14 +598,14 @@
             this.lblSensorOneHumidityValue.TabIndex = 1;
             this.lblSensorOneHumidityValue.Text = "Kein Wert";
             // 
-            // pictureBox2
+            // picColHumidity
             // 
-            this.pictureBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.pictureBox2.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(225, 5);
-            this.pictureBox2.TabIndex = 0;
-            this.pictureBox2.TabStop = false;
+            this.picColHumidity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.picColHumidity.Location = new System.Drawing.Point(0, 0);
+            this.picColHumidity.Name = "picColHumidity";
+            this.picColHumidity.Size = new System.Drawing.Size(225, 5);
+            this.picColHumidity.TabIndex = 0;
+            this.picColHumidity.TabStop = false;
             // 
             // grpBoxTemperature
             // 
@@ -617,7 +617,7 @@
             this.grpBoxTemperature.Controls.Add(this.label4);
             this.grpBoxTemperature.Controls.Add(this.label3);
             this.grpBoxTemperature.Controls.Add(this.lblSensorOneTempValue);
-            this.grpBoxTemperature.Controls.Add(this.pictureBox1);
+            this.grpBoxTemperature.Controls.Add(this.picColTemp);
             this.grpBoxTemperature.Location = new System.Drawing.Point(6, 39);
             this.grpBoxTemperature.Name = "grpBoxTemperature";
             this.grpBoxTemperature.Size = new System.Drawing.Size(225, 110);
@@ -699,14 +699,14 @@
             this.lblSensorOneTempValue.TabIndex = 1;
             this.lblSensorOneTempValue.Text = "Kein Wert";
             // 
-            // pictureBox1
+            // picColTemp
             // 
-            this.pictureBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(225, 5);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            this.picColTemp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.picColTemp.Location = new System.Drawing.Point(0, 0);
+            this.picColTemp.Name = "picColTemp";
+            this.picColTemp.Size = new System.Drawing.Size(225, 5);
+            this.picColTemp.TabIndex = 0;
+            this.picColTemp.TabStop = false;
             // 
             // menuStrip1
             // 
@@ -747,12 +747,13 @@
             this.beendenToolStripMenuItem1.Text = "Beenden";
             this.beendenToolStripMenuItem1.Click += new System.EventHandler(this.beendenToolStripMenuItem1_Click);
             // 
-            // chart1
+            // chartValues
             // 
             chartArea1.Name = "ChartArea1";
-            this.chart1.ChartAreas.Add(chartArea1);
-            this.chart1.Location = new System.Drawing.Point(12, 441);
-            this.chart1.Name = "chart1";
+            this.chartValues.ChartAreas.Add(chartArea1);
+            this.chartValues.Location = new System.Drawing.Point(12, 441);
+            this.chartValues.Name = "chartValues";
+            this.chartValues.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series1.IsVisibleInLegend = false;
@@ -761,11 +762,11 @@
             series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             series2.IsVisibleInLegend = false;
             series2.Name = "HeatIndex";
-            this.chart1.Series.Add(series1);
-            this.chart1.Series.Add(series2);
-            this.chart1.Size = new System.Drawing.Size(466, 147);
-            this.chart1.TabIndex = 30;
-            this.chart1.Text = "chart1";
+            this.chartValues.Series.Add(series1);
+            this.chartValues.Series.Add(series2);
+            this.chartValues.Size = new System.Drawing.Size(466, 147);
+            this.chartValues.TabIndex = 30;
+            this.chartValues.Text = "chart1";
             // 
             // button1
             // 
@@ -783,7 +784,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(490, 618);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.chart1);
+            this.Controls.Add(this.chartValues);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.grpBoxSensorOne);
             this.Controls.Add(this.lblBottomLastUpdated);
@@ -802,22 +803,22 @@
             this.grpBoxSensorOne.PerformLayout();
             this.grpBoxHeatIndex.ResumeLayout(false);
             this.grpBoxHeatIndex.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).EndInit();
             this.grpBoxLUX.ResumeLayout(false);
             this.grpBoxLUX.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColLUX)).EndInit();
             this.grpBoxAirPressure.ResumeLayout(false);
             this.grpBoxAirPressure.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColAirPressure)).EndInit();
             this.grpBoxHumidity.ResumeLayout(false);
             this.grpBoxHumidity.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColHumidity)).EndInit();
             this.grpBoxTemperature.ResumeLayout(false);
             this.grpBoxTemperature.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColTemp)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartValues)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -842,7 +843,7 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Label label23;
         private System.Windows.Forms.Label lblSensorOneLuxValue;
-        private System.Windows.Forms.PictureBox pictureBox3;
+        private System.Windows.Forms.PictureBox picColLUX;
         private System.Windows.Forms.GroupBox grpBoxAirPressure;
         private System.Windows.Forms.Label lblSensorOnePressureName;
         private System.Windows.Forms.Label lblSensorOnePressureMaxTime;
@@ -852,7 +853,7 @@
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.Label label31;
         private System.Windows.Forms.Label lblSensorOnePressureValue;
-        private System.Windows.Forms.PictureBox pictureBox4;
+        private System.Windows.Forms.PictureBox picColAirPressure;
         private System.Windows.Forms.GroupBox grpBoxHumidity;
         private System.Windows.Forms.Label lblSensorOneHumidityName;
         private System.Windows.Forms.Label lblSensorOneHumidityValueMaxTime;
@@ -862,7 +863,7 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label lblSensorOneHumidityValue;
-        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox picColHumidity;
         private System.Windows.Forms.GroupBox grpBoxTemperature;
         private System.Windows.Forms.Label lblSensorOneTempName;
         private System.Windows.Forms.Label lblSensorOneTempMaxTime;
@@ -872,7 +873,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label lblSensorOneTempValue;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox picColTemp;
         private System.Windows.Forms.Label lblSensorOneLastUpdated;
         private System.Windows.Forms.GroupBox grpBoxHeatIndex;
         private System.Windows.Forms.Label lblSensorHeatIndexName;
@@ -883,14 +884,14 @@
         private System.Windows.Forms.Label lblSensorHeatIndexMaxName;
         private System.Windows.Forms.Label lblSensorHeatIndexMinName;
         private System.Windows.Forms.Label lblSensorHeatIndexValue;
-        private System.Windows.Forms.PictureBox pictureBox9;
+        private System.Windows.Forms.PictureBox picColHeatIndex;
         private System.Windows.Forms.ComboBox cboSensors;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem optionenToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem optionenToolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem beendenToolStripMenuItem1;
-        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartValues;
         private System.Windows.Forms.Button button1;
     }
 }

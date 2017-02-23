@@ -6,6 +6,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Security.AccessControl;
 using System.Web;
+using System.Drawing;
 
 namespace Arduino_Temperature
 {
@@ -878,28 +879,39 @@ namespace Arduino_Temperature
             this.TopMost = Options.propTopMost;
         }
 
+        private void addChartSerie(List<double> values, string name, Color color)
+        {
+            if (chartValues.Series.IndexOf(name) < 0)
+            {
+                chartValues.Series.Add(name);
+                chartValues.Series[name].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            }
+            chartValues.Series[name].Points.DataBindY(values.ToArray());
+            chartValues.Series[name].Color = color;
+
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             
             try
             {
-                if (chart1.Series.IndexOf("Temperature") < 0)
-                {
-                    chart1.Series.Add("Temperature");
-                    chart1.Series["Temperature"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-                }
+                if (DataObjectCapabilities.HasTemperature(dObjTisch.Protocol))
+                    addChartSerie(dObjTisch.getLogItems(DataObjectCategory.Temperature), "Temperature", picColTemp.BackColor);
+                if (DataObjectCapabilities.HasHeatIndex(dObjTisch.Protocol))
+                    addChartSerie(dObjTisch.getLogItems(DataObjectCategory.HeatIndex), "HeatIndex", picColHeatIndex.BackColor);
+                if (DataObjectCapabilities.HasHumidity(dObjTisch.Protocol))
+                    addChartSerie(dObjTisch.getLogItems(DataObjectCategory.Humidity), "Humitidy", picColHumidity.BackColor);
+                if (DataObjectCapabilities.HasAirPressure(dObjTisch.Protocol))
+                    addChartSerie(dObjTisch.getLogItems(DataObjectCategory.AirPressure), "AirPressure", picColAirPressure.BackColor);
+                if (DataObjectCapabilities.HasLUX(dObjTisch.Protocol))
+                    addChartSerie(dObjTisch.getLogItems(DataObjectCategory.LUX), "LUX", picColLUX.BackColor);
 
-                if (chart1.Series.IndexOf("HeatIndex") < 0)
+                if (chartValues.Series.Count > 0)
                 {
-                    chart1.Series.Add("HeatIndex");
-                    chart1.Series["HeatIndex"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+                    chartValues.DataBind();
+                    chartValues.Update();
                 }
-                chart1.Series["Temperature"].Color = pictureBox1.BackColor;
-                chart1.Series["Temperature"].Points.DataBindY(dObjTisch.getLogItems(DataObjectCategory.Temperature).ToArray());
-                chart1.Series["Temperature"].Color = pictureBox9.BackColor;
-                chart1.Series["HeatIndex"].Points.DataBindY(dObjTisch.getLogItems(DataObjectCategory.HeatIndex).ToArray());
-                chart1.DataBind();
-                chart1.Update();
             }
             catch (Exception ex)
             {
