@@ -880,6 +880,7 @@ namespace Arduino_Temperature
 
         private void button1_Click(object sender, EventArgs e)
         {
+            
             try
             {
                 if (chart1.Series.IndexOf("Temperature") < 0)
@@ -893,8 +894,9 @@ namespace Arduino_Temperature
                     chart1.Series.Add("HeatIndex");
                     chart1.Series["HeatIndex"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
                 }
-
+                chart1.Series["Temperature"].Color = pictureBox1.BackColor;
                 chart1.Series["Temperature"].Points.DataBindY(dObjTisch.getLogItems(DataObjectCategory.Temperature).ToArray());
+                chart1.Series["Temperature"].Color = pictureBox9.BackColor;
                 chart1.Series["HeatIndex"].Points.DataBindY(dObjTisch.getLogItems(DataObjectCategory.HeatIndex).ToArray());
                 chart1.DataBind();
                 chart1.Update();

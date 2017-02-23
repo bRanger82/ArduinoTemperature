@@ -62,8 +62,8 @@ namespace Arduino_Temperature
         private string _statusText = string.Empty;
         public string StatusText { get { return _statusText; } set { _statusText = value; } }
 
-        public static int LogMinEntries = 200;
-        public static int LogMaxEntries = 1000;
+        public static int LogMinEntries = 600;
+        public static int LogMaxEntries = 3000;
 
         private int _maxLogItemsCount = LogMinEntries;
 
