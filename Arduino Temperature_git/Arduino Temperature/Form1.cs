@@ -41,6 +41,9 @@ namespace Arduino_Temperature
         private DataObjectExt dObjBoden = new DataObjectExt();
         private Dictionary<string, int> di = new Dictionary<string, int>(); //Anzahl Verbindungsversuche pro Port
         private DataObjectDetails dobjDetail = new DataObjectDetails();
+        private Dictionary<string, DataObjectExt> SensorItems = new Dictionary<string, DataObjectExt>();
+        private List<string> SensorItemsNames = new List<string>();
+        private optionProperties Options = new optionProperties();
 
         public frmMain()
         {
@@ -204,10 +207,32 @@ namespace Arduino_Temperature
             
         }
 
+        private void addSensor(string name, string portName, bool active)
+        {
+            if (SensorItems.ContainsKey(name))
+            {
+                throw new InvalidOperationException("Key '" + name + "' existiert bereits!");
+            }
+
+            DataObjectExt dobjExt = new DataObjectExt();
+
+            dobjExt.Name = name;
+            dobjExt.PortName = portName;
+            dobjExt.Active = active;
+
+            SensorItems.Add(name, dobjExt);
+
+            SensorItemsNames.Add(name);
+
+        }
+
         private void loadSetttingsFromXML()
         {
-            strPortTisch = XML.TischPort;
 
+            addSensor(XML.TischBezeichnung, XML.TischPort, XML.TischAktiv);
+            addSensor(XML.BodenBezeichnung, XML.BodenPort, XML.BodenAktiv);
+
+            strPortTisch = XML.TischPort;
             dObjTisch.PortName = XML.TischPort;
             dObjTisch.Name = XML.TischBezeichnung;
             dObjTisch.Active = XML.TischAktiv;
@@ -850,20 +875,18 @@ namespace Arduino_Temperature
 
         private void optionenToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            optionProperties _optionProperties = new optionProperties();
-            _optionProperties.numEntries = 25;
-            _optionProperties.propLogToFile = false;
-            _optionProperties.propWriteHTML = true;
-            _optionProperties.propTopMost = true;
 
-            frmOptions fOpt = new frmOptions(_optionProperties);
+            frmOptions fOpt = new frmOptions(Options);
             fOpt.ShowDialog();
 
             //exit if canceled
             if (fOpt.Cancel == true)
                 return;
 
-            //if not canceled -> proceed and set local properties
+            Options = fOpt.OptionProp;
+
+            this.TopMost = Options.propTopMost;
+            this.chkTopMost.Checked = Options.propTopMost;
         }
     }
 

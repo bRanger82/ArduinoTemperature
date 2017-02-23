@@ -59,9 +59,9 @@ namespace Arduino_Temperature
 
     public class optionProperties
     {
-        public bool propTopMost { get; set; }
-        public bool propLogToFile { get; set; }
-        public bool propWriteHTML { get; set; }
-        public int numEntries { get; set; }
+        public bool propTopMost { get; set; } = false;
+        public bool propLogToFile { get; set; } = false;
+        public bool propWriteHTML { get; set; } = false;
+        public int numEntries { get; set; } = 5;
     }
 }

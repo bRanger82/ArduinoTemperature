@@ -42,7 +42,9 @@ namespace Arduino_Temperature
         public DataObjectProtocol Protocol { get; set; }
         public string AdditionalInformation { get; set; }
         public DateTime LastUpdated { get; set; }
-        
+
+        private string _statusText = string.Empty;
+        public string StatusText { get { return _statusText; } set { _statusText = value; } }
 
         private bool _IsDataUpToDate = true;
         public bool IsDataUpToDate { get { return _IsDataUpToDate;  } set { _IsDataUpToDate = value; } }
