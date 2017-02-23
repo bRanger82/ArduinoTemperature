@@ -53,8 +53,7 @@ namespace Arduino_Temperature
         private void init()
         {
             loadSetttingsFromXML();
-
-            lblHTMLNumEntriesHist.Text = "Anzahl Einträge: " + this.numMaxEntries.Value.ToString();
+            
             setLabelFormat(lblTempTisch, lblTableLastUpdated);
             setLabelFormat(lblTempBoden, lblBottomLastUpdated);
 
@@ -137,20 +136,22 @@ namespace Arduino_Temperature
 
         private void checkAccessRights()
         {
-            this.chkLogEnabled.Checked = false;
-            this.chkHTML.Checked = false;
+            /*
+                this.chkLogEnabled.Checked = false;
+                this.chkHTML.Checked = false;
 
-            FileInfo pathTable = new FileInfo(logPathTisch);
-            FileInfo pathBottom = new FileInfo(logPathBoden);
-            FileInfo pathHTML = new FileInfo(PathHTML);
+                FileInfo pathTable = new FileInfo(logPathTisch);
+                FileInfo pathBottom = new FileInfo(logPathBoden);
+                FileInfo pathHTML = new FileInfo(PathHTML);
 
-            this.chkLogEnabled.Enabled = false;
+                this.chkLogEnabled.Enabled = false;
 
-            if (Permission.HasAccess(pathTable, FileSystemRights.WriteData) &&
-                Permission.HasAccess(pathBottom, FileSystemRights.WriteData))
-                this.chkLogEnabled.Enabled = true;
+                if (Permission.HasAccess(pathTable, FileSystemRights.WriteData) &&
+                    Permission.HasAccess(pathBottom, FileSystemRights.WriteData))
+                    this.chkLogEnabled.Enabled = true;
 
-            this.chkHTML.Enabled = Permission.HasAccess(new FileInfo(PathHTML), FileSystemRights.WriteData);
+                this.chkHTML.Enabled = Permission.HasAccess(new FileInfo(PathHTML), FileSystemRights.WriteData);
+            */
         }
 
         private void connectToDevices()
@@ -189,8 +190,8 @@ namespace Arduino_Temperature
         {
             switch(ds)
             {
-                case dataSource.Boden: genericAddDataToList(dataBoden, dobj, numMaxEntries.Value); break;
-                case dataSource.Tisch: genericAddDataToList(dataTisch, dobj, numMaxEntries.Value); break;
+                case dataSource.Boden: genericAddDataToList(dataBoden, dobj, 50); break;
+                case dataSource.Tisch: genericAddDataToList(dataTisch, dobj, 50); break;
             }
         }
 
@@ -724,11 +725,6 @@ namespace Arduino_Temperature
             
         }
 
-        private void chkTopMost_CheckedChanged(object sender, EventArgs e)
-        {
-            this.TopMost = (chkTopMost.Checked);
-        }
-
         private void lblTempTisch_DoubleClick(object sender, EventArgs e)
         {
             changeLabelFont(ref lblTempTisch);
@@ -747,7 +743,7 @@ namespace Arduino_Temperature
         private void writeToLog(string text, string path)
         {
             Console.WriteLine("writeToLog called");
-            if (!this.chkLogEnabled.Checked)
+            if (!Options.propLogToFile)
             {
                 Console.WriteLine("writeToLog - logEnabled is not checked, exit ...");
                 return;
@@ -791,7 +787,7 @@ namespace Arduino_Temperature
 
         private void writeToHTML()
         {
-            if (!chkHTML.Checked)
+            if (!Options.propWriteHTML)
                 return;
             
             if ((string.IsNullOrEmpty(tempDataTisch) && tischAktiv) || (string.IsNullOrEmpty(tempDataBoden) && bodenAktiv))
@@ -802,18 +798,22 @@ namespace Arduino_Temperature
 
             try
             {
-                lblHTMLUpdated.Invoke((MethodInvoker)(() => lblHTMLUpdated.ForeColor = System.Drawing.Color.Black));
+                //lblHTMLUpdated.Invoke((MethodInvoker)(() => lblHTMLUpdated.ForeColor = System.Drawing.Color.Black));
 
                 HTML.writeHTMLFile(PathHTML, tischAktiv, tempDataTisch, dataTisch, bodenAktiv, tempDataBoden, dataBoden);
             }
             catch (Exception ex)
             {
-                chkHTML.Checked = false;
-                lblHTMLUpdated.Invoke((MethodInvoker)(() => lblHTMLUpdated.ForeColor = System.Drawing.Color.Red));
+                Options.propWriteHTML = false;
                 Console.WriteLine(ex.Message);
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Beim Versuch die Daten als HTML abzuspeichern ist folgender Fehler aufgetreten:\n" + 
+                                ex.Message + 
+                                "\nEs wird kein weiterer Verusch unternommen ein HTML zu schreiben." + 
+                                "\nDies muss in den Optionen wieder aktiviert werden.", 
+                                "Error", 
+                                MessageBoxButtons.OK, 
+                                MessageBoxIcon.Error);
             }
-            lblHTMLUpdated.Invoke((MethodInvoker)(() => lblHTMLUpdated.Text = Common.getCurrentDateTimeFormatted()));
         }
         
         private void lblTempBoden_DoubleClick(object sender, EventArgs e)
@@ -821,16 +821,6 @@ namespace Arduino_Temperature
             changeLabelFont(ref lblTempBoden);
         }
 
-        private void chkTopMost_CheckedChanged_1(object sender, EventArgs e)
-        {
-            this.TopMost = chkTopMost.Checked;
-        }
-
-        private void numMaxEntries_Scroll(object sender, EventArgs e)
-        {
-            this.toolTip1.SetToolTip(numMaxEntries, numMaxEntries.Value.ToString());
-            lblHTMLNumEntriesHist.Text = "Anzahl Einträge: " + this.numMaxEntries.Value.ToString();
-        }
 
         private void checkCabability(DataObjectExt dobjExt)
         {
@@ -886,21 +876,37 @@ namespace Arduino_Temperature
             Options = fOpt.OptionProp;
 
             this.TopMost = Options.propTopMost;
-            this.chkTopMost.Checked = Options.propTopMost;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (chart1.Series.IndexOf("Temperature") < 0)
+                {
+                    chart1.Series.Add("Temperature");
+                    chart1.Series["Temperature"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+                }
+
+                if (chart1.Series.IndexOf("HeatIndex") < 0)
+                {
+                    chart1.Series.Add("HeatIndex");
+                    chart1.Series["HeatIndex"].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+                }
+
+                chart1.Series["Temperature"].Points.DataBindY(dObjTisch.getLogItems(DataObjectCategory.Temperature).ToArray());
+                chart1.Series["HeatIndex"].Points.DataBindY(dObjTisch.getLogItems(DataObjectCategory.HeatIndex).ToArray());
+                chart1.DataBind();
+                chart1.Update();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("EXCEPTION button1_Click: " + ex.Message);
+            }
         }
     }
-
     
-    
-
-
-
 }
-
-
-
-
-
 
 
 

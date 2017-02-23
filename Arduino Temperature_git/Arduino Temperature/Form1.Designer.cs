@@ -29,17 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.lblTempTisch = new System.Windows.Forms.Label();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
             this.lblTempBoden = new System.Windows.Forms.Label();
-            this.grpSettings = new System.Windows.Forms.GroupBox();
-            this.lblHTMLNumEntriesHist = new System.Windows.Forms.Label();
-            this.numMaxEntries = new System.Windows.Forms.TrackBar();
-            this.chkHTML = new System.Windows.Forms.CheckBox();
-            this.lblHTMLUpdated = new System.Windows.Forms.Label();
-            this.chkLogEnabled = new System.Windows.Forms.CheckBox();
-            this.chkTopMost = new System.Windows.Forms.CheckBox();
             this.lblTableLastUpdated = new System.Windows.Forms.Label();
             this.lblBottomLastUpdated = new System.Windows.Forms.Label();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -102,8 +98,8 @@
             this.optionenToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.beendenToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.grpSettings.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numMaxEntries)).BeginInit();
+            this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.button1 = new System.Windows.Forms.Button();
             this.grpBoxSensorOne.SuspendLayout();
             this.grpBoxHeatIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox9)).BeginInit();
@@ -116,6 +112,7 @@
             this.grpBoxTemperature.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
             // lblTempTisch
@@ -137,80 +134,6 @@
             this.lblTempBoden.Size = new System.Drawing.Size(410, 180);
             this.lblTempBoden.TabIndex = 4;
             this.lblTempBoden.DoubleClick += new System.EventHandler(this.lblTempBoden_DoubleClick);
-            // 
-            // grpSettings
-            // 
-            this.grpSettings.Controls.Add(this.lblHTMLNumEntriesHist);
-            this.grpSettings.Controls.Add(this.numMaxEntries);
-            this.grpSettings.Controls.Add(this.chkHTML);
-            this.grpSettings.Controls.Add(this.lblHTMLUpdated);
-            this.grpSettings.Controls.Add(this.chkLogEnabled);
-            this.grpSettings.Controls.Add(this.chkTopMost);
-            this.grpSettings.Location = new System.Drawing.Point(16, 441);
-            this.grpSettings.Name = "grpSettings";
-            this.grpSettings.Size = new System.Drawing.Size(459, 140);
-            this.grpSettings.TabIndex = 7;
-            this.grpSettings.TabStop = false;
-            // 
-            // lblHTMLNumEntriesHist
-            // 
-            this.lblHTMLNumEntriesHist.AutoSize = true;
-            this.lblHTMLNumEntriesHist.Location = new System.Drawing.Point(290, 63);
-            this.lblHTMLNumEntriesHist.Name = "lblHTMLNumEntriesHist";
-            this.lblHTMLNumEntriesHist.Size = new System.Drawing.Size(93, 13);
-            this.lblHTMLNumEntriesHist.TabIndex = 12;
-            this.lblHTMLNumEntriesHist.Text = "Anzahl Einträge: 0";
-            // 
-            // numMaxEntries
-            // 
-            this.numMaxEntries.Location = new System.Drawing.Point(6, 91);
-            this.numMaxEntries.Maximum = 100;
-            this.numMaxEntries.Minimum = 5;
-            this.numMaxEntries.Name = "numMaxEntries";
-            this.numMaxEntries.Size = new System.Drawing.Size(392, 45);
-            this.numMaxEntries.TabIndex = 11;
-            this.numMaxEntries.Value = 5;
-            this.numMaxEntries.Scroll += new System.EventHandler(this.numMaxEntries_Scroll);
-            // 
-            // chkHTML
-            // 
-            this.chkHTML.AutoSize = true;
-            this.chkHTML.Location = new System.Drawing.Point(9, 62);
-            this.chkHTML.Name = "chkHTML";
-            this.chkHTML.Size = new System.Drawing.Size(56, 17);
-            this.chkHTML.TabIndex = 10;
-            this.chkHTML.Text = "HTML";
-            this.chkHTML.UseVisualStyleBackColor = true;
-            // 
-            // lblHTMLUpdated
-            // 
-            this.lblHTMLUpdated.AutoSize = true;
-            this.lblHTMLUpdated.Location = new System.Drawing.Point(80, 63);
-            this.lblHTMLUpdated.Name = "lblHTMLUpdated";
-            this.lblHTMLUpdated.Size = new System.Drawing.Size(108, 13);
-            this.lblHTMLUpdated.TabIndex = 9;
-            this.lblHTMLUpdated.Text = "HTML letztes Update";
-            // 
-            // chkLogEnabled
-            // 
-            this.chkLogEnabled.AutoSize = true;
-            this.chkLogEnabled.Location = new System.Drawing.Point(9, 39);
-            this.chkLogEnabled.Name = "chkLogEnabled";
-            this.chkLogEnabled.Size = new System.Drawing.Size(75, 17);
-            this.chkLogEnabled.TabIndex = 8;
-            this.chkLogEnabled.Text = "Log to File";
-            this.chkLogEnabled.UseVisualStyleBackColor = true;
-            // 
-            // chkTopMost
-            // 
-            this.chkTopMost.AutoSize = true;
-            this.chkTopMost.Location = new System.Drawing.Point(9, 16);
-            this.chkTopMost.Name = "chkTopMost";
-            this.chkTopMost.Size = new System.Drawing.Size(71, 17);
-            this.chkTopMost.TabIndex = 7;
-            this.chkTopMost.Text = "Top-Most";
-            this.chkTopMost.UseVisualStyleBackColor = true;
-            this.chkTopMost.CheckedChanged += new System.EventHandler(this.chkTopMost_CheckedChanged_1);
             // 
             // lblTableLastUpdated
             // 
@@ -824,16 +747,47 @@
             this.beendenToolStripMenuItem1.Text = "Beenden";
             this.beendenToolStripMenuItem1.Click += new System.EventHandler(this.beendenToolStripMenuItem1_Click);
             // 
+            // chart1
+            // 
+            chartArea1.Name = "ChartArea1";
+            this.chart1.ChartAreas.Add(chartArea1);
+            this.chart1.Location = new System.Drawing.Point(12, 441);
+            this.chart1.Name = "chart1";
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series1.IsVisibleInLegend = false;
+            series1.Name = "Temperature";
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series2.IsVisibleInLegend = false;
+            series2.Name = "HeatIndex";
+            this.chart1.Series.Add(series1);
+            this.chart1.Series.Add(series2);
+            this.chart1.Size = new System.Drawing.Size(466, 147);
+            this.chart1.TabIndex = 30;
+            this.chart1.Text = "chart1";
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(397, 594);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 31;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(490, 588);
+            this.ClientSize = new System.Drawing.Size(490, 618);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.chart1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.grpBoxSensorOne);
             this.Controls.Add(this.lblBottomLastUpdated);
             this.Controls.Add(this.lblTableLastUpdated);
-            this.Controls.Add(this.grpSettings);
             this.Controls.Add(this.lblTempBoden);
             this.Controls.Add(this.lblTempTisch);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -844,9 +798,6 @@
             this.Text = "Arduino Temperature Watcher";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             this.Load += new System.EventHandler(this.frmMain_Load);
-            this.grpSettings.ResumeLayout(false);
-            this.grpSettings.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numMaxEntries)).EndInit();
             this.grpBoxSensorOne.ResumeLayout(false);
             this.grpBoxSensorOne.PerformLayout();
             this.grpBoxHeatIndex.ResumeLayout(false);
@@ -866,6 +817,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -876,16 +828,9 @@
         private System.Windows.Forms.Label lblTempTisch;
         private System.Windows.Forms.FontDialog fontDialog1;
         private System.Windows.Forms.Label lblTempBoden;
-        private System.Windows.Forms.GroupBox grpSettings;
-        private System.Windows.Forms.CheckBox chkHTML;
-        private System.Windows.Forms.Label lblHTMLUpdated;
-        private System.Windows.Forms.CheckBox chkLogEnabled;
-        private System.Windows.Forms.CheckBox chkTopMost;
         private System.Windows.Forms.Label lblTableLastUpdated;
         private System.Windows.Forms.Label lblBottomLastUpdated;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.TrackBar numMaxEntries;
-        private System.Windows.Forms.Label lblHTMLNumEntriesHist;
         private System.Windows.Forms.GroupBox grpBoxSensorOne;
         private System.Windows.Forms.Label lblSensorOne;
         private System.Windows.Forms.GroupBox grpBoxLUX;
@@ -945,6 +890,8 @@
         private System.Windows.Forms.ToolStripMenuItem optionenToolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem beendenToolStripMenuItem1;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
+        private System.Windows.Forms.Button button1;
     }
 }
 

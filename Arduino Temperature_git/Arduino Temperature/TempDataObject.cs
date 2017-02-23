@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
@@ -7,6 +8,21 @@ using System.Threading.Tasks;
 
 namespace Arduino_Temperature
 {
+
+    public class LogObject
+    {
+        public LogObject(double value, DataObjectCategory category, DateTime timepoint)
+        {
+            this.Value = value;
+            this.Category = category;
+            this.Timepoint = timepoint;
+        }
+
+        public double Value { get; set; }
+        public DataObjectCategory Category { get; set; }
+        public DateTime Timepoint { get; set; }
+    }
+
     public class DetailsTimePointExt
     {
         public double MinValue { get; set; } = double.MaxValue;
@@ -46,6 +62,39 @@ namespace Arduino_Temperature
         private string _statusText = string.Empty;
         public string StatusText { get { return _statusText; } set { _statusText = value; } }
 
+        public static int LogMinEntries = 200;
+        public static int LogMaxEntries = 1000;
+
+        private int _maxLogItemsCount = LogMinEntries;
+
+        public int MaxLogItemsCount { get {return _maxLogItemsCount; } set { if (value < LogMinEntries || value > LogMaxEntries) return;  _maxLogItemsCount = value; } }
+
+        private List<LogObject> _LogData = new List<LogObject>();
+
+        public List<double> getLogItems(DataObjectCategory dObjcat)
+        {
+            List<double> lst = new List<double>();
+
+            foreach(LogObject logObj in _LogData)
+            {
+                if (logObj.Category.Value == dObjcat.Value)
+                {
+                    lst.Add(logObj.Value);
+                }
+            }
+            
+            return lst;
+        }
+
+        public void addItemToLog(LogObject logObj)
+        {
+            while(_LogData.Count > _maxLogItemsCount)
+            {
+                _LogData.RemoveAt(0);
+            }
+            _LogData.Add(logObj);
+        }
+
         private bool _IsDataUpToDate = true;
         public bool IsDataUpToDate { get { return _IsDataUpToDate;  } set { _IsDataUpToDate = value; } }
 
@@ -60,6 +109,8 @@ namespace Arduino_Temperature
             return _Items.ContainsKey(dobjCat.Value);
         }
 
+        public bool LogEnabled { get; set; } = true;
+
         public double getItem(DataObjectCategory dobjCat)
         {
             if (!ItemExists(dobjCat))
@@ -70,14 +121,16 @@ namespace Arduino_Temperature
 
         public void addDataItem(string name, double value, DataObjectCategory dObjCat, Common.SensorValueType SensorType)
         {
+            DateTime timepoint = DateTime.Now;
+
             if (!_Items.ContainsKey(name))
             {
                 DetailsTimePointExt dtp = new DetailsTimePointExt();
                 dtp.Value = value;
                 dtp.MinValue = value;
                 dtp.MaxValue = value;
-                dtp.MinTimepoint = DateTime.Now;
-                dtp.MaxTimepoint = DateTime.Now;
+                dtp.MinTimepoint = timepoint;
+                dtp.MaxTimepoint = timepoint;
                 dtp.SensorType = SensorType;
                 dtp.DataObjCategory = dObjCat;
                 _Items.Add(name, dtp);
@@ -89,14 +142,18 @@ namespace Arduino_Temperature
                 if (_Items[name].MinValue > value)
                 {
                     _Items[name].MinValue = value;
-                    _Items[name].MinTimepoint = DateTime.Now;
+                    _Items[name].MinTimepoint = timepoint;
                 }
                 if (_Items[name].MaxValue < value)
                 {
                     _Items[name].MaxValue = value;
-                    _Items[name].MaxTimepoint = DateTime.Now;
+                    _Items[name].MaxTimepoint = timepoint;
                 }
             }
+
+            if (LogEnabled)
+                addItemToLog(new LogObject(value, dObjCat, timepoint));
+
         }
     }
     
