@@ -101,7 +101,6 @@
             this.chartValues = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.cboChartSelection = new System.Windows.Forms.ComboBox();
             this.lblChartSelection = new System.Windows.Forms.Label();
-            this.btnUpdateChart = new System.Windows.Forms.Button();
             this.grpBoxSensorOne.SuspendLayout();
             this.grpBoxHeatIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).BeginInit();
@@ -751,6 +750,7 @@
             // 
             // chartValues
             // 
+            chartArea1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
             chartArea1.Name = "ChartArea1";
             this.chartValues.ChartAreas.Add(chartArea1);
             this.chartValues.Location = new System.Drawing.Point(12, 467);
@@ -778,6 +778,7 @@
             this.cboChartSelection.Name = "cboChartSelection";
             this.cboChartSelection.Size = new System.Drawing.Size(136, 21);
             this.cboChartSelection.TabIndex = 31;
+            this.cboChartSelection.SelectedIndexChanged += new System.EventHandler(this.cboChartSelection_SelectedIndexChanged);
             // 
             // lblChartSelection
             // 
@@ -788,22 +789,11 @@
             this.lblChartSelection.TabIndex = 32;
             this.lblChartSelection.Text = "Datenauswahl:";
             // 
-            // btnUpdateChart
-            // 
-            this.btnUpdateChart.Location = new System.Drawing.Point(12, 438);
-            this.btnUpdateChart.Name = "btnUpdateChart";
-            this.btnUpdateChart.Size = new System.Drawing.Size(75, 23);
-            this.btnUpdateChart.TabIndex = 33;
-            this.btnUpdateChart.Text = "Test Chart";
-            this.btnUpdateChart.UseVisualStyleBackColor = true;
-            this.btnUpdateChart.Click += new System.EventHandler(this.btnUpdateChart_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(490, 618);
-            this.Controls.Add(this.btnUpdateChart);
             this.Controls.Add(this.lblChartSelection);
             this.Controls.Add(this.cboChartSelection);
             this.Controls.Add(this.chartValues);
@@ -916,7 +906,6 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chartValues;
         private System.Windows.Forms.ComboBox cboChartSelection;
         private System.Windows.Forms.Label lblChartSelection;
-        private System.Windows.Forms.Button btnUpdateChart;
     }
 }
 

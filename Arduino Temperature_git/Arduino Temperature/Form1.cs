@@ -610,6 +610,7 @@ namespace Arduino_Temperature
                 writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathTisch);
                 addDataset(dataSource.Tisch, dObjTisch);
                 cboChange();
+                updateChart(dObjTisch);
             } else if (comPort == strPortBoden)
             {
                 string line = getLineFromDataExt(newline, ref dObjBoden);
@@ -887,7 +888,7 @@ namespace Arduino_Temperature
             this.TopMost = Options.propTopMost;
         }
 
-        private void addChartSerie(List<double> values, string name, Color color)
+        private void addChartSerie(List<double> values, string name, Color color, double min = double.MinValue, double max = double.MaxValue)
         {
             if (chartValues.Series.IndexOf(name) < 0)
             {
@@ -895,35 +896,72 @@ namespace Arduino_Temperature
                 chartValues.Series[name].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             }
             chartValues.Series[name].Points.DataBindY(values.ToArray());
-            chartValues.Series[name].Color = color;
+           
+            if (min > double.MinValue && max < double.MaxValue)
+            {
+                chartValues.ChartAreas[0].AxisY.Minimum = min - 5;
+                chartValues.ChartAreas[0].AxisY.Maximum = max + 5;
+            }
 
+            chartValues.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDotDot;
+            chartValues.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDotDot;
+            chartValues.Series[name].Color = color;
+            
         }
 
-        private void updateChart(DataObjectCategory dbo, DataObjectExt dObjExt)
+        private void updateChart(DataObjectCategory dbo, DataObjectExt dObjExt, Color lineColor)
         {
-            
-            try
-            {
-                chartValues.Series.Clear();
+            chartValues.Series.Clear();
 
-                if (DataObjectCapabilities.HasCapability(dbo, dObjExt.Protocol))
-                    addChartSerie(dObjExt.getLogItems(dbo), dbo.Value.ToString(), picColTemp.BackColor);
+            if (DataObjectCapabilities.HasCapability(dbo, dObjExt.Protocol))
+            {
+                double min = dObjExt.getLogItemMinValue(dbo);
+                double max = dObjExt.getLogItemMaxValue(dbo);
+                Console.WriteLine("Min " + min.ToString() + " - Max: " + max.ToString());
+                addChartSerie(dObjExt.getLogItems(dbo), dbo.Value.ToString(), lineColor, min, max);
+            }
                 
-                if (chartValues.Series.Count > 0)
+            if (chartValues.Series.Count > 0)
+            {
+                chartValues.DataBind();
+                chartValues.Update();
+            }
+        }
+
+        private Color getChartColor(DataObjectCategory dobjCat)
+        {
+            if (dobjCat.Value == DataObjectCategory.HeatIndex.Value)
+                return picColHeatIndex.BackColor;
+            else if (dobjCat.Value == DataObjectCategory.Temperature.Value)
+                return picColTemp.BackColor;
+            else if (dobjCat.Value == DataObjectCategory.LUX.Value)
+                return picColLUX.BackColor;
+            else if (dobjCat.Value == DataObjectCategory.Humidity.Value)
+                return picColHumidity.BackColor;
+            else if (dobjCat.Value == DataObjectCategory.AirPressure.Value)
+                return picColAirPressure.BackColor;
+            else
+                return Color.Red;
+        }
+
+        private void updateChart(DataObjectExt dobjExt)
+        {
+            string selected = this.cboChartSelection.GetItemText(this.cboChartSelection.SelectedItem);
+            DataObjectCategory dobjCat = DataObjectCategory.getObjectCategory(selected);
+
+            if (dobjCat != null)
+            {
+                if (dObjTisch.getLogItemCount(dobjCat) > 0)
                 {
-                    chartValues.DataBind();
-                    chartValues.Update();
+                    Color lineColor = getChartColor(dobjCat);
+                    updateChart(dobjCat, dobjExt, lineColor);
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("EXCEPTION button1_Click: " + ex.Message);
-            }
         }
 
-        private void btnUpdateChart_Click(object sender, EventArgs e)
+        private void cboChartSelection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            updateChart(DataObjectCategory.LUX, dObjTisch);
+            updateChart(dObjTisch);
         }
     }
     

@@ -41,7 +41,7 @@ namespace Arduino_Temperature
 
         public string Value { get; set; }
 
-        private enum itemList
+        public enum itemList
         {
             Temperature = 0,
             HeatIndex = 1,
@@ -51,6 +51,19 @@ namespace Arduino_Temperature
         }
 
         public static List<string> Items = new List<string>(new string[] { "Temperature", "HeatIndex", "Humidity", "AirPressure", "LUX" });
+
+        public static DataObjectCategory getObjectCategory(itemList item)
+        {
+            return new DataObjectCategory(Items[(int)item]);
+        }
+
+        public static DataObjectCategory getObjectCategory(string item)
+        {
+            if (!Items.Contains(item))
+                return null;
+
+            return new DataObjectCategory(Items[Items.IndexOf(item)]);
+        }
 
         public static DataObjectCategory Temperature { get { return new DataObjectCategory(Items[(int)itemList.Temperature]); } }
         public static DataObjectCategory HeatIndex { get { return new DataObjectCategory(Items[(int)itemList.HeatIndex]); } }
@@ -98,6 +111,20 @@ namespace Arduino_Temperature
             return lst;
         }
 
+        public double getLogItemMinValue(DataObjectCategory dObjcat)
+        {
+            if (!_Items.ContainsKey(dObjcat.Value))
+                return 0;
+            return _Items[dObjcat.Value].MinValue;
+        }
+
+        public double getLogItemMaxValue(DataObjectCategory dObjcat)
+        {
+            if (!_Items.ContainsKey(dObjcat.Value))
+                return 0;
+            return _Items[dObjcat.Value].MaxValue;
+        }
+
         public int getLogItemCount(DataObjectCategory dObjCat)
         {
             if (_LogData.Count < 1)
@@ -108,8 +135,6 @@ namespace Arduino_Temperature
 
         public void addItemToLog(LogObject logObj)
         {
-            Console.WriteLine("getLogItemCount(logObj.Category) == " + getLogItemCount(logObj.Category).ToString());
-
             while(getLogItemCount(logObj.Category) > _maxLogItemsCount)
             {
                 _LogData.RemoveAt(0);
