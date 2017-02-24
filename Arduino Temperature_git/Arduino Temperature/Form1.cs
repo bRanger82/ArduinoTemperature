@@ -104,6 +104,13 @@ namespace Arduino_Temperature
             }
         }
 
+        private void addChartPossibilities()
+        {
+            cboChartSelection.Items.AddRange(DataObjectCategory.Items.ToArray());
+            if (cboChartSelection.Items.Count > 0)
+                cboChartSelection.SelectedIndex = 0;
+        }
+
         private void frmMain_Load(object sender, EventArgs e)
         {
 
@@ -123,6 +130,7 @@ namespace Arduino_Temperature
                 connectToDevices();
                 loadSensorToComboBox();
                 checkForConnection();
+                addChartPossibilities();
             }
             catch (Exception ex)
             {
@@ -891,22 +899,16 @@ namespace Arduino_Temperature
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void updateChart(DataObjectCategory dbo, DataObjectExt dObjExt)
         {
             
             try
             {
-                if (DataObjectCapabilities.HasTemperature(dObjTisch.Protocol))
-                    addChartSerie(dObjTisch.getLogItems(DataObjectCategory.Temperature), "Temperature", picColTemp.BackColor);
-                if (DataObjectCapabilities.HasHeatIndex(dObjTisch.Protocol))
-                    addChartSerie(dObjTisch.getLogItems(DataObjectCategory.HeatIndex), "HeatIndex", picColHeatIndex.BackColor);
-                if (DataObjectCapabilities.HasHumidity(dObjTisch.Protocol))
-                    addChartSerie(dObjTisch.getLogItems(DataObjectCategory.Humidity), "Humitidy", picColHumidity.BackColor);
-                if (DataObjectCapabilities.HasAirPressure(dObjTisch.Protocol))
-                    addChartSerie(dObjTisch.getLogItems(DataObjectCategory.AirPressure), "AirPressure", picColAirPressure.BackColor);
-                if (DataObjectCapabilities.HasLUX(dObjTisch.Protocol))
-                    addChartSerie(dObjTisch.getLogItems(DataObjectCategory.LUX), "LUX", picColLUX.BackColor);
+                chartValues.Series.Clear();
 
+                if (DataObjectCapabilities.HasCapability(dbo, dObjExt.Protocol))
+                    addChartSerie(dObjExt.getLogItems(dbo), dbo.Value.ToString(), picColTemp.BackColor);
+                
                 if (chartValues.Series.Count > 0)
                 {
                     chartValues.DataBind();
@@ -917,6 +919,11 @@ namespace Arduino_Temperature
             {
                 Console.WriteLine("EXCEPTION button1_Click: " + ex.Message);
             }
+        }
+
+        private void btnUpdateChart_Click(object sender, EventArgs e)
+        {
+            updateChart(DataObjectCategory.LUX, dObjTisch);
         }
     }
     

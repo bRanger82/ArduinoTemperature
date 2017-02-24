@@ -99,7 +99,9 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.beendenToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.chartValues = new System.Windows.Forms.DataVisualization.Charting.Chart();
-            this.button1 = new System.Windows.Forms.Button();
+            this.cboChartSelection = new System.Windows.Forms.ComboBox();
+            this.lblChartSelection = new System.Windows.Forms.Label();
+            this.btnUpdateChart = new System.Windows.Forms.Button();
             this.grpBoxSensorOne.SuspendLayout();
             this.grpBoxHeatIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).BeginInit();
@@ -751,7 +753,7 @@
             // 
             chartArea1.Name = "ChartArea1";
             this.chartValues.ChartAreas.Add(chartArea1);
-            this.chartValues.Location = new System.Drawing.Point(12, 441);
+            this.chartValues.Location = new System.Drawing.Point(12, 467);
             this.chartValues.Name = "chartValues";
             this.chartValues.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
             series1.ChartArea = "ChartArea1";
@@ -764,26 +766,46 @@
             series2.Name = "HeatIndex";
             this.chartValues.Series.Add(series1);
             this.chartValues.Series.Add(series2);
-            this.chartValues.Size = new System.Drawing.Size(466, 147);
+            this.chartValues.Size = new System.Drawing.Size(460, 147);
             this.chartValues.TabIndex = 30;
             this.chartValues.Text = "chart1";
             // 
-            // button1
+            // cboChartSelection
             // 
-            this.button1.Location = new System.Drawing.Point(397, 594);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 31;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.cboChartSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboChartSelection.FormattingEnabled = true;
+            this.cboChartSelection.Location = new System.Drawing.Point(336, 441);
+            this.cboChartSelection.Name = "cboChartSelection";
+            this.cboChartSelection.Size = new System.Drawing.Size(136, 21);
+            this.cboChartSelection.TabIndex = 31;
+            // 
+            // lblChartSelection
+            // 
+            this.lblChartSelection.AutoSize = true;
+            this.lblChartSelection.Location = new System.Drawing.Point(252, 444);
+            this.lblChartSelection.Name = "lblChartSelection";
+            this.lblChartSelection.Size = new System.Drawing.Size(78, 13);
+            this.lblChartSelection.TabIndex = 32;
+            this.lblChartSelection.Text = "Datenauswahl:";
+            // 
+            // btnUpdateChart
+            // 
+            this.btnUpdateChart.Location = new System.Drawing.Point(12, 438);
+            this.btnUpdateChart.Name = "btnUpdateChart";
+            this.btnUpdateChart.Size = new System.Drawing.Size(75, 23);
+            this.btnUpdateChart.TabIndex = 33;
+            this.btnUpdateChart.Text = "Test Chart";
+            this.btnUpdateChart.UseVisualStyleBackColor = true;
+            this.btnUpdateChart.Click += new System.EventHandler(this.btnUpdateChart_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(490, 618);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.btnUpdateChart);
+            this.Controls.Add(this.lblChartSelection);
+            this.Controls.Add(this.cboChartSelection);
             this.Controls.Add(this.chartValues);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.grpBoxSensorOne);
@@ -892,7 +914,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem beendenToolStripMenuItem1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartValues;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox cboChartSelection;
+        private System.Windows.Forms.Label lblChartSelection;
+        private System.Windows.Forms.Button btnUpdateChart;
     }
 }
 

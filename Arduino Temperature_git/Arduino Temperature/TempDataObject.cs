@@ -11,13 +11,14 @@ namespace Arduino_Temperature
 
     public class LogObject
     {
+
         public LogObject(double value, DataObjectCategory category, DateTime timepoint)
         {
             this.Value = value;
             this.Category = category;
             this.Timepoint = timepoint;
         }
-
+        
         public double Value { get; set; }
         public DataObjectCategory Category { get; set; }
         public DateTime Timepoint { get; set; }
@@ -40,11 +41,22 @@ namespace Arduino_Temperature
 
         public string Value { get; set; }
 
-        public static DataObjectCategory Temperature { get { return new DataObjectCategory("Temperature"); } }
-        public static DataObjectCategory HeatIndex { get { return new DataObjectCategory("HeatIndex"); } }
-        public static DataObjectCategory Humidity { get { return new DataObjectCategory("Humidity"); } }
-        public static DataObjectCategory AirPressure { get { return new DataObjectCategory("AirPressure"); } }
-        public static DataObjectCategory LUX { get { return new DataObjectCategory("LUX"); } }
+        private enum itemList
+        {
+            Temperature = 0,
+            HeatIndex = 1,
+            Humidity = 2,
+            AirPressure = 3,
+            LUX = 4
+        }
+
+        public static List<string> Items = new List<string>(new string[] { "Temperature", "HeatIndex", "Humidity", "AirPressure", "LUX" });
+
+        public static DataObjectCategory Temperature { get { return new DataObjectCategory(Items[(int)itemList.Temperature]); } }
+        public static DataObjectCategory HeatIndex { get { return new DataObjectCategory(Items[(int)itemList.HeatIndex]); } }
+        public static DataObjectCategory Humidity { get { return new DataObjectCategory(Items[(int)itemList.Humidity]); } }
+        public static DataObjectCategory AirPressure { get { return new DataObjectCategory(Items[(int)itemList.AirPressure]); } }
+        public static DataObjectCategory LUX { get { return new DataObjectCategory(Items[(int)itemList.LUX]); } }
     }
 
     public class DataObjectExt : SerialPort
@@ -86,9 +98,19 @@ namespace Arduino_Temperature
             return lst;
         }
 
+        public int getLogItemCount(DataObjectCategory dObjCat)
+        {
+            if (_LogData.Count < 1)
+                return 0;
+
+            return _LogData.Count(i => i.Category.Value == dObjCat.Value);
+        }
+
         public void addItemToLog(LogObject logObj)
         {
-            while(_LogData.Count > _maxLogItemsCount)
+            Console.WriteLine("getLogItemCount(logObj.Category) == " + getLogItemCount(logObj.Category).ToString());
+
+            while(getLogItemCount(logObj.Category) > _maxLogItemsCount)
             {
                 _LogData.RemoveAt(0);
             }
