@@ -282,14 +282,18 @@ void processData()
   {
     showError();
     errorOccured = true;
+    digitalWrite(LEDrot, HIGH);
     if (Serial)
     {
       Serial.println("Fehler: Daten konnten gelesen werden!");
       Serial.flush();
     }
+    
+    
   } 
   else
   {
+    digitalWrite(LEDrot, LOW);
     //update TFT only the CYCLE_UPDATE_TFT times when a processData is called
     //to avoid each time update of the TFT
     //or if an error occured, update the TFT the next OK time
@@ -297,6 +301,7 @@ void processData()
     {
       writeTextToTFT(t, h, r, p0, lux);
       errorOccured = false;
+      UPDATE_TFT_DATA = false;
     }
     
     if (Serial)
@@ -324,11 +329,17 @@ void printIPInfoOnTFT(void)
   tft.println("Signal Staerke:");
   tft.println("-71 dBm");
   
-  tft.println("Ser. Schnittstelle:");
+  tft.println("Schnittstelle (Serial):");
   if (Serial)
-    tft.println(" verfuegbar:"); 
+    tft.println(" verfuegbar"); 
   else
-    tft.println(" NICHT verfuegbar:");
+    tft.println(" NICHT verfuegbar");
+
+  tft.println("Schnittstelle (Serial1):");
+  if (Serial1)
+    tft.println(" verfuegbar"); 
+  else
+    tft.println(" NICHT verfuegbar");
 }
 
 void ledTest(void)
@@ -346,5 +357,6 @@ void ledTest(void)
 
 void interruptCall(void)
 {
+  printIPInfoOnTFT();
   UPDATE_TFT_DATA = true;
 }
