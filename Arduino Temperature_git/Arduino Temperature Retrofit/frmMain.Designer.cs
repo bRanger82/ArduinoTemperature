@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.lblChartSelection = new System.Windows.Forms.Label();
             this.cboChartSelection = new System.Windows.Forms.ComboBox();
@@ -162,6 +162,7 @@
             this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexMinName);
             this.grpBoxHeatIndex.Controls.Add(this.lblSensorHeatIndexValue);
             this.grpBoxHeatIndex.Controls.Add(this.picColHeatIndex);
+            this.grpBoxHeatIndex.Enabled = false;
             this.grpBoxHeatIndex.Location = new System.Drawing.Point(238, 69);
             this.grpBoxHeatIndex.Name = "grpBoxHeatIndex";
             this.grpBoxHeatIndex.Size = new System.Drawing.Size(225, 110);
@@ -283,6 +284,7 @@
             this.grpBoxLUX.Controls.Add(this.label23);
             this.grpBoxLUX.Controls.Add(this.lblSensorLuxValue);
             this.grpBoxLUX.Controls.Add(this.picColLUX);
+            this.grpBoxLUX.Enabled = false;
             this.grpBoxLUX.Location = new System.Drawing.Point(6, 301);
             this.grpBoxLUX.Name = "grpBoxLUX";
             this.grpBoxLUX.Size = new System.Drawing.Size(225, 110);
@@ -384,6 +386,7 @@
             this.grpBoxAirPressure.Controls.Add(this.label31);
             this.grpBoxAirPressure.Controls.Add(this.lblSensorPressureValue);
             this.grpBoxAirPressure.Controls.Add(this.picColAirPressure);
+            this.grpBoxAirPressure.Enabled = false;
             this.grpBoxAirPressure.Location = new System.Drawing.Point(6, 185);
             this.grpBoxAirPressure.Name = "grpBoxAirPressure";
             this.grpBoxAirPressure.Size = new System.Drawing.Size(225, 110);
@@ -485,6 +488,7 @@
             this.grpBoxHumidity.Controls.Add(this.label15);
             this.grpBoxHumidity.Controls.Add(this.lblSensorHumidityValue);
             this.grpBoxHumidity.Controls.Add(this.picColHumidity);
+            this.grpBoxHumidity.Enabled = false;
             this.grpBoxHumidity.Location = new System.Drawing.Point(237, 185);
             this.grpBoxHumidity.Name = "grpBoxHumidity";
             this.grpBoxHumidity.Size = new System.Drawing.Size(225, 110);
@@ -586,6 +590,7 @@
             this.grpBoxTemperature.Controls.Add(this.label3);
             this.grpBoxTemperature.Controls.Add(this.lblSensorTempValue);
             this.grpBoxTemperature.Controls.Add(this.picColTemp);
+            this.grpBoxTemperature.Enabled = false;
             this.grpBoxTemperature.Location = new System.Drawing.Point(6, 69);
             this.grpBoxTemperature.Name = "grpBoxTemperature";
             this.grpBoxTemperature.Size = new System.Drawing.Size(225, 110);
@@ -678,22 +683,22 @@
             // 
             // chartValues
             // 
-            chartArea4.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            chartArea4.Name = "ChartArea1";
-            this.chartValues.ChartAreas.Add(chartArea4);
+            chartArea1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea1.Name = "ChartArea1";
+            this.chartValues.ChartAreas.Add(chartArea1);
             this.chartValues.Location = new System.Drawing.Point(12, 500);
             this.chartValues.Name = "chartValues";
             this.chartValues.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series7.ChartArea = "ChartArea1";
-            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series7.IsVisibleInLegend = false;
-            series7.Name = "Temperature";
-            series8.ChartArea = "ChartArea1";
-            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series8.IsVisibleInLegend = false;
-            series8.Name = "HeatIndex";
-            this.chartValues.Series.Add(series7);
-            this.chartValues.Series.Add(series8);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series1.IsVisibleInLegend = false;
+            series1.Name = "Temperature";
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series2.IsVisibleInLegend = false;
+            series2.Name = "HeatIndex";
+            this.chartValues.Series.Add(series1);
+            this.chartValues.Series.Add(series2);
             this.chartValues.Size = new System.Drawing.Size(460, 147);
             this.chartValues.TabIndex = 36;
             this.chartValues.Text = "chart1";

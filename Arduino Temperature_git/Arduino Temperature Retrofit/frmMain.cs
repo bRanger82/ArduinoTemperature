@@ -54,7 +54,7 @@ namespace Arduino_Temperature_Retrofit
         }
 
         private delegate void DataReceiveEvent(string information, string comPort, string Name);
-
+        
         private void DataReceived(string information, string comPort, string name)
         {
             DataObject dobj = dataObjs[name];
@@ -70,6 +70,9 @@ namespace Arduino_Temperature_Retrofit
                 } else if (values.Length == 8 && values[0].StartsWith("START") && values[7].StartsWith("EOF")) //Protocol third version
                 {
                     processDataProtocolV3(values, ref dobj);
+                } else if (values.Length == 3 && values[0].StartsWith("REPLY") && values[2].StartsWith("EOF")) //Reply Message from Arudino
+                {
+                    parseArduinoReply(dobj, values[1]);
                 } else
                 {
                     dobj.DataAvailable = false;
@@ -85,25 +88,49 @@ namespace Arduino_Temperature_Retrofit
                 dobj.AdditionalInformation = information;
             }
 
+            processIncomingDataSet(ref dobj, name);
+        }
+
+        private void writeCommandToArduino(ref DataObject dobj, string command)
+        {
+            //Has to be implemented together with ARDUINO and the C# method parseArduinoReply
+            if (dobj.IsOpen)
+            {
+                dobj.Write(command);
+            }
+        }
+
+        private void parseArduinoReply(DataObject dobj, string message)
+        {
+            //TODO
+            Console.WriteLine(message);
+        }
+
+        private void processIncomingDataSet(ref DataObject dobj, string name)
+        {
             if (dobj.Protocol != DataObjectProtocol.NONE)
             {
                 if (name == this.cboSensors.GetItemText(this.cboSensors.SelectedItem) && dobj.FirstData)
                 {
                     if (dobj.FirstData && cboChartSelection.Items.Count == 0)
+                    {
                         addChartPossibilities();
+                    }
 
                     showData(dobj);
                     updateChart(dobj);
                     lblSensorLastUpdated.ForeColor = SystemColors.ControlText;
                     lblSensorLastUpdated.Text = "Zuletzt aktualisiert: " + Common.getCurrentDateTimeFormatted();
                 }
-            } else
+            }
+            else
             {
                 if (dobj.FirstData)
                 {
                     lblSensorLastUpdated.ForeColor = Color.DarkRed;
                     lblSensorLastUpdated.Text = dobj.AdditionalInformation;
-                } else
+                }
+                else
                 {
                     lblSensorLastUpdated.Text = "Warte auf Daten";
                 }
@@ -194,6 +221,7 @@ namespace Arduino_Temperature_Retrofit
                 lblMaxValue.Text = dObjExt.Items[dobjcat.Value].MaxValue.ToString("#.#0") + unit;
                 lblMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MinTimepoint);
                 lblMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MaxTimepoint);
+                lblValue.Parent.Enabled = true;
             }
             else
             {
@@ -202,6 +230,7 @@ namespace Arduino_Temperature_Retrofit
                 lblMaxValue.Text = " --- ";
                 lblMinTime.Text = " --- ";
                 lblMaxTime.Text = " --- ";
+                lblValue.Parent.Enabled = false;
             }
         }
 
