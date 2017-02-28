@@ -34,9 +34,9 @@
 #define LEDrot 46 // Farbe rot an Pin 5
 #define LEDgruen 45 // Farbe gruen an Pin 6
 #define delayRGB 500 // p ist eine Pause mit 1000ms also 1 Sekunde
-#define brightness1a 125 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
-#define brightness1b 125 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
-#define brightness1c 125 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
+#define brightness1a 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
+#define brightness1b 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
+#define brightness1c 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
 #define dunkel 0 // Zahlenwert 0 bedeutet Spannung 0V – also LED aus.
 
 //cycle will be increased in the loop(), if cycle == CYCLE_UPDATE_TFT --> update TFT and reset cycle to 0
@@ -51,6 +51,49 @@ DHT dht(DHTPIN, DHTTYPE);
 SFE_BMP180 pressure;
 volatile bool ledTestRun = false;
 volatile bool UPDATE_TFT_DATA = false;
+
+#define MAXARRAY 5
+float tempArray [MAXARRAY] = {0};
+int lenTempArray = 0;
+
+float calculateTrendY(float y [], int len)
+{
+    float sumMultXY = 0;
+    float sumX = 0;
+    float sumY = 0;
+    float resBOne = 0;
+    float resBTwo = 0;
+
+    for(size_t i=0; i<len; i++)
+    {
+       sumMultXY += i * y[i];
+       sumX += i;
+       sumY += y[i];
+       resBOne += i * i;
+    }
+
+    resBOne *= len;
+    resBTwo = sumX * sumX;
+    float oben = (len * sumMultXY) - (sumX * sumY);
+    float unten = resBOne - resBTwo;
+
+    return (oben / unten);
+}
+
+void addValueToArray(float value)
+{
+  if (lenTempArray >= MAXARRAY)
+  {
+    for ( int i = 0; i<MAXARRAY-1; i++)
+    {
+        tempArray[i] = tempArray[i+1];
+    }
+    tempArray [MAXARRAY-1] = value;
+  } else
+  {
+      tempArray [lenTempArray++] = value;
+  }
+}
 
 void initSerial(void)
 {
@@ -174,7 +217,7 @@ void showError(void)
 
 void writeSerialProtocolV1(float humanity, float temperature, float heatIndex)
 {
-  analogWrite(LEDgruen, brightness1c);
+  digitalWrite(LEDgruen, HIGH);
   Serial.print("START");
   Serial.print("|"); // delim
   Serial.print(humanity); // Luftfeuchte
@@ -186,12 +229,12 @@ void writeSerialProtocolV1(float humanity, float temperature, float heatIndex)
   Serial.println("EOF");
   Serial.flush();
   delay(SERIALWAIT);
-  analogWrite(LEDgruen, dunkel); 
+  digitalWrite(LEDgruen, LOW);  
 }
 
 void writeSerialProtocolV2(float humanity, float temperature, float heatIndex, double airPressure)
 {
-  analogWrite(LEDgruen, brightness1c);
+  digitalWrite(LEDgruen, HIGH);
   Serial.print("START");
   Serial.print("|"); // delim
   Serial.print("LEN:4"); //4 Werte werden uebertragen
@@ -207,12 +250,12 @@ void writeSerialProtocolV2(float humanity, float temperature, float heatIndex, d
   Serial.println("EOF");
   Serial.flush();
   delay(SERIALWAIT);
-  analogWrite(LEDgruen, dunkel);
+  digitalWrite(LEDgruen, LOW);
 }
 
 void writeSerialProtocolV3(float humanity, float temperature, float heatIndex, double airPressure, int lux)
 {
-  analogWrite(LEDgruen, brightness1c);
+  digitalWrite(LEDgruen, HIGH);
   Serial.print("START");
   Serial.print("|"); // delim
   Serial.print("LEN:5"); //5 Werte werden uebertragen
@@ -230,7 +273,7 @@ void writeSerialProtocolV3(float humanity, float temperature, float heatIndex, d
   Serial.println("EOF");
   Serial.flush();
   delay(SERIALWAIT);
-  analogWrite(LEDgruen, dunkel);
+  digitalWrite(LEDgruen, LOW);
 }
 
 bool getPressure(double * value)
@@ -282,14 +325,19 @@ void processData()
   {
     showError();
     errorOccured = true;
+    digitalWrite(LEDrot, HIGH);
     if (Serial)
     {
       Serial.println("Fehler: Daten konnten gelesen werden!");
       Serial.flush();
     }
+    
+    
   } 
   else
-  {
+  {    
+    addValueToArray((float)12.5);
+    digitalWrite(LEDrot, LOW);
     //update TFT only the CYCLE_UPDATE_TFT times when a processData is called
     //to avoid each time update of the TFT
     //or if an error occured, update the TFT the next OK time
@@ -324,12 +372,20 @@ void printIPInfoOnTFT(void)
   tft.println("127.0.0.1");
   tft.println("Signal Staerke:");
   tft.println("-71 dBm");
-  
-  tft.println("Ser. Schnittstelle:");
+
+  tft.println("Temp. Trend:");
+  tft.println(calculateTrendY(tempArray, lenTempArray));
+  tft.println("Schnittstelle (Serial):");
   if (Serial)
-    tft.println(" verfuegbar:"); 
+    tft.println(" verfuegbar"); 
   else
-    tft.println(" NICHT verfuegbar:");
+    tft.println(" NICHT verfuegbar");
+
+  tft.println("Schnittstelle (Serial1):");
+  if (Serial1)
+    tft.println(" verfuegbar"); 
+  else
+    tft.println(" NICHT verfuegbar");
 }
 
 void ledTest(void)
@@ -347,5 +403,8 @@ void ledTest(void)
 
 void interruptCall(void)
 {
+  printIPInfoOnTFT();
   UPDATE_TFT_DATA = true;
 }
+
+
