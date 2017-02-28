@@ -15,6 +15,8 @@ namespace Arduino_Temperature_Retrofit
     {
 
         Dictionary<string, DataObject> dataObjs = new Dictionary<string, DataObject>();
+        Timer tmrCheckConnStatus = new Timer();
+
 
         public frmMain()
         {
@@ -36,8 +38,11 @@ namespace Arduino_Temperature_Retrofit
                 dobj.DataBits = Common.COMSettings.DefaultDataBits;
                 dobj.DtrEnable = Common.COMSettings.DefaultDtrEnable;
                 dobj.StopBits = Common.COMSettings.DefaultStopBits;
-                dobj.DataReceived += Dobj_DataReceived;
-                dobj.Open();
+                if (dobj.Active)
+                {
+                    dobj.DataReceived += Dobj_DataReceived;
+                    dobj.Open();
+                }
                 dataObjs.Add(dobj.Name, dobj);
             }
         }
@@ -91,7 +96,7 @@ namespace Arduino_Temperature_Retrofit
             processIncomingDataSet(ref dobj, name);
         }
 
-        private void writeCommandToArduino(ref DataObject dobj, string command)
+        private void writeCommandToArduino(DataObject dobj, string command)
         {
             //Has to be implemented together with ARDUINO and the C# method parseArduinoReply
             if (dobj.IsOpen)
@@ -103,7 +108,7 @@ namespace Arduino_Temperature_Retrofit
         private void parseArduinoReply(DataObject dobj, string message)
         {
             //TODO
-            Console.WriteLine(message);
+            MessageBox.Show("Received REPLY message from Arduino: " + message);
         }
 
         private void processIncomingDataSet(ref DataObject dobj, string name)
@@ -250,12 +255,60 @@ namespace Arduino_Temperature_Retrofit
                 return Color.Red;
         }
 
+        private void connectionCheck(bool enabled)
+        {
+            if (!enabled)
+            {
+                tmrCheckConnStatus.Enabled = false;
+                return;
+            }
+            tmrCheckConnStatus.Interval = 2000;
+            tmrCheckConnStatus.Enabled = true;
+            tmrCheckConnStatus.Tick -= TmrCheckConnStatus_Tick;
+            tmrCheckConnStatus.Tick += TmrCheckConnStatus_Tick;
+            tmrCheckConnStatus.Start();
+        }
+
+        private void TmrCheckConnStatus_Tick(object sender, EventArgs e)
+        {
+            DataObject dobj = getAcutalDataObject();
+            int maxConnectionRetries = 10;
+
+            if (dobj == null)
+                return;
+
+            if (dobj.Active && !dobj.IsOpen)
+            {
+                lblSensorLastUpdated.ForeColor = Color.DarkRed;
+
+                if (dobj.ConnectionRetries >= maxConnectionRetries)
+                {
+                    lblSensorLastUpdated.Text = "Fehler: Keine Verbindung nach 10 Versuchen!";
+                    return;
+                }
+
+                lblSensorLastUpdated.Text = "Fehler: Keine Verbindung, Verbindungsversuch ...";
+                dobj.increaseConnectionRetry();
+
+                try
+                {
+                    dobj.Open();
+                }
+                catch (Exception ex)
+                {
+                    lblSensorLastUpdated.Text = "Verbindungsfehler: " + ex.Message;
+                }
+
+            }
+        }
+
         private void frmMain_Load(object sender, EventArgs e)
         {
             try
             {
                 LoadDataObjects();
                 UpdateSensorCbo();
+                connectionCheck(true);
             }
             catch (Exception ex)
             {
@@ -281,6 +334,10 @@ namespace Arduino_Temperature_Retrofit
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
+
+            tmrCheckConnStatus.Stop();
+            tmrCheckConnStatus.Dispose();
+
             foreach (KeyValuePair<string, DataObject> kvp in dataObjs)
             {
                 DataObject dobj = (DataObject)kvp.Value;
@@ -408,6 +465,16 @@ namespace Arduino_Temperature_Retrofit
 
             Options = fOpt.OptionProp;
             this.TopMost = Options.propTopMost;
+        }
+
+        private void blauAnToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeCommandToArduino(getAcutalDataObject(), "LED");
+        }
+
+        private void blauStatusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeCommandToArduino(getAcutalDataObject(), "STATUSLED");
         }
     }
 }

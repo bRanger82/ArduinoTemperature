@@ -94,6 +94,9 @@
             this.tsmOptions = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.tsmEnd = new System.Windows.Forms.ToolStripMenuItem();
+            this.kommandosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.blauAnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.blauStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpBoxSensorOne.SuspendLayout();
             this.grpBoxHeatIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).BeginInit();
@@ -712,7 +715,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.menüToolStripMenuItem});
+            this.menüToolStripMenuItem,
+            this.kommandosToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(489, 24);
@@ -747,6 +751,29 @@
             this.tsmEnd.Size = new System.Drawing.Size(152, 22);
             this.tsmEnd.Text = "Beenden";
             this.tsmEnd.Click += new System.EventHandler(this.tsmEnd_Click);
+            // 
+            // kommandosToolStripMenuItem
+            // 
+            this.kommandosToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.blauAnToolStripMenuItem,
+            this.blauStatusToolStripMenuItem});
+            this.kommandosToolStripMenuItem.Name = "kommandosToolStripMenuItem";
+            this.kommandosToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
+            this.kommandosToolStripMenuItem.Text = "Kommandos";
+            // 
+            // blauAnToolStripMenuItem
+            // 
+            this.blauAnToolStripMenuItem.Name = "blauAnToolStripMenuItem";
+            this.blauAnToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.blauAnToolStripMenuItem.Text = "Blau ändern";
+            this.blauAnToolStripMenuItem.Click += new System.EventHandler(this.blauAnToolStripMenuItem_Click);
+            // 
+            // blauStatusToolStripMenuItem
+            // 
+            this.blauStatusToolStripMenuItem.Name = "blauStatusToolStripMenuItem";
+            this.blauStatusToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.blauStatusToolStripMenuItem.Text = "Blau Status";
+            this.blauStatusToolStripMenuItem.Click += new System.EventHandler(this.blauStatusToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -854,6 +881,9 @@
         private System.Windows.Forms.ToolStripMenuItem tsmOptions;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem tsmEnd;
+        private System.Windows.Forms.ToolStripMenuItem kommandosToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem blauAnToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem blauStatusToolStripMenuItem;
     }
 }
 

@@ -212,6 +212,14 @@ namespace Arduino_Temperature_Retrofit
         public string AdditionalInformation { get; set; }
         public DateTime LastUpdated { get; set; }
 
+        private int _connectionRetries = 0;
+        public int ConnectionRetries { get { return _connectionRetries; } }
+
+        public void increaseConnectionRetry()
+        {
+            _connectionRetries++;
+        }
+
         private bool _firstData = false;
         public bool FirstData { get { return _firstData; } set { _firstData = value; } }
 
