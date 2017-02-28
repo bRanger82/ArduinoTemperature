@@ -8,3 +8,4 @@ C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Te
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.pdb
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\bin\Debug\Settings.xml
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csprojResolveAssemblyReference.cache
+C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino_Temperature_Retrofit.frmOptions.resources

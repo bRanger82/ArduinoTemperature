@@ -8,6 +8,7 @@
 		  <Port>COM8</Port>
 		  <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
       <NumLogItems>620</NumLogItems>
+      <maxLogFileSize>4194304</maxLogFileSize>
 		</Sensor>
 		<Sensor>
 		  <Aktiv>Y</Aktiv>
@@ -15,6 +16,7 @@
 		  <Port>COM3</Port>
 		  <LogFile>C:\Temp\Temperatur\Bottom.log</LogFile>
       <NumLogItems>640</NumLogItems>
+      <maxLogFileSize>4194304</maxLogFileSize>
 		</Sensor>
 	</Sensoren>
 	<HTML>

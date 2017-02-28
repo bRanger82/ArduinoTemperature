@@ -23,7 +23,7 @@ namespace Arduino_Temperature_Retrofit
 
         private void LoadDataObjects()
         {
-            List<XMLSensorObject> xmlSensors = clsXML.test();
+            List<XMLSensorObject> xmlSensors = clsXML.getSensorItemsFromXML();
             foreach (XMLSensorObject xmlSensor in xmlSensors)
             {
                 DataObject dobj = new DataObject();
@@ -384,6 +384,30 @@ namespace Arduino_Temperature_Retrofit
         {
             updateChart(getAcutalDataObject());
         }
-        
+
+        private void tsmEnd_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void tsmOptions_Click(object sender, EventArgs e)
+        {
+            optionProperties Options = new optionProperties();
+            Options.propTopMost = this.TopMost;
+
+            frmOptions fOpt = new frmOptions(Options);
+
+            fOpt.Top = (this.Top + (this.Height / 2)) - (fOpt.Height / 2);
+            fOpt.Left = (this.Left + (this.Width / 2)) - (fOpt.Width / 2);
+
+            fOpt.Show(this);
+
+            //exit if canceled
+            if (fOpt.Cancel == true)
+                return;
+
+            Options = fOpt.OptionProp;
+            this.TopMost = Options.propTopMost;
+        }
     }
 }

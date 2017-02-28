@@ -12,6 +12,7 @@ namespace Arduino_Temperature_Retrofit
         public string Port { get; set; }
         public string LogFilePath { get; set; }
         public int numLogEntries { get; set; }
+        public long maxLogFileSize { get; set; }
     }
 
     public static class clsXML
@@ -28,11 +29,46 @@ namespace Arduino_Temperature_Retrofit
                 return string.Empty;
         }
 
-        public static List<XMLSensorObject> test()
+        public static string Title { get { return getValue("/root/titel"); } }
+        public static string getHtmlFile { get { return getValue("/root/HTML/FileHTML"); } }
+        public static string getHtmlHeadText { get { return getValue("/root/HTML/HTMLHEAD"); } }
+
+        public static bool getHtmlEnabled { get { return (getValue("/root/ProgrammEinstellungen/WriteHTML").ToUpper() == "Y"); } }
+
+        public static bool getTopMost { get { return (getValue("/root/ProgrammEinstellungen/Topmost").ToUpper() == "Y"); } }
+
+        private static string getValue(string nodePath)
+        {
+            try
+            {
+                loadXML();
+
+                XmlNode t = xDoc.SelectSingleNode(nodePath);
+                if (t == null)
+                    return String.Empty;
+                else
+                    return t.InnerText.ToString();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return String.Empty;
+            }
+        }
+
+        private static bool loadXML()
+        {
+
+            xDoc.Load(XmlFileName);
+
+            return true;
+        }
+
+        public static List<XMLSensorObject> getSensorItemsFromXML()
         {
             List<XMLSensorObject> lst = new List<XMLSensorObject>();
 
-            xDoc.Load(XmlFileName);
+            loadXML();
 
             foreach (XmlNode xmln in xDoc.SelectNodes("/root/Sensoren"))
             {
@@ -57,6 +93,22 @@ namespace Arduino_Temperature_Retrofit
                     {
                         MessageBox.Show("XML Fehler: Die Anzahl der Num Einträge kann nicht verarbeitet werden!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
+
+                    tmpSensor.numLogEntries = DataObject.LogMinEntries; //default
+
+                    long maxLogFileSize = 4194304;
+                    if (long.TryParse(getInnerText(child, "maxLogFileSize"), out maxLogFileSize))
+                    {
+                        if (maxLogFileSize >= 1048576 && maxLogFileSize <= 1073741824)
+                            tmpSensor.maxLogFileSize = maxLogFileSize;
+                        else
+                            MessageBox.Show("XML Fehler: Die maximale Größe des Logfiles muss zwischen 1.048.576 und 1.073.741.824 liegen!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        MessageBox.Show("XML Fehler: Die maximale Größe des Logfiles kann nicht verarbeitet werden!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    tmpSensor.maxLogFileSize = maxLogFileSize;
 
                     tmpSensor.Name = getInnerText(child, "Bezeichnung");
                     tmpSensor.Port = getInnerText(child, "Port");

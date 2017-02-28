@@ -89,6 +89,11 @@
             this.lblSensorTempValue = new System.Windows.Forms.Label();
             this.picColTemp = new System.Windows.Forms.PictureBox();
             this.chartValues = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.menüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmOptions = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsmEnd = new System.Windows.Forms.ToolStripMenuItem();
             this.grpBoxSensorOne.SuspendLayout();
             this.grpBoxHeatIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).BeginInit();
@@ -101,13 +106,14 @@
             this.grpBoxTemperature.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picColTemp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartValues)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblChartSelection
             // 
             this.lblChartSelection.AutoSize = true;
             this.lblChartSelection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblChartSelection.Location = new System.Drawing.Point(221, 473);
+            this.lblChartSelection.Location = new System.Drawing.Point(221, 484);
             this.lblChartSelection.Name = "lblChartSelection";
             this.lblChartSelection.Size = new System.Drawing.Size(109, 16);
             this.lblChartSelection.TabIndex = 35;
@@ -118,7 +124,7 @@
             this.cboChartSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboChartSelection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboChartSelection.FormattingEnabled = true;
-            this.cboChartSelection.Location = new System.Drawing.Point(336, 470);
+            this.cboChartSelection.Location = new System.Drawing.Point(336, 481);
             this.cboChartSelection.Name = "cboChartSelection";
             this.cboChartSelection.Size = new System.Drawing.Size(136, 24);
             this.cboChartSelection.TabIndex = 34;
@@ -134,7 +140,7 @@
             this.grpBoxSensorOne.Controls.Add(this.grpBoxAirPressure);
             this.grpBoxSensorOne.Controls.Add(this.grpBoxHumidity);
             this.grpBoxSensorOne.Controls.Add(this.grpBoxTemperature);
-            this.grpBoxSensorOne.Location = new System.Drawing.Point(12, 12);
+            this.grpBoxSensorOne.Location = new System.Drawing.Point(12, 25);
             this.grpBoxSensorOne.Name = "grpBoxSensorOne";
             this.grpBoxSensorOne.Size = new System.Drawing.Size(463, 447);
             this.grpBoxSensorOne.TabIndex = 33;
@@ -686,7 +692,7 @@
             chartArea1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
             chartArea1.Name = "ChartArea1";
             this.chartValues.ChartAreas.Add(chartArea1);
-            this.chartValues.Location = new System.Drawing.Point(12, 500);
+            this.chartValues.Location = new System.Drawing.Point(12, 511);
             this.chartValues.Name = "chartValues";
             this.chartValues.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
             series1.ChartArea = "ChartArea1";
@@ -703,15 +709,55 @@
             this.chartValues.TabIndex = 36;
             this.chartValues.Text = "chart1";
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menüToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(489, 24);
+            this.menuStrip1.TabIndex = 37;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // menüToolStripMenuItem
+            // 
+            this.menüToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmOptions,
+            this.toolStripMenuItem1,
+            this.tsmEnd});
+            this.menüToolStripMenuItem.Name = "menüToolStripMenuItem";
+            this.menüToolStripMenuItem.Size = new System.Drawing.Size(50, 20);
+            this.menüToolStripMenuItem.Text = "Menü";
+            // 
+            // tsmOptions
+            // 
+            this.tsmOptions.Name = "tsmOptions";
+            this.tsmOptions.Size = new System.Drawing.Size(152, 22);
+            this.tsmOptions.Text = "Optionen";
+            this.tsmOptions.Click += new System.EventHandler(this.tsmOptions_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            // 
+            // tsmEnd
+            // 
+            this.tsmEnd.Name = "tsmEnd";
+            this.tsmEnd.Size = new System.Drawing.Size(152, 22);
+            this.tsmEnd.Text = "Beenden";
+            this.tsmEnd.Click += new System.EventHandler(this.tsmEnd_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(490, 661);
+            this.ClientSize = new System.Drawing.Size(489, 671);
             this.Controls.Add(this.chartValues);
             this.Controls.Add(this.lblChartSelection);
             this.Controls.Add(this.cboChartSelection);
             this.Controls.Add(this.grpBoxSensorOne);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
@@ -737,6 +783,8 @@
             this.grpBoxTemperature.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picColTemp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartValues)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -801,6 +849,11 @@
         private System.Windows.Forms.Label lblSensorTempValue;
         private System.Windows.Forms.PictureBox picColTemp;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartValues;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem menüToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmOptions;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem tsmEnd;
     }
 }
 
