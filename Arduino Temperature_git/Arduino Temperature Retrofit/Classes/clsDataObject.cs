@@ -57,6 +57,17 @@ namespace Arduino_Temperature_Retrofit
 
         public static List<string> Items = new List<string>(new string[] { "Temperature", "HeatIndex", "Humidity", "AirPressure", "LUX" });
 
+        public static List <string> getCapableItems(DataObjectProtocol dobj)
+        {
+            List<string> ret = new List<string>();
+            foreach(string s in Items)
+            {
+                if (DataObjectCapabilities.HasCapability(s, dobj))
+                    ret.Add(s);
+            }
+            return ret;
+        }
+
         public static DataObjectCategory getObjectCategory(itemList item)
         {
             return new DataObjectCategory(Items[(int)item]);
@@ -119,6 +130,35 @@ namespace Arduino_Temperature_Retrofit
             return (dop == DataObjectProtocol.PROTOCOL_THREE);
         }
 
+        public static bool HasCapability(string dobjCat, DataObjectProtocol dop)
+        {
+
+            if (dobjCat == DataObjectCategory.AirPressure.Value)
+            {
+                return HasAirPressure(dop);
+            }
+            else if (dobjCat == DataObjectCategory.HeatIndex.Value)
+            {
+                return HasHeatIndex(dop);
+            }
+            else if (dobjCat == DataObjectCategory.Humidity.Value)
+            {
+                return HasHumidity(dop);
+            }
+            else if (dobjCat == DataObjectCategory.LUX.Value)
+            {
+                return HasLUX(dop);
+            }
+            else if (dobjCat == DataObjectCategory.Temperature.Value)
+            {
+                return HasTemperature(dop);
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public static bool HasCapability(DataObjectCategory dobjCat, DataObjectProtocol dop)
         {
 
@@ -171,6 +211,9 @@ namespace Arduino_Temperature_Retrofit
         public DataObjectProtocol Protocol { get; set; }
         public string AdditionalInformation { get; set; }
         public DateTime LastUpdated { get; set; }
+
+        private bool _firstData = false;
+        public bool FirstData { get { return _firstData; } set { _firstData = value; } }
 
         private string _statusText = string.Empty;
         public string StatusText { get { return _statusText; } set { _statusText = value; } }

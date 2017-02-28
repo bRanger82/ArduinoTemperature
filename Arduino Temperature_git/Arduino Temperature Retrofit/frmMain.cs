@@ -31,6 +31,7 @@ namespace Arduino_Temperature_Retrofit
                 dobj.Name = xmlSensor.Name;
                 dobj.Active = xmlSensor.Active;
                 dobj.PortName = xmlSensor.Port;
+                dobj.MaxLogItemsCount = xmlSensor.numLogEntries;
                 dobj.BaudRate = Common.COMSettings.DefaultBaudRate;
                 dobj.DataBits = Common.COMSettings.DefaultDataBits;
                 dobj.DtrEnable = Common.COMSettings.DefaultDtrEnable;
@@ -84,10 +85,28 @@ namespace Arduino_Temperature_Retrofit
                 dobj.AdditionalInformation = information;
             }
 
-            if (name == this.cboSensors.GetItemText(this.cboSensors.SelectedItem))
+            if (dobj.Protocol != DataObjectProtocol.NONE)
             {
-                showData(dobj);
-                updateChart(dobj);
+                if (name == this.cboSensors.GetItemText(this.cboSensors.SelectedItem) && dobj.FirstData)
+                {
+                    if (dobj.FirstData && cboChartSelection.Items.Count == 0)
+                        addChartPossibilities();
+
+                    showData(dobj);
+                    updateChart(dobj);
+                    lblSensorLastUpdated.ForeColor = SystemColors.ControlText;
+                    lblSensorLastUpdated.Text = "Zuletzt aktualisiert: " + Common.getCurrentDateTimeFormatted();
+                }
+            } else
+            {
+                if (dobj.FirstData)
+                {
+                    lblSensorLastUpdated.ForeColor = Color.DarkRed;
+                    lblSensorLastUpdated.Text = dobj.AdditionalInformation;
+                } else
+                {
+                    lblSensorLastUpdated.Text = "Warte auf Daten";
+                }
             }
         }
 
@@ -100,6 +119,7 @@ namespace Arduino_Temperature_Retrofit
             dobj.DataAvailable = true;
             dobj.AdditionalInformation = "-";
             dobj.Protocol = DataObjectProtocol.PROTOCOL_ONE;
+            dobj.FirstData = true;
         }
 
         private void processDataProtocolV2(string[] data, ref DataObject dobj)
@@ -112,6 +132,7 @@ namespace Arduino_Temperature_Retrofit
             dobj.DataAvailable = true;
             dobj.AdditionalInformation = "-";
             dobj.Protocol = DataObjectProtocol.PROTOCOL_TWO;
+            dobj.FirstData = true;
         }
 
         private void processDataProtocolV3(string[] data, ref DataObject dobj)
@@ -126,6 +147,7 @@ namespace Arduino_Temperature_Retrofit
             dobj.DataAvailable = true;
             dobj.AdditionalInformation = "-";
             dobj.Protocol = DataObjectProtocol.PROTOCOL_THREE;
+            dobj.FirstData = true;
         }
 
         private void showData(DataObject dobj)
@@ -243,16 +265,31 @@ namespace Arduino_Temperature_Retrofit
 
         private void cboSensors_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string name = this.cboSensors.GetItemText(this.cboSensors.SelectedItem);
             addChartPossibilities();
-            showData(dataObjs[name]);
+            showData(getAcutalDataObject());
+        }
+
+        private DataObject getAcutalDataObject()
+        {
+            return dataObjs[this.cboSensors.GetItemText(this.cboSensors.SelectedItem)];
         }
 
         private void addChartPossibilities()
         {
-            cboChartSelection.Items.AddRange(DataObjectCategory.Items.ToArray());
+            this.cboChartSelection.SelectedIndexChanged -= cboChartSelection_SelectedIndexChanged;
+
+            List<string> capabaleItems = DataObjectCategory.getCapableItems(getAcutalDataObject().Protocol);
+
+            cboChartSelection.Items.Clear();
+            cboChartSelection.Items.AddRange(capabaleItems.ToArray());
+
             if (cboChartSelection.Items.Count > 0)
                 cboChartSelection.SelectedIndex = 0;
+
+            this.cboChartSelection.SelectedIndexChanged += cboChartSelection_SelectedIndexChanged;
+
+            cboChartSelection_SelectedIndexChanged(this, EventArgs.Empty);
+
         }
 
         private void addChartSerie(List<double> values, string name, Color color, double min = double.MinValue, double max = double.MaxValue)
@@ -280,14 +317,13 @@ namespace Arduino_Temperature_Retrofit
 
             if (DataObjectCapabilities.HasCapability(dbo, dObjExt.Protocol))
             {
-                double min = dObjExt.getLogItemMinValue(dbo);
-                double max = dObjExt.getLogItemMaxValue(dbo);
+                double min = dObjExt.getLogItemMinValue(dbo) - 5;
+                double max = dObjExt.getLogItemMaxValue(dbo) + 5;
+                
 
-                if ((max - min) < 10)
-                {
-                    min -= 5;
-                    max += 5;
-                }
+                //Set minimum Value to 0 evept for Temperature values (HeatIndex and Temperature -> it can be colder than 0 degrees ;) )
+                if (min < 0 && !(dbo.Value == DataObjectCategory.HeatIndex.Value || dbo.Value == DataObjectCategory.Temperature.Value))
+                    min = 0;
 
                 Console.WriteLine("Min " + min.ToString() + " - Max: " + max.ToString());
                 addChartSerie(dObjExt.getLogItems(dbo), dbo.Value.ToString(), lineColor, min, max);
@@ -317,8 +353,8 @@ namespace Arduino_Temperature_Retrofit
 
         private void cboChartSelection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string name = this.cboSensors.GetItemText(this.cboSensors.SelectedItem);
-            updateChart(dataObjs[name]);
+            updateChart(getAcutalDataObject());
         }
+        
     }
 }

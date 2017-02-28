@@ -11,6 +11,7 @@ namespace Arduino_Temperature_Retrofit
         public string Name { get; set; }
         public string Port { get; set; }
         public string LogFilePath { get; set; }
+        public int numLogEntries { get; set; }
     }
 
     public static class clsXML
@@ -44,6 +45,19 @@ namespace Arduino_Temperature_Retrofit
                     else
                         tmpSensor.Active = false;
 
+                    tmpSensor.numLogEntries = DataObject.LogMinEntries; //default
+                    int numEntries;
+                    if (int.TryParse(getInnerText(child, "NumLogItems"), out numEntries))
+                    {
+                        if (numEntries >= DataObject.LogMinEntries && numEntries <= DataObject.LogMaxEntries)
+                            tmpSensor.numLogEntries = numEntries;
+                        else
+                            MessageBox.Show("XML Fehler: Die Anzahl der Num Einträge muss zwischen " + DataObject.LogMinEntries.ToString() + " und " + DataObject.LogMaxEntries.ToString() + " liegen!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    } else
+                    {
+                        MessageBox.Show("XML Fehler: Die Anzahl der Num Einträge kann nicht verarbeitet werden!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
                     tmpSensor.Name = getInnerText(child, "Bezeichnung");
                     tmpSensor.Port = getInnerText(child, "Port");
                     tmpSensor.LogFilePath = getInnerText(child, "LogFile");
@@ -51,10 +65,11 @@ namespace Arduino_Temperature_Retrofit
                     lst.Add(tmpSensor);
 
                     Console.WriteLine("************************************************************");
-                    Console.WriteLine("tmpSensor.Active      == {0}", (tmpSensor.Active) ? "Y" : "N");
-                    Console.WriteLine("tmpSensor.Name        == {0}", tmpSensor.Name);
-                    Console.WriteLine("tmpSensor.Port        == {0}", tmpSensor.Port);
-                    Console.WriteLine("tmpSensor.LogFilePath == {0}", tmpSensor.LogFilePath);
+                    Console.WriteLine("tmpSensor.Active        == {0}", (tmpSensor.Active) ? "Y" : "N");
+                    Console.WriteLine("tmpSensor.Name          == {0}", tmpSensor.Name);
+                    Console.WriteLine("tmpSensor.Port          == {0}", tmpSensor.Port);
+                    Console.WriteLine("tmpSensor.LogFilePath   == {0}", tmpSensor.LogFilePath);
+                    Console.WriteLine("tmpSensor.numLogEntries == {0}", tmpSensor.numLogEntries.ToString());
                     Console.WriteLine("************************************************************");
                 }
             }

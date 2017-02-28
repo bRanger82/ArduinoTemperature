@@ -28,9 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.lblChartSelection = new System.Windows.Forms.Label();
             this.cboChartSelection = new System.Windows.Forms.ComboBox();
             this.grpBoxSensorOne = new System.Windows.Forms.GroupBox();
@@ -254,12 +255,12 @@
             // lblSensorLastUpdated
             // 
             this.lblSensorLastUpdated.AutoSize = true;
-            this.lblSensorLastUpdated.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSensorLastUpdated.Location = new System.Drawing.Point(3, 415);
+            this.lblSensorLastUpdated.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblSensorLastUpdated.Location = new System.Drawing.Point(3, 421);
             this.lblSensorLastUpdated.Name = "lblSensorLastUpdated";
-            this.lblSensorLastUpdated.Size = new System.Drawing.Size(261, 15);
+            this.lblSensorLastUpdated.Size = new System.Drawing.Size(204, 16);
             this.lblSensorLastUpdated.TabIndex = 34;
-            this.lblSensorLastUpdated.Text = "Zuletzt aktualisiert: xx.mm.yyyy hh:mi:ss";
+            this.lblSensorLastUpdated.Text = "Bitte warten, initialisierung ...";
             // 
             // lblSensor
             // 
@@ -677,22 +678,22 @@
             // 
             // chartValues
             // 
-            chartArea3.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            chartArea3.Name = "ChartArea1";
-            this.chartValues.ChartAreas.Add(chartArea3);
+            chartArea4.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea4.Name = "ChartArea1";
+            this.chartValues.ChartAreas.Add(chartArea4);
             this.chartValues.Location = new System.Drawing.Point(12, 500);
             this.chartValues.Name = "chartValues";
             this.chartValues.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series5.ChartArea = "ChartArea1";
-            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series5.IsVisibleInLegend = false;
-            series5.Name = "Temperature";
-            series6.ChartArea = "ChartArea1";
-            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series6.IsVisibleInLegend = false;
-            series6.Name = "HeatIndex";
-            this.chartValues.Series.Add(series5);
-            this.chartValues.Series.Add(series6);
+            series7.ChartArea = "ChartArea1";
+            series7.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series7.IsVisibleInLegend = false;
+            series7.Name = "Temperature";
+            series8.ChartArea = "ChartArea1";
+            series8.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series8.IsVisibleInLegend = false;
+            series8.Name = "HeatIndex";
+            this.chartValues.Series.Add(series7);
+            this.chartValues.Series.Add(series8);
             this.chartValues.Size = new System.Drawing.Size(460, 147);
             this.chartValues.TabIndex = 36;
             this.chartValues.Text = "chart1";
@@ -707,6 +708,7 @@
             this.Controls.Add(this.cboChartSelection);
             this.Controls.Add(this.grpBoxSensorOne);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "frmMain";
             this.Text = "Arduino Temperature";

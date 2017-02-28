@@ -1,7 +1,6 @@
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\bin\Debug\Arduino Temperature Retrofit.exe.config
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\bin\Debug\Arduino Temperature Retrofit.exe
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\bin\Debug\Arduino Temperature Retrofit.pdb
-C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csprojResolveAssemblyReference.cache
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino_Temperature_Retrofit.frmMain.resources
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino_Temperature_Retrofit.Properties.Resources.resources
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csproj.GenerateResource.Cache
