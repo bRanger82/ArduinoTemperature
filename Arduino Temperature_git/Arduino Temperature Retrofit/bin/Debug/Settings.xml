@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<root>
+	<titel>Arduino Temperatur Anzeige</titel>
+	<Sensoren>
+		<Sensor>
+		  <Aktiv>Y</Aktiv>
+		  <Bezeichnung>Tisch</Bezeichnung>
+		  <Port>COM8</Port>
+		  <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
+		</Sensor>
+		<Sensor>
+		  <Aktiv>Y</Aktiv>
+		  <Bezeichnung>Boden</Bezeichnung>
+		  <Port>COM3</Port>
+		  <LogFile>C:\Temp\Temperatur\Bottom.log</LogFile>
+		</Sensor>
+	</Sensoren>
+	<HTML>
+		<FileHTML>C:\inetpub\wwwroot\temp.html</FileHTML>
+		<HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
+	</HTML>
+	<ProgrammEinstellungen>
+		<maxTimeDifferenceReadData>60</maxTimeDifferenceReadData>
+		<Topmost>Y</Topmost>
+		<WriteHTML>N</WriteHTML>
+		<NumLogItems>400</NumLogItems>
+	</ProgrammEinstellungen>
+	<LOGFiles>
+		<maxLogFileSize>4194304</maxLogFileSize>
+	</LOGFiles>
+</root>

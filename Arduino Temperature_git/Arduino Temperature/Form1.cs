@@ -609,7 +609,6 @@ namespace Arduino_Temperature
                 tempDataTisch = tempDataTisch.Replace(".br.", "</br>");
                 writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathTisch);
                 addDataset(dataSource.Tisch, dObjTisch);
-                cboChange();
                 updateChart(dObjTisch);
             } else if (comPort == strPortBoden)
             {
@@ -620,7 +619,7 @@ namespace Arduino_Temperature
                 tempDataBoden = tempDataBoden.Replace(".br.", "</br>");
                 writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathBoden);
                 addDataset(dataSource.Boden, dObjBoden);
-                cboChange();
+                updateChart(dObjBoden);
             }
 
             
@@ -834,11 +833,63 @@ namespace Arduino_Temperature
 
         private void checkCabability(DataObjectExt dobjExt)
         {
-            grpBoxAirPressure.Enabled = DataObjectCapabilities.HasAirPressure(dobjExt.Protocol);
-            grpBoxHeatIndex.Enabled = DataObjectCapabilities.HasHeatIndex(dobjExt.Protocol);
-            grpBoxHumidity.Enabled = DataObjectCapabilities.HasHumidity(dobjExt.Protocol);
-            grpBoxLUX.Enabled = DataObjectCapabilities.HasLUX(dobjExt.Protocol);
-            grpBoxTemperature.Enabled = DataObjectCapabilities.HasTemperature(dobjExt.Protocol);
+            cboChartSelection.Items.Clear();
+
+
+            if (DataObjectCapabilities.HasTemperature(dobjExt.Protocol))
+            {
+                grpBoxTemperature.Enabled = true;
+                cboChartSelection.Items.Add(DataObjectCategory.Temperature.Value);
+            }
+            else
+            {
+                grpBoxTemperature.Enabled = false;
+            }
+
+            if (DataObjectCapabilities.HasAirPressure(dobjExt.Protocol))
+            {
+                grpBoxAirPressure.Enabled = true;
+                cboChartSelection.Items.Add(DataObjectCategory.AirPressure.Value);
+            }
+            else
+            {
+                grpBoxAirPressure.Enabled = false;
+            }
+
+            if (DataObjectCapabilities.HasHeatIndex(dobjExt.Protocol))
+            {
+                grpBoxHeatIndex.Enabled = true;
+                cboChartSelection.Items.Add(DataObjectCategory.HeatIndex.Value);
+            }
+            else
+            {
+                grpBoxHeatIndex.Enabled = false;
+            }
+
+            if (DataObjectCapabilities.HasHumidity(dobjExt.Protocol))
+            {
+                grpBoxHumidity.Enabled = true;
+                cboChartSelection.Items.Add(DataObjectCategory.Humidity.Value);
+            }
+            else
+            {
+                grpBoxHumidity.Enabled = false;
+            }
+
+            if (DataObjectCapabilities.HasLUX(dobjExt.Protocol))
+            {
+                grpBoxLUX.Enabled = true;
+                cboChartSelection.Items.Add(DataObjectCategory.LUX.Value);
+            }
+            else
+            {
+                grpBoxLUX.Enabled = false;
+            }
+
+
+            if (cboChartSelection.Items.Count > 0)
+                cboChartSelection.SelectedIndex = 0;
+
         }
 
         private void checkAvailableData(DataObjectExt dobjExt)
@@ -846,24 +897,24 @@ namespace Arduino_Temperature
             if (dobjExt.DataAvailable)
             {
                 lblSensorOne.Text = this.cboSensors.GetItemText(this.cboSensors.SelectedItem);
-                checkCabability(dobjExt);
                 showData(dobjExt);
             }
         }
 
         private void cboChange()
         {
-            //Temporal, has to be adapted to be more generic
-            switch (cboSensors.SelectedIndex)
-            {
-                case 0: checkAvailableData(dObjTisch); break;
-                case 1: checkAvailableData(dObjBoden); break;
-                default: MessageBox.Show("Nicht definierter Eintrag!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error); break;
-            }
+            xxx();
         }
 
         private void cboSensors_SelectedIndexChanged(object sender, EventArgs e)
         {
+            switch (cboSensors.SelectedIndex)
+            {
+                case 0: checkCabability(dObjTisch); break;
+                case 1: checkCabability(dObjBoden); break;
+                default: MessageBox.Show("Nicht definierter Eintrag!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error); break;
+            }
+            
             cboChange();
         }
 
@@ -877,8 +928,12 @@ namespace Arduino_Temperature
         {
 
             frmOptions fOpt = new frmOptions(Options);
-            fOpt.ShowDialog();
 
+            fOpt.Top = (this.Top + (this.Height / 2)) - (fOpt.Height / 2);
+            fOpt.Left = (this.Left + (this.Width / 2)) - (fOpt.Width / 2);
+
+            fOpt.Show(this);
+            
             //exit if canceled
             if (fOpt.Cancel == true)
                 return;
@@ -897,14 +952,12 @@ namespace Arduino_Temperature
             }
             chartValues.Series[name].Points.DataBindY(values.ToArray());
            
-            if (min > double.MinValue && max < double.MaxValue)
-            {
-                chartValues.ChartAreas[0].AxisY.Minimum = min - 5;
-                chartValues.ChartAreas[0].AxisY.Maximum = max + 5;
-            }
+            chartValues.ChartAreas[0].AxisY.Minimum = min;
+            chartValues.ChartAreas[0].AxisY.Maximum = max;
 
             chartValues.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDotDot;
             chartValues.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDotDot;
+
             chartValues.Series[name].Color = color;
             
         }
@@ -917,6 +970,13 @@ namespace Arduino_Temperature
             {
                 double min = dObjExt.getLogItemMinValue(dbo);
                 double max = dObjExt.getLogItemMaxValue(dbo);
+
+                if ((max - min) < 10)
+                {
+                    min -= 5;
+                    max += 5;
+                }
+
                 Console.WriteLine("Min " + min.ToString() + " - Max: " + max.ToString());
                 addChartSerie(dObjExt.getLogItems(dbo), dbo.Value.ToString(), lineColor, min, max);
             }
@@ -944,6 +1004,16 @@ namespace Arduino_Temperature
                 return Color.Red;
         }
 
+        private void xxx()
+        {
+            switch (cboSensors.SelectedIndex)
+            {
+                case 0: checkAvailableData(dObjTisch); break;
+                case 1: checkAvailableData(dObjBoden); break;
+                default: MessageBox.Show("Nicht definierter Eintrag!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error); break;
+            }
+        }
+
         private void updateChart(DataObjectExt dobjExt)
         {
             string selected = this.cboChartSelection.GetItemText(this.cboChartSelection.SelectedItem);
@@ -951,7 +1021,7 @@ namespace Arduino_Temperature
 
             if (dobjCat != null)
             {
-                if (dObjTisch.getLogItemCount(dobjCat) > 0)
+                if (dobjExt.getLogItemCount(dobjCat) > 0)
                 {
                     Color lineColor = getChartColor(dobjCat);
                     updateChart(dobjCat, dobjExt, lineColor);
@@ -961,7 +1031,12 @@ namespace Arduino_Temperature
 
         private void cboChartSelection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            updateChart(dObjTisch);
+            switch (cboSensors.SelectedIndex)
+            {
+                case 0: updateChart(dObjTisch); break;
+                case 1: updateChart(dObjBoden); break;
+                default: MessageBox.Show("Nicht definierter Eintrag!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error); break;
+            }
         }
     }
     

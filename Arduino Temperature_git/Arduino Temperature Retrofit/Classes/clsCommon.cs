@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Ports;
@@ -7,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Arduino_Temperature
+namespace Arduino_Temperature_Retrofit
 {
     static public class Common
     {
@@ -34,7 +33,7 @@ namespace Arduino_Temperature
         {
             string ret = (leadingSpace) ? " " : "";
 
-            switch(typ)
+            switch (typ)
             {
                 case SensorValueType.AirPressure: ret = ret + "mb"; break;
                 case SensorValueType.Temperature: ret = ret + "°C"; break;
@@ -48,9 +47,9 @@ namespace Arduino_Temperature
         public enum SensorValueType
         {
             Temperature,
-            Humidity, 
-            LUX, 
-            AirPressure, 
+            Humidity,
+            LUX,
+            AirPressure,
             HeatIndex
         }
 
@@ -90,6 +89,5 @@ namespace Arduino_Temperature
 
             return (oben / unten);
         }
-
     }
 }
