@@ -36,6 +36,7 @@ namespace Arduino_Temperature_Retrofit
                 dobj.MaxLogItemsCount = xmlSensor.numLogEntries;
                 dobj.LoggingEnabled = xmlSensor.LogEnabled;
                 dobj.LogPath = xmlSensor.LogFilePath;
+                dobj.maxLogFileSize = xmlSensor.maxLogFileSize;
                 dobj.BaudRate = Common.COMSettings.DefaultBaudRate;
                 dobj.DataBits = Common.COMSettings.DefaultDataBits;
                 dobj.DtrEnable = Common.COMSettings.DefaultDtrEnable;
@@ -80,12 +81,13 @@ namespace Arduino_Temperature_Retrofit
                 } else if (values.Length == 3 && values[0].StartsWith("REPLY") && values[2].StartsWith("EOF")) //Reply Message from Arudino
                 {
                     parseArduinoReply(dobj, values[1]);
+                    return;
                 } else
                 {
                     dobj.DataAvailable = false;
                     dobj.LastUpdated = DateTime.Now;
                     dobj.Protocol = DataObjectProtocol.NONE;
-                    dobj.AdditionalInformation = "Datenprotokoll unbekannt";
+                    dobj.AdditionalInformation = "Daten empfangen: Datenprotokoll unbekannt";
                 }
             } else
             {

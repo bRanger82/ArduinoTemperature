@@ -57,6 +57,7 @@
     <Compile Include="Classes\clsXML.cs" />
     <Compile Include="Classes\clsCommon.cs" />
     <Compile Include="Classes\clsDataObject.cs" />
+    <Compile Include="Classes\Permission.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>

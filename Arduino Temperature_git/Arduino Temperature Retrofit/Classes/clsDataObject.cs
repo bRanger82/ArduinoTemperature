@@ -231,6 +231,8 @@ namespace Arduino_Temperature_Retrofit
 
         private int _maxLogItemsCount = LogMinEntries;
 
+        public long maxLogFileSize { get; set; } = 4194304;
+
         public bool LoggingEnabled { get; set; }
 
         public int MaxLogItemsCount { get { return _maxLogItemsCount; } set { if (value < LogMinEntries || value > LogMaxEntries) return; _maxLogItemsCount = value; } }
