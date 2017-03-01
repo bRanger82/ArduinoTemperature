@@ -38,7 +38,7 @@ namespace Arduino_Temperature_Retrofit
                 dobj.LogPath = xmlSensor.LogFilePath;
                 dobj.maxLogFileSize = xmlSensor.maxLogFileSize;
                 dobj.HTMLEnabled = xmlSensor.HTMLEnabled;
-                dobj.BaudRate = Common.COMSettings.DefaultBaudRate;
+                dobj.BaudRate = xmlSensor.Baudrate;
                 dobj.DataBits = Common.COMSettings.DefaultDataBits;
                 dobj.DtrEnable = Common.COMSettings.DefaultDtrEnable;
                 dobj.StopBits = Common.COMSettings.DefaultStopBits;
@@ -313,6 +313,7 @@ namespace Arduino_Temperature_Retrofit
                 LoadDataObjects();
                 UpdateSensorCbo();
                 connectionCheck(true);
+                this.TopMost = clsXML.getTopMost;
             }
             catch (Exception ex)
             {

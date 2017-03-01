@@ -15,6 +15,7 @@ namespace Arduino_Temperature_Retrofit
         public long maxLogFileSize { get; set; }
         public bool LogEnabled { get; set; }
         public bool HTMLEnabled { get; set; }
+        public int Baudrate { get; set; }
     }
 
     public static class clsXML
@@ -34,10 +35,8 @@ namespace Arduino_Temperature_Retrofit
         public static string Title { get { return getValue("/root/titel"); } }
         public static string getHtmlFile { get { return getValue("/root/HTML/FileHTML"); } }
         public static string getHtmlHeadText { get { return getValue("/root/HTML/HTMLHEAD"); } }
-
-        public static bool getHtmlEnabled { get { return (getValue("/root/ProgrammEinstellungen/WriteHTML").ToUpper() == "Y"); } }
-
-        public static bool getTopMost { get { return (getValue("/root/ProgrammEinstellungen/Topmost").ToUpper() == "Y"); } }
+        
+        public static bool getTopMost { get { return checkBool(getValue("/root/ProgrammEinstellungen/Topmost")); } }
 
         private static string getValue(string nodePath)
         {
@@ -105,6 +104,15 @@ namespace Arduino_Temperature_Retrofit
 
                     tmpSensor.numLogEntries = DataObject.LogMinEntries; //default
 
+                    int Baudrate;
+                    if (int.TryParse(getInnerText(child, "Baudrate"), out Baudrate))
+                    {
+                        tmpSensor.Baudrate = Baudrate;
+                    } else
+                    {
+                        tmpSensor.Baudrate = Common.COMSettings.DefaultBaudRate;
+                    }
+
                     long maxLogFileSize = 4194304;
                     if (long.TryParse(getInnerText(child, "maxLogFileSize"), out maxLogFileSize))
                     {
@@ -129,8 +137,10 @@ namespace Arduino_Temperature_Retrofit
                     Console.WriteLine("tmpSensor.Name          == {0}", tmpSensor.Name);
                     Console.WriteLine("tmpSensor.Active        == {0}", (tmpSensor.Active) ? "Y" : "N");
                     Console.WriteLine("tmpSensor.Port          == {0}", tmpSensor.Port);
+                    Console.WriteLine("tmpSensor.Baudrate      == {0}", tmpSensor.Baudrate.ToString());
                     Console.WriteLine("tmpSensor.LogEnabled    == {0}", (tmpSensor.LogEnabled) ? "Y" : "N");
                     Console.WriteLine("tmpSensor.LogFilePath   == {0}", tmpSensor.LogFilePath);
+                    Console.WriteLine("tmpSensor.HTMLEnabled   == {0}", (tmpSensor.HTMLEnabled) ? "Y" : "N");
                     Console.WriteLine("tmpSensor.numLogEntries == {0}", tmpSensor.numLogEntries.ToString());
                     Console.WriteLine("******************************************************************");
                 }

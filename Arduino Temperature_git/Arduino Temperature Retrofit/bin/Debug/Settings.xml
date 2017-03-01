@@ -6,6 +6,7 @@
       <Aktiv>Y</Aktiv>
       <Bezeichnung>Tisch</Bezeichnung>
       <Port>COM8</Port>
+      <Baudrate>9600</Baudrate>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
@@ -16,6 +17,7 @@
       <Aktiv>Y</Aktiv>
       <Bezeichnung>Boden</Bezeichnung>
       <Port>COM3</Port>
+      <Baudrate>9600</Baudrate>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Bottom.log</LogFile>
@@ -30,6 +32,5 @@
   <ProgrammEinstellungen>
     <maxTimeDifferenceReadData>60</maxTimeDifferenceReadData>
     <Topmost>Y</Topmost>
-    <WriteHTML>N</WriteHTML>
   </ProgrammEinstellungen>
 </root>
