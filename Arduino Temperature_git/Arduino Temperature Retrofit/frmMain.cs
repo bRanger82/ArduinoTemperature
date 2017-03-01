@@ -37,6 +37,7 @@ namespace Arduino_Temperature_Retrofit
                 dobj.LoggingEnabled = xmlSensor.LogEnabled;
                 dobj.LogPath = xmlSensor.LogFilePath;
                 dobj.maxLogFileSize = xmlSensor.maxLogFileSize;
+                dobj.HTMLEnabled = xmlSensor.HTMLEnabled;
                 dobj.BaudRate = Common.COMSettings.DefaultBaudRate;
                 dobj.DataBits = Common.COMSettings.DefaultDataBits;
                 dobj.DtrEnable = Common.COMSettings.DefaultDtrEnable;
@@ -56,14 +57,13 @@ namespace Arduino_Temperature_Retrofit
             {
                 DataObject spTemp = (DataObject)sender;
                 string received = spTemp.ReadLine();
-                string portName = spTemp.PortName;
-                this.BeginInvoke(new DataReceiveEvent(DataReceived), received, portName, spTemp.Name);
+                this.BeginInvoke(new DataReceiveEvent(DataReceived), received, spTemp.Name);
             }
         }
 
-        private delegate void DataReceiveEvent(string information, string comPort, string Name);
+        private delegate void DataReceiveEvent(string information, string Name);
         
-        private void DataReceived(string information, string comPort, string name)
+        private void DataReceived(string information, string name)
         {
             DataObject dobj = dataObjs[name];
             if (information.Contains("|"))

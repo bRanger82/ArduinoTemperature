@@ -7,9 +7,83 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Arduino_Temperature_Retrofit
 {
+
+    static public class HTML
+    {
+        private static string getData(DataObject dobjExt, DataObjectCategory dobjCat)
+        {
+            double temp = dobjExt.getItem(dobjCat);
+            if (temp == double.MinValue)
+                return "Keine Daten";
+
+            return HttpUtility.HtmlEncode(temp.ToString());
+        }
+
+        private static string createHTMLTableString(List<DataObject> lDojb)
+        {
+            if (lDojb.Count < 1)
+                return "";
+
+
+            StringBuilder sb = new StringBuilder();
+            sb.Clear();
+            foreach (DataObject dobj in lDojb)
+            {
+                if (!dobj.HTMLEnabled)
+                    continue;
+
+                List<string> capabaleItems = DataObjectCategory.getCapableItems(dobj.Protocol);
+
+                sb.AppendLine("</br><h3>" + dobj.Name + "</h3>");
+                sb.AppendLine(@"<table style=""width:100%"">");
+                sb.AppendLine("  <tr>");
+                sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Datum und Uhrzeit") + "</th>");
+                foreach(string s in capabaleItems)
+                {
+                    sb.AppendLine("    <th>" + HttpUtility.HtmlEncode(s) + "</th>");
+                }
+                sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Zusatz-Info") + "</th>");
+                sb.AppendLine("  </tr>");
+
+
+                sb.AppendLine("  <tr>");
+                sb.AppendLine("    <td>" + dobj.LastUpdated.ToShortDateString() + " " + dobj.LastUpdated.ToLongTimeString() + "</td>");
+
+                if (dobj.DataAvailable)
+                {
+                    foreach(string s in capabaleItems)
+                    {
+                        DataObjectCategory dobjCat = DataObjectCategory.getObjectCategory(s);
+                        sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(getData(dobj, dobjCat)) + "</td>");
+                    }
+
+                    sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.AdditionalInformation) + "</td>");
+                }
+                else
+                {
+                    foreach (string s in capabaleItems)
+                    {
+                        DataObjectCategory dobjCat = DataObjectCategory.getObjectCategory(s);
+                        sb.AppendLine("    <td>Keine Daten</td>");
+                    }
+
+                    sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.AdditionalInformation) + "</td>");
+                }
+
+                sb.AppendLine("  </tr>");
+                
+
+                sb.AppendLine("  </table> ");
+
+                sb.AppendLine("</br>");
+            }
+            return sb.ToString();
+        }
+    }
     static public class LOG
     {
         public enum LogDataReturnValue

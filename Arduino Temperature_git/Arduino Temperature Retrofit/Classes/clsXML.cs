@@ -14,6 +14,7 @@ namespace Arduino_Temperature_Retrofit
         public int numLogEntries { get; set; }
         public long maxLogFileSize { get; set; }
         public bool LogEnabled { get; set; }
+        public bool HTMLEnabled { get; set; }
     }
 
     public static class clsXML
@@ -65,6 +66,11 @@ namespace Arduino_Temperature_Retrofit
             return true;
         }
 
+        private static bool checkBool(string value)
+        {
+            return (value.ToUpper() == "Y");
+        }
+
         public static List<XMLSensorObject> getSensorItemsFromXML()
         {
             List<XMLSensorObject> lst = new List<XMLSensorObject>();
@@ -77,15 +83,12 @@ namespace Arduino_Temperature_Retrofit
                 foreach (XmlNode child in xmln.ChildNodes)
                 {
                     XMLSensorObject tmpSensor = new XMLSensorObject();
-                    if (getInnerText(child, "Aktiv").ToUpper() == "Y")
-                        tmpSensor.Active = true;
-                    else
-                        tmpSensor.Active = false;
 
-                    if (getInnerText(child, "LogEnabled").ToUpper() == "Y")
-                        tmpSensor.LogEnabled = true;
-                    else
-                        tmpSensor.LogEnabled = false;
+                    tmpSensor.Active = checkBool(getInnerText(child, "Aktiv"));
+
+                    tmpSensor.LogEnabled = checkBool(getInnerText(child, "LogEnabled"));
+
+                    tmpSensor.HTMLEnabled = checkBool(getInnerText(child, "WriteHTML"));
 
                     tmpSensor.numLogEntries = DataObject.LogMinEntries; //default
                     int numEntries;
