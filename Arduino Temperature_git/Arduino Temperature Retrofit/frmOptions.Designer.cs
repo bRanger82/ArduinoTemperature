@@ -30,7 +30,6 @@
         {
             this.grpSettings = new System.Windows.Forms.GroupBox();
             this.chkHTML = new System.Windows.Forms.CheckBox();
-            this.chkLogEnabled = new System.Windows.Forms.CheckBox();
             this.chkTopMost = new System.Windows.Forms.CheckBox();
             this.btnOptionsOK = new System.Windows.Forms.Button();
             this.btnOptionsCancel = new System.Windows.Forms.Button();
@@ -40,11 +39,10 @@
             // grpSettings
             // 
             this.grpSettings.Controls.Add(this.chkHTML);
-            this.grpSettings.Controls.Add(this.chkLogEnabled);
             this.grpSettings.Controls.Add(this.chkTopMost);
             this.grpSettings.Location = new System.Drawing.Point(12, 12);
             this.grpSettings.Name = "grpSettings";
-            this.grpSettings.Size = new System.Drawing.Size(413, 146);
+            this.grpSettings.Size = new System.Drawing.Size(256, 146);
             this.grpSettings.TabIndex = 8;
             this.grpSettings.TabStop = false;
             // 
@@ -58,16 +56,6 @@
             this.chkHTML.Text = "HTML";
             this.chkHTML.UseVisualStyleBackColor = true;
             // 
-            // chkLogEnabled
-            // 
-            this.chkLogEnabled.AutoSize = true;
-            this.chkLogEnabled.Location = new System.Drawing.Point(9, 39);
-            this.chkLogEnabled.Name = "chkLogEnabled";
-            this.chkLogEnabled.Size = new System.Drawing.Size(75, 17);
-            this.chkLogEnabled.TabIndex = 8;
-            this.chkLogEnabled.Text = "Log to File";
-            this.chkLogEnabled.UseVisualStyleBackColor = true;
-            // 
             // chkTopMost
             // 
             this.chkTopMost.AutoSize = true;
@@ -80,7 +68,7 @@
             // 
             // btnOptionsOK
             // 
-            this.btnOptionsOK.Location = new System.Drawing.Point(258, 164);
+            this.btnOptionsOK.Location = new System.Drawing.Point(102, 164);
             this.btnOptionsOK.Name = "btnOptionsOK";
             this.btnOptionsOK.Size = new System.Drawing.Size(75, 23);
             this.btnOptionsOK.TabIndex = 9;
@@ -91,7 +79,7 @@
             // btnOptionsCancel
             // 
             this.btnOptionsCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnOptionsCancel.Location = new System.Drawing.Point(349, 164);
+            this.btnOptionsCancel.Location = new System.Drawing.Point(193, 164);
             this.btnOptionsCancel.Name = "btnOptionsCancel";
             this.btnOptionsCancel.Size = new System.Drawing.Size(75, 23);
             this.btnOptionsCancel.TabIndex = 10;
@@ -105,16 +93,16 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOptionsCancel;
-            this.ClientSize = new System.Drawing.Size(439, 206);
+            this.ClientSize = new System.Drawing.Size(284, 204);
             this.Controls.Add(this.btnOptionsCancel);
             this.Controls.Add(this.btnOptionsOK);
             this.Controls.Add(this.grpSettings);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "frmOptions";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Optionen";
             this.Load += new System.EventHandler(this.frmOptions_Load);
             this.grpSettings.ResumeLayout(false);
@@ -127,7 +115,6 @@
 
         private System.Windows.Forms.GroupBox grpSettings;
         private System.Windows.Forms.CheckBox chkHTML;
-        private System.Windows.Forms.CheckBox chkLogEnabled;
         private System.Windows.Forms.CheckBox chkTopMost;
         private System.Windows.Forms.Button btnOptionsOK;
         private System.Windows.Forms.Button btnOptionsCancel;

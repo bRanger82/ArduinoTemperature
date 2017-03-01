@@ -32,7 +32,6 @@ C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\TestEnviro
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\bin\Debug\TestEnvironment.pdb
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\obj\Debug\TestEnvironment.exe
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\obj\Debug\TestEnvironment.pdb
-C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\obj\Debug\TestEnvironment.csprojResolveAssemblyReference.cache
 C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\bin\Debug\TestEnvironment.exe.config
 C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\bin\Debug\TestEnvironment.exe
 C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\TestEnvironment\bin\Debug\TestEnvironment.pdb

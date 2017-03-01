@@ -13,6 +13,7 @@ namespace Arduino_Temperature_Retrofit
         public string LogFilePath { get; set; }
         public int numLogEntries { get; set; }
         public long maxLogFileSize { get; set; }
+        public bool LogEnabled { get; set; }
     }
 
     public static class clsXML
@@ -81,6 +82,11 @@ namespace Arduino_Temperature_Retrofit
                     else
                         tmpSensor.Active = false;
 
+                    if (getInnerText(child, "LogEnabled").ToUpper() == "Y")
+                        tmpSensor.LogEnabled = true;
+                    else
+                        tmpSensor.LogEnabled = false;
+
                     tmpSensor.numLogEntries = DataObject.LogMinEntries; //default
                     int numEntries;
                     if (int.TryParse(getInnerText(child, "NumLogItems"), out numEntries))
@@ -116,13 +122,14 @@ namespace Arduino_Temperature_Retrofit
 
                     lst.Add(tmpSensor);
 
-                    Console.WriteLine("************************************************************");
-                    Console.WriteLine("tmpSensor.Active        == {0}", (tmpSensor.Active) ? "Y" : "N");
+                    Console.WriteLine("******************************************************************");
                     Console.WriteLine("tmpSensor.Name          == {0}", tmpSensor.Name);
+                    Console.WriteLine("tmpSensor.Active        == {0}", (tmpSensor.Active) ? "Y" : "N");
                     Console.WriteLine("tmpSensor.Port          == {0}", tmpSensor.Port);
+                    Console.WriteLine("tmpSensor.LogEnabled    == {0}", (tmpSensor.LogEnabled) ? "Y" : "N");
                     Console.WriteLine("tmpSensor.LogFilePath   == {0}", tmpSensor.LogFilePath);
                     Console.WriteLine("tmpSensor.numLogEntries == {0}", tmpSensor.numLogEntries.ToString());
-                    Console.WriteLine("************************************************************");
+                    Console.WriteLine("******************************************************************");
                 }
             }
 

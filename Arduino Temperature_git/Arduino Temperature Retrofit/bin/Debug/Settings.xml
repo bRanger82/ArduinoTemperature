@@ -1,34 +1,33 @@
-<?xml version="1.0" encoding="UTF-8"?> 
+<?xml version="1.0" encoding="UTF-8"?>
 <root>
-	<titel>Arduino Temperatur Anzeige</titel>
-	<Sensoren>
-		<Sensor>
-		  <Aktiv>Y</Aktiv>
-		  <Bezeichnung>Tisch</Bezeichnung>
-		  <Port>COM5</Port>
-		  <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
-      <NumLogItems>620</NumLogItems>
+  <titel>Arduino Temperatur Anzeige</titel>
+  <Sensoren>
+    <Sensor>
+      <Aktiv>Y</Aktiv>
+      <Bezeichnung>Tisch</Bezeichnung>
+      <Port>COM8</Port>
+      <LogEnabled>N</LogEnabled>
+      <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
+      <NumLogItems>700</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>
-		</Sensor>
-		<Sensor>
-		  <Aktiv>N</Aktiv>
-		  <Bezeichnung>Boden</Bezeichnung>
-		  <Port>COM3</Port>
-		  <LogFile>C:\Temp\Temperatur\Bottom.log</LogFile>
-      <NumLogItems>640</NumLogItems>
+    </Sensor>
+    <Sensor>
+      <Aktiv>Y</Aktiv>
+      <Bezeichnung>Boden</Bezeichnung>
+      <Port>COM3</Port>
+      <LogEnabled>N</LogEnabled>
+      <LogFile>C:\Temp\Temperatur\Bottom.log</LogFile>
+      <NumLogItems>680</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>
-		</Sensor>
-	</Sensoren>
-	<HTML>
-		<FileHTML>C:\inetpub\wwwroot\temp.html</FileHTML>
-		<HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
-	</HTML>
-	<ProgrammEinstellungen>
-		<maxTimeDifferenceReadData>60</maxTimeDifferenceReadData>
-		<Topmost>Y</Topmost>
-		<WriteHTML>N</WriteHTML>
-	</ProgrammEinstellungen>
-	<LOGFiles>
-		<maxLogFileSize>4194304</maxLogFileSize>
-	</LOGFiles>
+    </Sensor>
+  </Sensoren>
+  <HTML>
+    <FileHTML>C:\inetpub\wwwroot\temp.html</FileHTML>
+    <HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
+  </HTML>
+  <ProgrammEinstellungen>
+    <maxTimeDifferenceReadData>60</maxTimeDifferenceReadData>
+    <Topmost>Y</Topmost>
+    <WriteHTML>N</WriteHTML>
+  </ProgrammEinstellungen>
 </root>

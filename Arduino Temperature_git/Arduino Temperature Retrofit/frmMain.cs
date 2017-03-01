@@ -29,11 +29,13 @@ namespace Arduino_Temperature_Retrofit
             foreach (XMLSensorObject xmlSensor in xmlSensors)
             {
                 DataObject dobj = new DataObject();
-                dobj.LogPath = xmlSensor.LogFilePath;
+                
                 dobj.Name = xmlSensor.Name;
                 dobj.Active = xmlSensor.Active;
                 dobj.PortName = xmlSensor.Port;
                 dobj.MaxLogItemsCount = xmlSensor.numLogEntries;
+                dobj.LoggingEnabled = xmlSensor.LogEnabled;
+                dobj.LogPath = xmlSensor.LogFilePath;
                 dobj.BaudRate = Common.COMSettings.DefaultBaudRate;
                 dobj.DataBits = Common.COMSettings.DefaultDataBits;
                 dobj.DtrEnable = Common.COMSettings.DefaultDtrEnable;
@@ -454,10 +456,12 @@ namespace Arduino_Temperature_Retrofit
 
             frmOptions fOpt = new frmOptions(Options);
 
+            fOpt.Show(this);
+
             fOpt.Top = (this.Top + (this.Height / 2)) - (fOpt.Height / 2);
             fOpt.Left = (this.Left + (this.Width / 2)) - (fOpt.Width / 2);
 
-            fOpt.Show(this);
+            
 
             //exit if canceled
             if (fOpt.Cancel == true)

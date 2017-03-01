@@ -231,6 +231,8 @@ namespace Arduino_Temperature_Retrofit
 
         private int _maxLogItemsCount = LogMinEntries;
 
+        public bool LoggingEnabled { get; set; }
+
         public int MaxLogItemsCount { get { return _maxLogItemsCount; } set { if (value < LogMinEntries || value > LogMaxEntries) return; _maxLogItemsCount = value; } }
 
         private List<LogObject> _LogData = new List<LogObject>();
@@ -295,7 +297,7 @@ namespace Arduino_Temperature_Retrofit
             return _Items.ContainsKey(dobjCat.Value);
         }
 
-        public bool LogEnabled { get; set; } = true;
+        public bool EnableAddDataToHistory { get; set; } = true;
 
         public double getItem(DataObjectCategory dobjCat)
         {
@@ -338,7 +340,7 @@ namespace Arduino_Temperature_Retrofit
                 }
             }
 
-            if (LogEnabled)
+            if (EnableAddDataToHistory)
                 addItemToLog(new LogObject(value, dObjCat, timepoint));
 
         }

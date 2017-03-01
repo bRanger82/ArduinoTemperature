@@ -26,7 +26,6 @@ namespace Arduino_Temperature_Retrofit
         private void btnOptionsOK_Click(object sender, EventArgs e)
         {
             OptionProp.propWriteHTML = this.chkHTML.Checked;
-            OptionProp.propLogToFile = this.chkLogEnabled.Checked;
             OptionProp.propTopMost = this.chkTopMost.Checked;
 
             _cancel = false;
@@ -43,7 +42,6 @@ namespace Arduino_Temperature_Retrofit
         private void frmOptions_Load(object sender, EventArgs e)
         {
             this.chkHTML.Checked = OptionProp.propWriteHTML;
-            this.chkLogEnabled.Checked = OptionProp.propLogToFile;
             this.chkTopMost.Checked = OptionProp.propTopMost;
         }
         
@@ -52,8 +50,6 @@ namespace Arduino_Temperature_Retrofit
     public class optionProperties
     {
         public bool propTopMost { get; set; } = false;
-        public bool propLogToFile { get; set; } = false;
         public bool propWriteHTML { get; set; } = false;
-        public int numEntries { get; set; } = 5;
     }
 }
