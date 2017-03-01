@@ -22,7 +22,7 @@ namespace Arduino_Temperature_Retrofit
         {
             InitializeComponent();
         }
-
+        
         private void LoadDataObjects()
         {
             List<XMLSensorObject> xmlSensors = clsXML.getSensorItemsFromXML();
@@ -98,6 +98,48 @@ namespace Arduino_Temperature_Retrofit
             }
 
             processIncomingDataSet(ref dobj, name);
+        }
+
+        private string getToolTip(DataObject dobj)
+        {
+            return "Name:         " + dobj.Name + "\n" +
+                   "Aktiv:        " + dobj.Active + "\n" +
+                   "Port:         " + dobj.PortName + "\n" +
+                   "Log Enabled:  " + dobj.LoggingEnabled + "\n" +
+                   "HTML Enabled: " + dobj.HTMLEnabled + "\n" +
+                   "Baud-Rate:    " + dobj.BaudRate;
+        }
+
+        private void UpdateStatus(DataObject dobj)
+        {
+            this.picConnStatus.BackColor = System.Windows.Forms.Control.DefaultBackColor; 
+            Color col = System.Windows.Forms.Control.DefaultBackColor;
+
+            if (dobj.Active)
+            {
+                if (dobj.IsOpen)
+                {
+                    col = System.Drawing.Color.Green;
+                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: Verbunden\n" + getToolTip(dobj));
+                }
+                else
+                {
+                    col = System.Drawing.Color.Red;
+                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: KEINE VERBINDUNG\n" + getToolTip(dobj));
+                }
+            }
+            else
+            {
+                col = System.Drawing.Color.LightBlue;
+                this.toolTip1.SetToolTip(picConnStatus, "STATUS: Nicht Aktiv\n" + getToolTip(dobj));
+            }
+
+            SolidBrush myBrush = new SolidBrush(col);
+            
+            Graphics g = picConnStatus.CreateGraphics();
+
+            g.FillEllipse(myBrush, new Rectangle(0, 0, picConnStatus.Size.Width, picConnStatus.Size.Height));
+            
         }
 
         private void writeCommandToArduino(DataObject dobj, string command)
@@ -281,6 +323,8 @@ namespace Arduino_Temperature_Retrofit
             if (dobj == null)
                 return;
 
+            UpdateStatus(dobj);
+
             if (dobj.Active && !dobj.IsOpen)
             {
                 lblSensorLastUpdated.ForeColor = Color.DarkRed;
@@ -357,7 +401,9 @@ namespace Arduino_Temperature_Retrofit
         private void cboSensors_SelectedIndexChanged(object sender, EventArgs e)
         {
             addChartPossibilities();
-            showData(getAcutalDataObject());
+            DataObject dojb = getAcutalDataObject();
+            showData(dojb);
+            UpdateStatus(dojb);
         }
 
         private DataObject getAcutalDataObject()

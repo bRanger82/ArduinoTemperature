@@ -28,9 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            this.components = new System.ComponentModel.Container();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.lblChartSelection = new System.Windows.Forms.Label();
             this.cboChartSelection = new System.Windows.Forms.ComboBox();
@@ -97,6 +98,8 @@
             this.kommandosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blauAnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blauStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.picConnStatus = new System.Windows.Forms.PictureBox();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grpBoxSensorOne.SuspendLayout();
             this.grpBoxHeatIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).BeginInit();
@@ -110,6 +113,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.picColTemp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartValues)).BeginInit();
             this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).BeginInit();
             this.SuspendLayout();
             // 
             // lblChartSelection
@@ -135,6 +139,7 @@
             // 
             // grpBoxSensorOne
             // 
+            this.grpBoxSensorOne.Controls.Add(this.picConnStatus);
             this.grpBoxSensorOne.Controls.Add(this.cboSensors);
             this.grpBoxSensorOne.Controls.Add(this.grpBoxHeatIndex);
             this.grpBoxSensorOne.Controls.Add(this.lblSensorLastUpdated);
@@ -692,22 +697,22 @@
             // 
             // chartValues
             // 
-            chartArea1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            chartArea1.Name = "ChartArea1";
-            this.chartValues.ChartAreas.Add(chartArea1);
+            chartArea2.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea2.Name = "ChartArea1";
+            this.chartValues.ChartAreas.Add(chartArea2);
             this.chartValues.Location = new System.Drawing.Point(12, 511);
             this.chartValues.Name = "chartValues";
             this.chartValues.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series1.ChartArea = "ChartArea1";
-            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series1.IsVisibleInLegend = false;
-            series1.Name = "Temperature";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series2.IsVisibleInLegend = false;
-            series2.Name = "HeatIndex";
-            this.chartValues.Series.Add(series1);
-            this.chartValues.Series.Add(series2);
+            series3.ChartArea = "ChartArea1";
+            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series3.IsVisibleInLegend = false;
+            series3.Name = "Temperature";
+            series4.ChartArea = "ChartArea1";
+            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series4.IsVisibleInLegend = false;
+            series4.Name = "HeatIndex";
+            this.chartValues.Series.Add(series3);
+            this.chartValues.Series.Add(series4);
             this.chartValues.Size = new System.Drawing.Size(460, 147);
             this.chartValues.TabIndex = 36;
             this.chartValues.Text = "chart1";
@@ -736,19 +741,19 @@
             // tsmOptions
             // 
             this.tsmOptions.Name = "tsmOptions";
-            this.tsmOptions.Size = new System.Drawing.Size(152, 22);
+            this.tsmOptions.Size = new System.Drawing.Size(124, 22);
             this.tsmOptions.Text = "Optionen";
             this.tsmOptions.Click += new System.EventHandler(this.tsmOptions_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(149, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(121, 6);
             // 
             // tsmEnd
             // 
             this.tsmEnd.Name = "tsmEnd";
-            this.tsmEnd.Size = new System.Drawing.Size(152, 22);
+            this.tsmEnd.Size = new System.Drawing.Size(124, 22);
             this.tsmEnd.Text = "Beenden";
             this.tsmEnd.Click += new System.EventHandler(this.tsmEnd_Click);
             // 
@@ -764,16 +769,25 @@
             // blauAnToolStripMenuItem
             // 
             this.blauAnToolStripMenuItem.Name = "blauAnToolStripMenuItem";
-            this.blauAnToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.blauAnToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.blauAnToolStripMenuItem.Text = "Blau ändern";
             this.blauAnToolStripMenuItem.Click += new System.EventHandler(this.blauAnToolStripMenuItem_Click);
             // 
             // blauStatusToolStripMenuItem
             // 
             this.blauStatusToolStripMenuItem.Name = "blauStatusToolStripMenuItem";
-            this.blauStatusToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.blauStatusToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.blauStatusToolStripMenuItem.Text = "Blau Status";
             this.blauStatusToolStripMenuItem.Click += new System.EventHandler(this.blauStatusToolStripMenuItem_Click);
+            // 
+            // picConnStatus
+            // 
+            this.picConnStatus.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.picConnStatus.Location = new System.Drawing.Point(15, 22);
+            this.picConnStatus.Name = "picConnStatus";
+            this.picConnStatus.Size = new System.Drawing.Size(25, 25);
+            this.picConnStatus.TabIndex = 36;
+            this.picConnStatus.TabStop = false;
             // 
             // frmMain
             // 
@@ -812,6 +826,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartValues)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -884,6 +899,8 @@
         private System.Windows.Forms.ToolStripMenuItem kommandosToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem blauAnToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem blauStatusToolStripMenuItem;
+        private System.Windows.Forms.PictureBox picConnStatus;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 
