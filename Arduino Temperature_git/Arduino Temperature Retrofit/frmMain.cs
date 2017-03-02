@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Arduino_Temperature_Retrofit
 {
@@ -102,12 +103,12 @@ namespace Arduino_Temperature_Retrofit
 
         private string getToolTip(DataObject dobj)
         {
-            return "Name:         " + dobj.Name + "\n" +
-                   "Aktiv:        " + dobj.Active + "\n" +
-                   "Port:         " + dobj.PortName + "\n" +
-                   "Log Enabled:  " + dobj.LoggingEnabled + "\n" +
-                   "HTML Enabled: " + dobj.HTMLEnabled + "\n" +
-                   "Baud-Rate:    " + dobj.BaudRate;
+            return "Name: \t" + dobj.Name + "\n" +
+                   "Aktiv: \t" + ((dobj.Active) ? "Ja" : "Nein") + "\n" +
+                   "Port: \t" + dobj.PortName + "\n" +
+                   "Log aktiviert: \t" + ((dobj.LoggingEnabled) ? "Ja" : "Nein") + "\n" +
+                   "HTML aktiviert: \t" + ((dobj.HTMLEnabled) ? "Ja" : "Nein") + "\n" +
+                   "Baud-Rate: \t" + dobj.BaudRate;
         }
 
         private void UpdateStatus(DataObject dobj)
@@ -358,6 +359,14 @@ namespace Arduino_Temperature_Retrofit
                 UpdateSensorCbo();
                 connectionCheck(true);
                 this.TopMost = clsXML.getTopMost;
+
+                toolTip1.UseFading = true;
+                toolTip1.UseAnimation = true;
+                toolTip1.IsBalloon = true;
+                toolTip1.ShowAlways = true;
+                toolTip1.AutoPopDelay = 5000;
+                toolTip1.InitialDelay = 1000;
+                toolTip1.ReshowDelay = 500;
             }
             catch (Exception ex)
             {
@@ -429,13 +438,29 @@ namespace Arduino_Temperature_Retrofit
 
         }
 
-        private void addChartSerie(List<double> values, string name, Color color, double min = double.MinValue, double max = double.MaxValue)
+    public double MilliTimeStamp(DateTime TheDate)
+    {  
+         DateTime d1 = new DateTime(1970, 1, 1);  
+         DateTime d2 = DateTime.SpecifyKind(TheDate, DateTimeKind.Utc);  
+         TimeSpan ts = new TimeSpan(d2.Ticks - d1.Ticks);  
+         return ts.TotalMilliseconds;  
+    }
+
+    private void addChartSerie(List<double> values, string name, Color color, double min = double.MinValue, double max = double.MaxValue)
         {
             if (chartValues.Series.IndexOf(name) < 0)
             {
                 chartValues.Series.Add(name);
                 chartValues.Series[name].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             }
+            /*
+            chartValues.Series[0].XValueType = ChartValueType.DateTime;
+            chartValues.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
+            chartValues.ChartAreas[0].AxisX.Interval = 1;
+            chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Hours;
+            chartValues.ChartAreas[0].AxisX.IntervalOffset = 1;
+            */
+
             chartValues.Series[name].Points.DataBindY(values.ToArray());
 
             chartValues.ChartAreas[0].AxisY.Minimum = min;
@@ -463,7 +488,15 @@ namespace Arduino_Temperature_Retrofit
                     min = 0;
 
                 Console.WriteLine("Min " + min.ToString() + " - Max: " + max.ToString());
+                List<double> dt = new List<double>();
+                List<double> values = new List<double>();
+                foreach(logItem li in dObjExt.getLogItems2(dbo))
+                {
+                    dt.Add(MilliTimeStamp(li.Timepoint));
+                    values.Add(li.Value);
+                }
                 addChartSerie(dObjExt.getLogItems(dbo), dbo.Value.ToString(), lineColor, min, max);
+                //addChartSerie(values, dt, dbo.Value.ToString(), lineColor, min, max);
             }
 
             if (chartValues.Series.Count > 0)

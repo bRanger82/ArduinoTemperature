@@ -29,13 +29,14 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.lblChartSelection = new System.Windows.Forms.Label();
             this.cboChartSelection = new System.Windows.Forms.ComboBox();
             this.grpBoxSensorOne = new System.Windows.Forms.GroupBox();
+            this.picConnStatus = new System.Windows.Forms.PictureBox();
             this.cboSensors = new System.Windows.Forms.ComboBox();
             this.grpBoxHeatIndex = new System.Windows.Forms.GroupBox();
             this.lblSensorHeatIndexName = new System.Windows.Forms.Label();
@@ -98,9 +99,9 @@
             this.kommandosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blauAnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blauStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.picConnStatus = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.grpBoxSensorOne.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).BeginInit();
             this.grpBoxHeatIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).BeginInit();
             this.grpBoxLUX.SuspendLayout();
@@ -113,7 +114,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.picColTemp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartValues)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).BeginInit();
             this.SuspendLayout();
             // 
             // lblChartSelection
@@ -153,6 +153,15 @@
             this.grpBoxSensorOne.Size = new System.Drawing.Size(463, 447);
             this.grpBoxSensorOne.TabIndex = 33;
             this.grpBoxSensorOne.TabStop = false;
+            // 
+            // picConnStatus
+            // 
+            this.picConnStatus.BackColor = System.Drawing.SystemColors.Control;
+            this.picConnStatus.Location = new System.Drawing.Point(15, 22);
+            this.picConnStatus.Name = "picConnStatus";
+            this.picConnStatus.Size = new System.Drawing.Size(25, 25);
+            this.picConnStatus.TabIndex = 36;
+            this.picConnStatus.TabStop = false;
             // 
             // cboSensors
             // 
@@ -697,22 +706,22 @@
             // 
             // chartValues
             // 
-            chartArea2.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
-            chartArea2.Name = "ChartArea1";
-            this.chartValues.ChartAreas.Add(chartArea2);
+            chartArea1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea1.Name = "ChartArea1";
+            this.chartValues.ChartAreas.Add(chartArea1);
             this.chartValues.Location = new System.Drawing.Point(12, 511);
             this.chartValues.Name = "chartValues";
             this.chartValues.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
-            series3.ChartArea = "ChartArea1";
-            series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series3.IsVisibleInLegend = false;
-            series3.Name = "Temperature";
-            series4.ChartArea = "ChartArea1";
-            series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series4.IsVisibleInLegend = false;
-            series4.Name = "HeatIndex";
-            this.chartValues.Series.Add(series3);
-            this.chartValues.Series.Add(series4);
+            series1.ChartArea = "ChartArea1";
+            series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series1.IsVisibleInLegend = false;
+            series1.Name = "Temperature";
+            series2.ChartArea = "ChartArea1";
+            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series2.IsVisibleInLegend = false;
+            series2.Name = "HeatIndex";
+            this.chartValues.Series.Add(series1);
+            this.chartValues.Series.Add(series2);
             this.chartValues.Size = new System.Drawing.Size(460, 147);
             this.chartValues.TabIndex = 36;
             this.chartValues.Text = "chart1";
@@ -780,15 +789,6 @@
             this.blauStatusToolStripMenuItem.Text = "Blau Status";
             this.blauStatusToolStripMenuItem.Click += new System.EventHandler(this.blauStatusToolStripMenuItem_Click);
             // 
-            // picConnStatus
-            // 
-            this.picConnStatus.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.picConnStatus.Location = new System.Drawing.Point(15, 22);
-            this.picConnStatus.Name = "picConnStatus";
-            this.picConnStatus.Size = new System.Drawing.Size(25, 25);
-            this.picConnStatus.TabIndex = 36;
-            this.picConnStatus.TabStop = false;
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -808,6 +808,7 @@
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.grpBoxSensorOne.ResumeLayout(false);
             this.grpBoxSensorOne.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).EndInit();
             this.grpBoxHeatIndex.ResumeLayout(false);
             this.grpBoxHeatIndex.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).EndInit();
@@ -826,7 +827,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartValues)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

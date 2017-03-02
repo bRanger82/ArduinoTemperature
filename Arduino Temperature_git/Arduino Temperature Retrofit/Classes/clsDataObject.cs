@@ -241,6 +241,21 @@ namespace Arduino_Temperature_Retrofit
 
         private List<LogObject> _LogData = new List<LogObject>();
 
+        public List<logItem> getLogItems2(DataObjectCategory dobj)
+        {
+            List<logItem> lst = new List<logItem>();
+
+            foreach (LogObject logObj in _LogData)
+            {
+                if (logObj.Category.Value == dobj.Value)
+                {
+                    lst.Add(new logItem(logObj.Value, logObj.Timepoint));
+                }
+            }
+            
+            return lst;
+        }
+        
         public List<double> getLogItems(DataObjectCategory dObjcat)
         {
             List<double> lst = new List<double>();
@@ -347,6 +362,17 @@ namespace Arduino_Temperature_Retrofit
             if (EnableAddDataToHistory)
                 addItemToLog(new LogObject(value, dObjCat, timepoint));
 
+        }
+    }
+
+    public class logItem
+    {
+        public double Value { get; set; }
+        public DateTime Timepoint { get; set; }
+        public logItem(double Value, DateTime Timepoint)
+        {
+            this.Value = Value;
+            this.Timepoint = Timepoint;
         }
     }
 }
