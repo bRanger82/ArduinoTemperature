@@ -446,26 +446,59 @@ namespace Arduino_Temperature_Retrofit
          return ts.TotalMilliseconds;  
     }
 
-    private void addChartSerie(List<double> values, string name, Color color, double min = double.MinValue, double max = double.MaxValue)
+        private void addChartSerie(List<double> values, List<double> dt, string name, Color color, DateTime minDate, DateTime maxDate, double min = double.MinValue, double max = double.MaxValue)
         {
             if (chartValues.Series.IndexOf(name) < 0)
             {
                 chartValues.Series.Add(name);
                 chartValues.Series[name].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             }
-            /*
+
             chartValues.Series[0].XValueType = ChartValueType.DateTime;
             chartValues.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
-            chartValues.ChartAreas[0].AxisX.Interval = 1;
-            chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Hours;
-            chartValues.ChartAreas[0].AxisX.IntervalOffset = 1;
-            */
+            double diff = maxDate.Subtract(minDate).TotalSeconds;
 
-            chartValues.Series[name].Points.DataBindY(values.ToArray());
+            if (diff < 600)
+            {
+                chartValues.ChartAreas[0].AxisX.Interval = 1;
+                chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Minutes;
+                chartValues.ChartAreas[0].AxisX.IntervalOffset = 1;    
+            } else if (diff >= 600 && diff < 1200)
+            {
+                chartValues.ChartAreas[0].AxisX.Interval = 5;
+                chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Minutes;
+                chartValues.ChartAreas[0].AxisX.IntervalOffset = 5;
+            } else if (diff >=1200 && diff < 1800)
+            {
+                chartValues.ChartAreas[0].AxisX.Interval = 10;
+                chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Minutes;
+                chartValues.ChartAreas[0].AxisX.IntervalOffset = 10;
+            } else if (diff >=1800 && diff < 3600)
+            {
+                chartValues.ChartAreas[0].AxisX.Interval = 15;
+                chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Minutes;
+                chartValues.ChartAreas[0].AxisX.IntervalOffset = 15;
+            } else if (diff >=3600 && diff < 7200)
+            {
+                chartValues.ChartAreas[0].AxisX.Interval = 30;
+                chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Minutes;
+                chartValues.ChartAreas[0].AxisX.IntervalOffset = 30;
+            }
+            else
+            {
+                chartValues.ChartAreas[0].AxisX.Interval = 1;
+                chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Hours;
+                chartValues.ChartAreas[0].AxisX.IntervalOffset = 1;
+            }
 
             chartValues.ChartAreas[0].AxisY.Minimum = min;
             chartValues.ChartAreas[0].AxisY.Maximum = max;
 
+            chartValues.ChartAreas[0].AxisX.Minimum = minDate.AddMinutes(-1).ToOADate();
+            chartValues.ChartAreas[0].AxisX.Maximum = maxDate.AddMinutes(1).ToOADate();
+            chartValues.Series[0].Points.DataBindXY(dt.ToArray(), values.ToArray());
+            //chartValues.Series[name].Points.DataBindY(values.ToArray());
+            
             chartValues.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDotDot;
             chartValues.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDotDot;
 
@@ -490,13 +523,18 @@ namespace Arduino_Temperature_Retrofit
                 Console.WriteLine("Min " + min.ToString() + " - Max: " + max.ToString());
                 List<double> dt = new List<double>();
                 List<double> values = new List<double>();
-                foreach(logItem li in dObjExt.getLogItems2(dbo))
+
+                DateTime minDate = dObjExt.getLogItems2(dbo)[0].Timepoint.AddMinutes(-1);
+                DateTime maxDate = dObjExt.getLogItems2(dbo)[dObjExt.getLogItems2(dbo).Count - 1].Timepoint;
+
+                foreach (logItem li in dObjExt.getLogItems2(dbo))
                 {
-                    dt.Add(MilliTimeStamp(li.Timepoint));
+                    dt.Add(li.Timepoint.ToOADate());
                     values.Add(li.Value);
                 }
-                addChartSerie(dObjExt.getLogItems(dbo), dbo.Value.ToString(), lineColor, min, max);
-                //addChartSerie(values, dt, dbo.Value.ToString(), lineColor, min, max);
+                
+                //addChartSerie(dObjExt.getLogItems(dbo), dbo.Value.ToString(), lineColor, min, max);
+                addChartSerie(values, dt, dbo.Value.ToString(), lineColor, minDate, maxDate, min, max);
             }
 
             if (chartValues.Series.Count > 0)
