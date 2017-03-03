@@ -35,7 +35,8 @@ namespace Arduino_Temperature_Retrofit
         public static string Title { get { return getValue("/root/titel"); } }
         public static string getHtmlFile { get { return getValue("/root/HTML/FileHTML"); } }
         public static string getHtmlHeadText { get { return getValue("/root/HTML/HTMLHEAD"); } }
-        
+        public static bool HttpEnabled { get { return checkBool(getValue("/root/HTML/Enabled")); } }
+
         public static bool getTopMost { get { return checkBool(getValue("/root/ProgrammEinstellungen/Topmost")); } }
 
         private static string getValue(string nodePath)

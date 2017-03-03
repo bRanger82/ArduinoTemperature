@@ -28,9 +28,13 @@ namespace Arduino_Temperature_Retrofit
             if (lDojb.Count < 1)
                 return "";
 
-
+            if (!clsXML.HttpEnabled)
+                return string.Empty;
+            
             StringBuilder sb = new StringBuilder();
             sb.Clear();
+            sb.AppendLine("<html>");
+            sb.AppendLine("<head>" + HttpUtility.HtmlEncode(clsXML.getHtmlHeadText) + "</head>");
             foreach (DataObject dobj in lDojb)
             {
                 if (!dobj.HTMLEnabled)
@@ -81,6 +85,8 @@ namespace Arduino_Temperature_Retrofit
 
                 sb.AppendLine("</br>");
             }
+
+            sb.AppendLine("</html>");
             return sb.ToString();
         }
     }

@@ -241,7 +241,7 @@ namespace Arduino_Temperature_Retrofit
 
         private List<LogObject> _LogData = new List<LogObject>();
 
-        public List<logItem> getLogItems2(DataObjectCategory dobj)
+        public List<logItem> getLogItems(DataObjectCategory dobj)
         {
             List<logItem> lst = new List<logItem>();
 
@@ -256,21 +256,6 @@ namespace Arduino_Temperature_Retrofit
             return lst;
         }
         
-        public List<double> getLogItems(DataObjectCategory dObjcat)
-        {
-            List<double> lst = new List<double>();
-
-            foreach (LogObject logObj in _LogData)
-            {
-                if (logObj.Category.Value == dObjcat.Value)
-                {
-                    lst.Add(logObj.Value);
-                }
-            }
-
-            return lst;
-        }
-
         public double getLogItemMinValue(DataObjectCategory dObjcat)
         {
             if (!_Items.ContainsKey(dObjcat.Value))

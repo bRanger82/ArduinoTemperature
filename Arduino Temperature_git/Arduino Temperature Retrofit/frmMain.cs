@@ -108,7 +108,7 @@ namespace Arduino_Temperature_Retrofit
                    "Port: \t" + dobj.PortName + "\n" +
                    "Log aktiviert: \t" + ((dobj.LoggingEnabled) ? "Ja" : "Nein") + "\n" +
                    "HTML aktiviert: \t" + ((dobj.HTMLEnabled) ? "Ja" : "Nein") + "\n" +
-                   "Baud-Rate: \t" + dobj.BaudRate;
+                   "Baud-Rate: \t" + dobj.BaudRate + "\n";
         }
 
         private void UpdateStatus(DataObject dobj)
@@ -446,7 +446,7 @@ namespace Arduino_Temperature_Retrofit
          return ts.TotalMilliseconds;  
     }
 
-        private void addChartSerie(List<double> values, List<double> dt, string name, Color color, DateTime minDate, DateTime maxDate, double min = double.MinValue, double max = double.MaxValue)
+        private void addChartSerie(List<double> values, List<double> dt, string name, Color color, DateTime minDate, DateTime maxDate, double minY = double.MinValue, double maxY = double.MaxValue)
         {
             if (chartValues.Series.IndexOf(name) < 0)
             {
@@ -484,20 +484,25 @@ namespace Arduino_Temperature_Retrofit
                 chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Minutes;
                 chartValues.ChartAreas[0].AxisX.IntervalOffset = 30;
             }
-            else
+            else if (diff >= 7200 && diff < 28800)
             {
                 chartValues.ChartAreas[0].AxisX.Interval = 1;
                 chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Hours;
                 chartValues.ChartAreas[0].AxisX.IntervalOffset = 1;
             }
+            else
+            {
+                chartValues.ChartAreas[0].AxisX.Interval = 4;
+                chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Hours;
+                chartValues.ChartAreas[0].AxisX.IntervalOffset = 4;
+            }
 
-            chartValues.ChartAreas[0].AxisY.Minimum = min;
-            chartValues.ChartAreas[0].AxisY.Maximum = max;
+            chartValues.ChartAreas[0].AxisY.Minimum = minY;
+            chartValues.ChartAreas[0].AxisY.Maximum = maxY;
 
             chartValues.ChartAreas[0].AxisX.Minimum = minDate.AddMinutes(-1).ToOADate();
             chartValues.ChartAreas[0].AxisX.Maximum = maxDate.AddMinutes(1).ToOADate();
             chartValues.Series[0].Points.DataBindXY(dt.ToArray(), values.ToArray());
-            //chartValues.Series[name].Points.DataBindY(values.ToArray());
             
             chartValues.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDotDot;
             chartValues.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDotDot;
@@ -510,7 +515,7 @@ namespace Arduino_Temperature_Retrofit
         {
             chartValues.Series.Clear();
 
-            if (DataObjectCapabilities.HasCapability(dbo, dObjExt.Protocol))
+            if (DataObjectCapabilities.HasCapability(dbo, dObjExt.Protocol) && dObjExt.DataAvailable)
             {
                 double min = dObjExt.getLogItemMinValue(dbo) - 5;
                 double max = dObjExt.getLogItemMaxValue(dbo) + 5;
@@ -524,16 +529,15 @@ namespace Arduino_Temperature_Retrofit
                 List<double> dt = new List<double>();
                 List<double> values = new List<double>();
 
-                DateTime minDate = dObjExt.getLogItems2(dbo)[0].Timepoint.AddMinutes(-1);
-                DateTime maxDate = dObjExt.getLogItems2(dbo)[dObjExt.getLogItems2(dbo).Count - 1].Timepoint;
+                DateTime minDate = dObjExt.getLogItems(dbo)[0].Timepoint.AddMinutes(-1);
+                DateTime maxDate = dObjExt.getLogItems(dbo)[dObjExt.getLogItems(dbo).Count - 1].Timepoint;
 
-                foreach (logItem li in dObjExt.getLogItems2(dbo))
+                foreach (logItem li in dObjExt.getLogItems(dbo))
                 {
                     dt.Add(li.Timepoint.ToOADate());
                     values.Add(li.Value);
                 }
                 
-                //addChartSerie(dObjExt.getLogItems(dbo), dbo.Value.ToString(), lineColor, min, max);
                 addChartSerie(values, dt, dbo.Value.ToString(), lineColor, minDate, maxDate, min, max);
             }
 
