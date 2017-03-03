@@ -203,6 +203,10 @@ namespace Arduino_Temperature_Retrofit
             double resBOne = 0;
             double resBTwo = 0;
 
+            //Wenn weniger als 10 Werte vorhanden sind soll 0 (*noch* kein Trend berechenbar) zurueck gegeben werden
+            if (values.Count < 10)
+                return (double)0;
+            
             for (int i = 0; i < values.Count; i++)
             {
                 sumMultXY += i * values[i];

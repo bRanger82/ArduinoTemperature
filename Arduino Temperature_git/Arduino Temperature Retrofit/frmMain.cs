@@ -549,7 +549,16 @@ namespace Arduino_Temperature_Retrofit
                 }
                 
                 addChartSerie(values, dt, dbo.Value.ToString(), lineColor, minDate, maxDate, min, max);
-                lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString();
+                Trend trend = dObjExt.getTrend(dbo);
+                string lblTrend = string.Empty;
+                switch(trend)
+                {
+                    case Trend.CONSTANT: lblTrend = "Konst."; break;
+                    case Trend.DOWN: lblTrend = "Fallend"; break;
+                    case Trend.UP: lblTrend = "Steigend"; break;
+                }
+
+                lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString() + " (" + lblTrend + ")";
             }
 
             if (chartValues.Series.Count > 0)

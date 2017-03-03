@@ -200,6 +200,13 @@ namespace Arduino_Temperature_Retrofit
         public Common.SensorValueType SensorType { get; set; }
     }
 
+    public enum Trend
+    {
+        UP,
+        CONSTANT,
+        DOWN
+    }
+
     public class DataObject : SerialPort
     {
         private Dictionary<string, DetailsTimePoint> _Items = new Dictionary<string, DetailsTimePoint>();
@@ -255,7 +262,35 @@ namespace Arduino_Temperature_Retrofit
             
             return lst;
         }
-        
+
+        public Trend getTrend(DataObjectCategory dobjCat)
+        {
+            List<double> lst = new List<double>();
+
+            foreach (LogObject logObj in _LogData)
+            {
+                if (logObj.Category.Value == dobjCat.Value)
+                {
+                    lst.Add(logObj.Value);
+                }
+            }
+
+            double calcTrend = Common.calculateTrend(lst);
+
+            if (calcTrend == 0)
+            {
+                return Trend.CONSTANT;
+            } else if (calcTrend < 0)
+            {
+                return Trend.DOWN;
+            }
+            else
+            {
+                return Trend.UP;
+            }
+
+        }
+
         public double getLogItemMinValue(DataObjectCategory dObjcat)
         {
             if (!_Items.ContainsKey(dObjcat.Value))
