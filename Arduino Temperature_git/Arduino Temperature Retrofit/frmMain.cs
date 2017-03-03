@@ -549,7 +549,9 @@ namespace Arduino_Temperature_Retrofit
                 }
                 
                 addChartSerie(values, dt, dbo.Value.ToString(), lineColor, minDate, maxDate, min, max);
-                Trend trend = dObjExt.getTrend(dbo);
+
+                //Trend aus den 30 aktuellsten Einträgen berechnen
+                Trend trend = dObjExt.getTrend(dbo, 30);
                 string lblTrend = string.Empty;
                 switch(trend)
                 {

@@ -263,7 +263,7 @@ namespace Arduino_Temperature_Retrofit
             return lst;
         }
 
-        public Trend getTrend(DataObjectCategory dobjCat)
+        public Trend getTrend(DataObjectCategory dobjCat, int numEntriesConsider )
         {
             List<double> lst = new List<double>();
 
@@ -275,7 +275,8 @@ namespace Arduino_Temperature_Retrofit
                 }
             }
 
-            double calcTrend = Common.calculateTrend(lst);
+            //Trend aus den letzten 'numEntriesConsider' Einträgen berechnen
+            double calcTrend = Common.calculateTrend(lst, numEntriesConsider);
 
             if (calcTrend == 0)
             {

@@ -195,7 +195,7 @@ namespace Arduino_Temperature_Retrofit
         /// </summary>
         /// <param name="values">Liste von Werten</param>
         /// <returns>Aenderung des naechesten Wertes im Vergleich zum akutuellem Wert</returns>
-        static public double calculateTrend(List<double> values)
+        static public double calculateTrend(List<double> values, int numEntriesAsBase)
         {
             double sumMultXY = 0;
             double sumX = 0;
@@ -203,11 +203,15 @@ namespace Arduino_Temperature_Retrofit
             double resBOne = 0;
             double resBTwo = 0;
 
-            //Wenn weniger als 10 Werte vorhanden sind soll 0 (*noch* kein Trend berechenbar) zurueck gegeben werden
-            if (values.Count < 10)
+            //Wenn weniger als x Werte vorhanden sind soll 0 (*noch* kein Trend berechenbar) zurueck gegeben werden
+            if (values.Count < numEntriesAsBase)
                 return (double)0;
-            
-            for (int i = 0; i < values.Count; i++)
+
+            //Es können nicht mehr Werte geprueft werden als vorhanden sind
+            if (numEntriesAsBase > values.Count)
+                numEntriesAsBase = values.Count;
+
+            for (int i = (values.Count - numEntriesAsBase); i < numEntriesAsBase; i++)
             {
                 sumMultXY += i * values[i];
                 sumX += i;
