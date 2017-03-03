@@ -100,6 +100,7 @@
             this.blauAnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blauStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.lblNumLogEntries = new System.Windows.Forms.Label();
             this.grpBoxSensorOne.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).BeginInit();
             this.grpBoxHeatIndex.SuspendLayout();
@@ -789,11 +790,22 @@
             this.blauStatusToolStripMenuItem.Text = "Blau Status";
             this.blauStatusToolStripMenuItem.Click += new System.EventHandler(this.blauStatusToolStripMenuItem_Click);
             // 
+            // lblNumLogEntries
+            // 
+            this.lblNumLogEntries.AutoSize = true;
+            this.lblNumLogEntries.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNumLogEntries.Location = new System.Drawing.Point(9, 484);
+            this.lblNumLogEntries.Name = "lblNumLogEntries";
+            this.lblNumLogEntries.Size = new System.Drawing.Size(136, 16);
+            this.lblNumLogEntries.TabIndex = 38;
+            this.lblNumLogEntries.Text = "Datensätze: <N/A>";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(489, 671);
+            this.Controls.Add(this.lblNumLogEntries);
             this.Controls.Add(this.chartValues);
             this.Controls.Add(this.lblChartSelection);
             this.Controls.Add(this.cboChartSelection);
@@ -901,6 +913,7 @@
         private System.Windows.Forms.ToolStripMenuItem blauStatusToolStripMenuItem;
         private System.Windows.Forms.PictureBox picConnStatus;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label lblNumLogEntries;
     }
 }
 

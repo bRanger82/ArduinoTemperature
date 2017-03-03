@@ -351,6 +351,23 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
+        private void initToolTip(ToolTip tp)
+        {
+            tp.UseFading = true;
+            tp.UseAnimation = true;
+            tp.IsBalloon = true;
+            tp.ShowAlways = true;
+            tp.AutoPopDelay = 5000;
+            tp.InitialDelay = 1000;
+            tp.ReshowDelay = 500;
+        }
+
+        private void initFormSettings()
+        {
+            this.TopMost = clsXML.getTopMost;
+            this.Text = clsXML.Title;
+        }
+
         private void frmMain_Load(object sender, EventArgs e)
         {
             try
@@ -358,15 +375,8 @@ namespace Arduino_Temperature_Retrofit
                 LoadDataObjects();
                 UpdateSensorCbo();
                 connectionCheck(true);
-                this.TopMost = clsXML.getTopMost;
-
-                toolTip1.UseFading = true;
-                toolTip1.UseAnimation = true;
-                toolTip1.IsBalloon = true;
-                toolTip1.ShowAlways = true;
-                toolTip1.AutoPopDelay = 5000;
-                toolTip1.InitialDelay = 1000;
-                toolTip1.ReshowDelay = 500;
+                initToolTip(toolTip1);
+                initFormSettings();
             }
             catch (Exception ex)
             {
@@ -539,6 +549,7 @@ namespace Arduino_Temperature_Retrofit
                 }
                 
                 addChartSerie(values, dt, dbo.Value.ToString(), lineColor, minDate, maxDate, min, max);
+                lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString();
             }
 
             if (chartValues.Series.Count > 0)

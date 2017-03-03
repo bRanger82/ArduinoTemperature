@@ -28,6 +28,7 @@
   <HTML>
     <FileHTML>C:\inetpub\wwwroot\temp.html</FileHTML>
     <HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
+    <Enabled>N</Enabled>  
   </HTML>
   <ProgrammEinstellungen>
     <maxTimeDifferenceReadData>60</maxTimeDifferenceReadData>
