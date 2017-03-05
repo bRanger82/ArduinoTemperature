@@ -87,6 +87,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -103,6 +104,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="c_temperature_folded_128px_1184170_easyicon.net.ico" />
+    <None Include="Resources\Trend_UP.png" />
+    <None Include="Resources\Trend_Same.png" />
+    <None Include="Resources\Trend_Down.png" />
     <Content Include="Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

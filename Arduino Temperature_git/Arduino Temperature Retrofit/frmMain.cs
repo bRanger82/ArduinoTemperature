@@ -69,26 +69,36 @@ namespace Arduino_Temperature_Retrofit
             DataObject dobj = dataObjs[name];
             if (information.Contains("|"))
             {
-                string[] values = information.Split('|');
-                if (values.Length == 5 && values[0].StartsWith("START") && values[4].StartsWith("EOF")) //Protocol first version
+                try
                 {
-                    processDataProtocolV1(values, ref dobj);
-                } else if (values.Length == 7 && values[0].StartsWith("START") && values[6].StartsWith("EOF")) //Protocoll second version
-                {
-                    processDataProtocolV2(values, ref dobj);
-                } else if (values.Length == 8 && values[0].StartsWith("START") && values[7].StartsWith("EOF")) //Protocol third version
-                {
-                    processDataProtocolV3(values, ref dobj);
-                } else if (values.Length == 3 && values[0].StartsWith("REPLY") && values[2].StartsWith("EOF")) //Reply Message from Arudino
-                {
-                    parseArduinoReply(dobj, values[1]);
-                    return;
-                } else
+                    string[] values = information.Split('|');
+                    if (values.Length == 5 && values[0].StartsWith("START") && values[4].StartsWith("EOF")) //Protocol first version
+                    {
+                        processDataProtocolV1(values, ref dobj);
+                    } else if (values.Length == 7 && values[0].StartsWith("START") && values[6].StartsWith("EOF")) //Protocoll second version
+                    {
+                        processDataProtocolV2(values, ref dobj);
+                    } else if (values.Length == 8 && values[0].StartsWith("START") && values[7].StartsWith("EOF")) //Protocol third version
+                    {
+                        processDataProtocolV3(values, ref dobj);
+                    } else if (values.Length == 3 && values[0].StartsWith("REPLY") && values[2].StartsWith("EOF")) //Reply Message from Arudino
+                    {
+                        parseArduinoReply(dobj, values[1]);
+                        return;
+                    } else
+                    {
+                        dobj.DataAvailable = false;
+                        dobj.LastUpdated = DateTime.Now;
+                        dobj.Protocol = DataObjectProtocol.NONE;
+                        dobj.AdditionalInformation = "Daten empfangen: Datenprotokoll unbekannt";
+                    }
+                }
+                catch (Exception)
                 {
                     dobj.DataAvailable = false;
                     dobj.LastUpdated = DateTime.Now;
                     dobj.Protocol = DataObjectProtocol.NONE;
-                    dobj.AdditionalInformation = "Daten empfangen: Datenprotokoll unbekannt";
+                    dobj.AdditionalInformation = "Fehler bei der Verarbeitung, warte auf nächste Datensatz.";
                 }
             } else
             {
@@ -233,11 +243,11 @@ namespace Arduino_Temperature_Retrofit
         {
             if (dobj.DataAvailable)
             {
-                setLabelInformation(lblSensorTempValue, lblSensorTempMin, lblSensorTempMax, lblSensorTempMinTime, lblSensorTempMaxTime, dobj, DataObjectCategory.Temperature);
-                setLabelInformation(lblSensorLuxValue, lblSensorLuxMin, lblSensorLuxMax, lblSensorLuxMinTime, lblSensorLuxMaxTime, dobj, DataObjectCategory.LUX);
-                setLabelInformation(lblSensorHumidityValue, lblSensorHumidityValueMin, lblSensorHumidityValueMax, lblSensorHumidityValueMinTime, lblSensorHumidityValueMaxTime, dobj, DataObjectCategory.Humidity);
-                setLabelInformation(lblSensorPressureValue, lblSensorPressureMin, lblSensorPressureMax, lblSensorPressureMinTime, lblSensorPressureMaxTime, dobj, DataObjectCategory.AirPressure);
-                setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobj, DataObjectCategory.HeatIndex);
+                setLabelInformation(lblSensorTempValue, lblSensorTempMin, lblSensorTempMax, lblSensorTempMinTime, lblSensorTempMaxTime, dobj, DataObjectCategory.Temperature, picTrendTemp);
+                setLabelInformation(lblSensorLuxValue, lblSensorLuxMin, lblSensorLuxMax, lblSensorLuxMinTime, lblSensorLuxMaxTime, dobj, DataObjectCategory.LUX, picTrendLUX);
+                setLabelInformation(lblSensorHumidityValue, lblSensorHumidityValueMin, lblSensorHumidityValueMax, lblSensorHumidityValueMinTime, lblSensorHumidityValueMaxTime, dobj, DataObjectCategory.Humidity, picTrendHumidity);
+                setLabelInformation(lblSensorPressureValue, lblSensorPressureMin, lblSensorPressureMax, lblSensorPressureMinTime, lblSensorPressureMaxTime, dobj, DataObjectCategory.AirPressure, picTrendAirPressure);
+                setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobj, DataObjectCategory.HeatIndex, picTrendHeatIndex);
             }
             else
             {
@@ -263,7 +273,23 @@ namespace Arduino_Temperature_Retrofit
             lblSensorLastUpdated.Text = "Aktualisiert: " + Common.getCurrentDateTimeFormatted();
         }
 
-        private void setLabelInformation(Label lblValue, Label lblMinValue, Label lblMaxValue, Label lblMinTime, Label lblMaxTime, DataObject dObjExt, DataObjectCategory dobjcat)
+        private Image getTrend(DataObject dobj, DataObjectCategory dobjCat, out string trendInfo)
+        {
+            Image img = null;
+            Trend trend = dobj.getTrend(dobjCat);
+            string lblTrend = string.Empty;
+            trendInfo = string.Empty;
+
+            switch (trend)
+            {
+                case Trend.CONSTANT: img = new Bitmap(Properties.Resources.Trend_Same); trendInfo = "Trend: gleichbleibend"; break;
+                case Trend.DOWN: img = new Bitmap(Properties.Resources.Trend_Down); trendInfo = "Trend: fallend";  break;
+                case Trend.UP: img = new Bitmap(Properties.Resources.Trend_UP); trendInfo = "Trend: steigend"; break;
+            }
+            return img;
+        }
+
+        private void setLabelInformation(Label lblValue, Label lblMinValue, Label lblMaxValue, Label lblMinTime, Label lblMaxTime, DataObject dObjExt, DataObjectCategory dobjcat, PictureBox picTrend)
         {
             if (dObjExt.ItemExists(dobjcat) && DataObjectCapabilities.HasCapability(dObjExt.Items[dobjcat.Value].DataObjCategory, dObjExt.Protocol))
             {
@@ -273,6 +299,9 @@ namespace Arduino_Temperature_Retrofit
                 lblMaxValue.Text = dObjExt.Items[dobjcat.Value].MaxValue.ToString("#.#0") + unit;
                 lblMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MinTimepoint);
                 lblMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MaxTimepoint);
+                string trendInfo;
+                picTrend.Image = getTrend(dObjExt, dobjcat, out trendInfo);
+                toolTip1.SetToolTip(picTrend, trendInfo);
                 lblValue.Parent.Enabled = true;
             }
             else
@@ -282,6 +311,8 @@ namespace Arduino_Temperature_Retrofit
                 lblMaxValue.Text = " --- ";
                 lblMinTime.Text = " --- ";
                 lblMaxTime.Text = " --- ";
+                picTrend.Image = null;
+                picTrend.BackColor = SystemColors.Control;
                 lblValue.Parent.Enabled = false;
             }
         }
@@ -368,6 +399,15 @@ namespace Arduino_Temperature_Retrofit
             this.Text = clsXML.Title;
         }
 
+        private void setDefaultTrend()
+        {
+            picTrendTemp.Image = picTrendSame.Image;
+            picTrendHeatIndex.Image = picTrendSame.Image;
+            picTrendAirPressure.Image = picTrendSame.Image;
+            picTrendHumidity.Image = picTrendSame.Image;
+            picTrendLUX.Image = picTrendSame.Image;
+            
+        }
         private void frmMain_Load(object sender, EventArgs e)
         {
             try
@@ -377,6 +417,7 @@ namespace Arduino_Temperature_Retrofit
                 connectionCheck(true);
                 initToolTip(toolTip1);
                 initFormSettings();
+                setDefaultTrend();
             }
             catch (Exception ex)
             {
@@ -468,11 +509,17 @@ namespace Arduino_Temperature_Retrofit
             chartValues.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
             double diff = maxDate.Subtract(minDate).TotalSeconds;
 
-            if (diff < 600)
+            if (diff < 300)
             {
                 chartValues.ChartAreas[0].AxisX.Interval = 1;
                 chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Minutes;
-                chartValues.ChartAreas[0].AxisX.IntervalOffset = 1;    
+                chartValues.ChartAreas[0].AxisX.IntervalOffset = 1;
+            }
+            else if (diff >= 300 && diff < 600)
+            {
+                chartValues.ChartAreas[0].AxisX.Interval = 2;
+                chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Minutes;
+                chartValues.ChartAreas[0].AxisX.IntervalOffset = 2;
             } else if (diff >= 600 && diff < 1200)
             {
                 chartValues.ChartAreas[0].AxisX.Interval = 5;
@@ -550,16 +597,9 @@ namespace Arduino_Temperature_Retrofit
                 
                 addChartSerie(values, dt, dbo.Value.ToString(), lineColor, minDate, maxDate, min, max);
                 
-                Trend trend = dObjExt.getTrend(dbo);
-                string lblTrend = string.Empty;
-                switch(trend)
-                {
-                    case Trend.CONSTANT: lblTrend = "Konst."; break;
-                    case Trend.DOWN: lblTrend = "Fallend"; break;
-                    case Trend.UP: lblTrend = "Steigend"; break;
-                }
 
-                lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString() + " (" + lblTrend + ")";
+
+                lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString();
             }
 
             if (chartValues.Series.Count > 0)
