@@ -41,7 +41,7 @@ namespace Arduino_Temperature_Retrofit
                 dobj.HTMLEnabled = xmlSensor.HTMLEnabled;
                 dobj.BaudRate = xmlSensor.Baudrate;
                 dobj.DataBits = Common.COMSettings.DefaultDataBits;
-                dobj.DtrEnable =xmlSensor.DtrEnabled;
+                dobj.DtrEnable = xmlSensor.DtrEnabled;
                 dobj.StopBits = Common.COMSettings.DefaultStopBits;
                 if (dobj.Active)
                 {
@@ -108,7 +108,9 @@ namespace Arduino_Temperature_Retrofit
                 dobj.AdditionalInformation = information;
             }
 
-            processIncomingDataSet(ref dobj, name);
+            if (dobj.DataAvailable)
+                processIncomingDataSet(ref dobj, name);
+
         }
 
         private string getToolTip(DataObject dobj)
@@ -188,7 +190,6 @@ namespace Arduino_Temperature_Retrofit
                     showData(dobj);
                     updateChart(dobj);
                     lblSensorLastUpdated.ForeColor = SystemColors.ControlText;
-                    lblSensorLastUpdated.Text = "Zuletzt aktualisiert: " + Common.getCurrentDateTimeFormatted();
                 }
             }
             else
@@ -254,29 +255,8 @@ namespace Arduino_Temperature_Retrofit
                 setLabelInformation(lblSensorHumidityValue, lblSensorHumidityValueMin, lblSensorHumidityValueMax, lblSensorHumidityValueMinTime, lblSensorHumidityValueMaxTime, dobj, DataObjectCategory.Humidity, picTrendHumidity);
                 setLabelInformation(lblSensorPressureValue, lblSensorPressureMin, lblSensorPressureMax, lblSensorPressureMinTime, lblSensorPressureMaxTime, dobj, DataObjectCategory.AirPressure, picTrendAirPressure);
                 setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobj, DataObjectCategory.HeatIndex, picTrendHeatIndex);
+                lblSensorLastUpdated.Text = "Zuletzt aktualisiert: " + Common.getCurrentDateTimeFormatted();
             }
-            else
-            {
-                lblSensorHumidityValue.Text = "Fehler";
-                lblSensorTempValue.Text = "Fehler";
-                if (dobj.Protocol == DataObjectProtocol.PROTOCOL_ONE)
-                {
-                    lblSensorLuxValue.Text = "N/A";
-                    lblSensorPressureValue.Text = "N/A";
-                }
-                else if (dobj.Protocol == DataObjectProtocol.PROTOCOL_TWO)
-                {
-                    lblSensorLuxValue.Text = "N/A";
-                    lblSensorPressureValue.Text = "Fehler";
-                }
-                else if (dobj.Protocol == DataObjectProtocol.PROTOCOL_THREE)
-                {
-                    lblSensorLuxValue.Text = "Fehler";
-                    lblSensorPressureValue.Text = "Fehler";
-                }
-            }
-
-            lblSensorLastUpdated.Text = "Aktualisiert: " + Common.getCurrentDateTimeFormatted();
         }
 
         private Image getTrend(DataObject dobj, DataObjectCategory dobjCat, out string trendInfo)
@@ -583,7 +563,7 @@ namespace Arduino_Temperature_Retrofit
                 double min = dObjExt.getLogItemMinValue(dbo);
                 double max = dObjExt.getLogItemMaxValue(dbo);
 
-                if ((max - min) < 5)
+                if ((max - min) < 4)
                 {
                     min -= 2;
                     max += 2;
@@ -603,7 +583,7 @@ namespace Arduino_Temperature_Retrofit
                 List<double> dt = new List<double>();
                 List<double> values = new List<double>();
 
-                DateTime minDate = dObjExt.getLogItems(dbo)[0].Timepoint.AddMinutes(-1);
+                DateTime minDate = dObjExt.getLogItems(dbo)[0].Timepoint;
                 DateTime maxDate = dObjExt.getLogItems(dbo)[dObjExt.getLogItems(dbo).Count - 1].Timepoint;
 
                 foreach (logItem li in dObjExt.getLogItems(dbo))
