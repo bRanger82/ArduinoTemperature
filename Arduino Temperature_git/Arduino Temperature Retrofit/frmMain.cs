@@ -41,7 +41,7 @@ namespace Arduino_Temperature_Retrofit
                 dobj.HTMLEnabled = xmlSensor.HTMLEnabled;
                 dobj.BaudRate = xmlSensor.Baudrate;
                 dobj.DataBits = Common.COMSettings.DefaultDataBits;
-                dobj.DtrEnable = Common.COMSettings.DefaultDtrEnable;
+                dobj.DtrEnable =xmlSensor.DtrEnabled;
                 dobj.StopBits = Common.COMSettings.DefaultStopBits;
                 if (dobj.Active)
                 {

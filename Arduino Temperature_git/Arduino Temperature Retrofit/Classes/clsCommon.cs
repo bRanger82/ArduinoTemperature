@@ -187,7 +187,7 @@ namespace Arduino_Temperature_Retrofit
             public static StopBits DefaultStopBits { get { return StopBits.One; } }
             public static int DefaultDataBits = 8;
             public static int DefaultBaudRate = 9600;
-            public static bool DefaultDtrEnable = true;
+            public static bool DefaultDtrEnable = false;
         }
 
         /// <summary>
