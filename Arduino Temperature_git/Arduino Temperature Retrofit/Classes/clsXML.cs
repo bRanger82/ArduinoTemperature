@@ -104,8 +104,6 @@ namespace Arduino_Temperature_Retrofit
                         MessageBox.Show("XML Fehler: Die Anzahl der Num Einträge kann nicht verarbeitet werden!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
 
-                    tmpSensor.numLogEntries = DataObject.LogMinEntries; //default
-
                     int Baudrate;
                     if (int.TryParse(getInnerText(child, "Baudrate"), out Baudrate))
                     {

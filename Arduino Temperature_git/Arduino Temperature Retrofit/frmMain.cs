@@ -164,8 +164,14 @@ namespace Arduino_Temperature_Retrofit
 
         private void parseArduinoReply(DataObject dobj, string message)
         {
-            //TODO
-            MessageBox.Show("Received REPLY message from Arduino: " + message);
+            switch(message)
+            {
+                case "BLAU-IST-AN": break;
+                case "BLAU-IST-AUS": break;
+                case "BLAU-OK": break;
+                default: Console.WriteLine("Unbekannte Antwort erhalten: " + message); break;
+            }
+
         }
 
         private void processIncomingDataSet(ref DataObject dobj, string name)

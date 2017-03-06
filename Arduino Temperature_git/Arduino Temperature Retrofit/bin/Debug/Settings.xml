@@ -6,6 +6,7 @@
       <Aktiv>Y</Aktiv>
       <Bezeichnung>Tisch</Bezeichnung>
       <Port>COM8</Port>
+      <DtrEnabled>N</DtrEnabled>
       <Baudrate>112000</Baudrate>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
@@ -17,6 +18,7 @@
       <Aktiv>Y</Aktiv>
       <Bezeichnung>Boden</Bezeichnung>
       <Port>COM3</Port>
+      <DtrEnabled>N</DtrEnabled>
       <Baudrate>9600</Baudrate>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
