@@ -51,7 +51,15 @@ DHT dht(DHTPIN, DHTTYPE);
 SFE_BMP180 pressure;
 volatile bool ledTestRun = false;
 volatile bool UPDATE_TFT_DATA = false;
+volatile bool dataAvailable = false;
 
+float h = NAN;     //Luftfeuchte auslesen
+float t = NAN;  //Temperatur auslesen
+float r = NAN; //Heat-Index berechnen
+double p0 = 0; //Wert fuer Luftdruck
+uint32_t lux = 0;
+  
+/*
 #define MAXARRAY 5
 float tempArray [MAXARRAY] = {0};
 int lenTempArray = 0;
@@ -93,7 +101,7 @@ void addValueToArray(float value)
   {
       tempArray [lenTempArray++] = value;
   }
-}
+}*/
 
 void initSerial(void)
 {
@@ -155,7 +163,14 @@ void setup(void)
 
 void loop(void) 
 {
-  processData();
+  bool sendSerialData = false;
+  if (Serial.available() > 0)
+  {
+    String input = Serial.readString();
+    if (input == "GetInformation")
+      sendSerialData = true;
+  }
+  processData(sendSerialData);
   delay(DELAY_TIME);
   cycle++;
 }
@@ -306,12 +321,11 @@ bool getPressure(double * value)
   return false;
 }
 
-void processData()
+void processData(bool sendSerialData)
 {
-  float h = dht.readHumidity();     //Luftfeuchte auslesen
-  float t = dht.readTemperature();  //Temperatur auslesen
-  float r = dht.computeHeatIndex(t, h, false); //Heat-Index berechnen
-  double p0 = 0; //Wert fuer Luftdruck
+  h = dht.readHumidity();     //Luftfeuchte auslesen
+  t = dht.readTemperature();  //Temperatur auslesen
+  r = dht.computeHeatIndex(t, h, false); //Heat-Index berechnen
   bool pressAvailable = getPressure(&p0); //Luftdruck lesen
   static bool errorOccured = false;
   uint16_t x = tsl.getLuminosity(TSL2561_VISIBLE);
@@ -319,14 +333,14 @@ void processData()
   uint16_t ir, full;
   ir = lum >> 16;
   full = lum & 0xFFFF;
-  uint32_t lux = tsl.calculateLux(full, ir);
+  lux = tsl.calculateLux(full, ir);
   
   if (isnan(t) || isnan(h) || isnan(r) || !pressAvailable) //Fehler beim Lesen eines der Daten
   {
     showError();
     errorOccured = true;
     digitalWrite(LEDrot, HIGH);
-    if (Serial)
+    if (sendSerialData)
     {
       Serial.println("Fehler: Daten konnten gelesen werden!");
       Serial.flush();
@@ -336,7 +350,6 @@ void processData()
   } 
   else
   {    
-    addValueToArray((float)12.5);
     digitalWrite(LEDrot, LOW);
     //update TFT only the CYCLE_UPDATE_TFT times when a processData is called
     //to avoid each time update of the TFT
@@ -348,7 +361,7 @@ void processData()
       UPDATE_TFT_DATA = false;
     }
     
-    if (Serial)
+    if (sendSerialData)
     {
       writeSerialProtocolV3(h, t, r, p0, lux);  
     }
@@ -372,20 +385,6 @@ void printIPInfoOnTFT(void)
   tft.println("127.0.0.1");
   tft.println("Signal Staerke:");
   tft.println("-71 dBm");
-
-  tft.println("Temp. Trend:");
-  tft.println(calculateTrendY(tempArray, lenTempArray));
-  tft.println("Schnittstelle (Serial):");
-  if (Serial)
-    tft.println(" verfuegbar"); 
-  else
-    tft.println(" NICHT verfuegbar");
-
-  tft.println("Schnittstelle (Serial1):");
-  if (Serial1)
-    tft.println(" verfuegbar"); 
-  else
-    tft.println(" NICHT verfuegbar");
 }
 
 void ledTest(void)

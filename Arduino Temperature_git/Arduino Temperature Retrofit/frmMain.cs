@@ -580,9 +580,20 @@ namespace Arduino_Temperature_Retrofit
 
             if (DataObjectCapabilities.HasCapability(dbo, dObjExt.Protocol) && dObjExt.DataAvailable)
             {
-                double min = dObjExt.getLogItemMinValue(dbo) - 5;
-                double max = dObjExt.getLogItemMaxValue(dbo) + 5;
-                
+                double min = dObjExt.getLogItemMinValue(dbo);
+                double max = dObjExt.getLogItemMaxValue(dbo);
+
+                if ((max - min) < 5)
+                {
+                    min -= 2;
+                    max += 2;
+                }
+                else
+                {
+                    min -= 5;
+                    max += 5;
+                }
+                    
 
                 //Set minimum Value to 0 evept for Temperature values (HeatIndex and Temperature -> it can be colder than 0 degrees ;) )
                 if (min < 0 && !(dbo.Value == DataObjectCategory.HeatIndex.Value || dbo.Value == DataObjectCategory.Temperature.Value))
