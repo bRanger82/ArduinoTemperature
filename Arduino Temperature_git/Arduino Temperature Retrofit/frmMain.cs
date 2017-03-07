@@ -635,16 +635,14 @@ namespace Arduino_Temperature_Retrofit
         {
             optionProperties Options = new optionProperties();
             Options.propTopMost = this.TopMost;
-
+            Options.propWriteHTML = clsXML.HttpEnabled;
             frmOptions fOpt = new frmOptions(Options);
 
             fOpt.Show(this);
 
             fOpt.Top = (this.Top + (this.Height / 2)) - (fOpt.Height / 2);
             fOpt.Left = (this.Left + (this.Width / 2)) - (fOpt.Width / 2);
-
             
-
             //exit if canceled
             if (fOpt.Cancel == true)
                 return;
