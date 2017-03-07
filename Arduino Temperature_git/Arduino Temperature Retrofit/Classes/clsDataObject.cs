@@ -246,13 +246,13 @@ namespace Arduino_Temperature_Retrofit
 
         public int MaxLogItemsCount { get { return _maxLogItemsCount; } set { if (value < LogMinEntries || value > LogMaxEntries) return; _maxLogItemsCount = value; } }
 
-        private List<LogObject> _LogData = new List<LogObject>();
+        private List<LogObject> _HistoryData = new List<LogObject>();
 
         public List<logItem> getLogItems(DataObjectCategory dobj)
         {
             List<logItem> lst = new List<logItem>();
 
-            foreach (LogObject logObj in _LogData)
+            foreach (LogObject logObj in _HistoryData)
             {
                 if (logObj.Category.Value == dobj.Value)
                 {
@@ -267,7 +267,7 @@ namespace Arduino_Temperature_Retrofit
         {
             List<double> lst = new List<double>();
 
-            foreach (LogObject logObj in _LogData)
+            foreach (LogObject logObj in _HistoryData)
             {
                 if (logObj.Category.Value == dobjCat.Value)
                 {
@@ -292,35 +292,35 @@ namespace Arduino_Temperature_Retrofit
 
         }
 
-        public double getLogItemMinValue(DataObjectCategory dObjcat)
+        public double getHistoryItemMinValue(DataObjectCategory dObjcat)
         {
             if (!_Items.ContainsKey(dObjcat.Value))
                 return 0;
             return _Items[dObjcat.Value].MinValue;
         }
 
-        public double getLogItemMaxValue(DataObjectCategory dObjcat)
+        public double getHistoryItemMaxValue(DataObjectCategory dObjcat)
         {
             if (!_Items.ContainsKey(dObjcat.Value))
                 return 0;
             return _Items[dObjcat.Value].MaxValue;
         }
 
-        public int getLogItemCount(DataObjectCategory dObjCat)
+        public int getHistoryItemCount(DataObjectCategory dObjCat)
         {
-            if (_LogData.Count < 1)
+            if (_HistoryData.Count < 1)
                 return 0;
 
-            return _LogData.Count(i => i.Category.Value == dObjCat.Value);
+            return _HistoryData.Count(i => i.Category.Value == dObjCat.Value);
         }
 
-        public void addItemToLog(LogObject logObj)
+        public void addItemToHistory(LogObject logObj)
         {
-            while (getLogItemCount(logObj.Category) > _maxLogItemsCount)
+            while (getHistoryItemCount(logObj.Category) > _maxLogItemsCount)
             {
-                _LogData.RemoveAt(0);
+                _HistoryData.RemoveAt(0);
             }
-            _LogData.Add(logObj);
+            _HistoryData.Add(logObj);
         }
 
         private bool _IsDataUpToDate = true;
@@ -381,7 +381,7 @@ namespace Arduino_Temperature_Retrofit
             }
 
             if (EnableAddDataToHistory)
-                addItemToLog(new LogObject(value, dObjCat, timepoint));
+                addItemToHistory(new LogObject(value, dObjCat, timepoint));
 
         }
     }

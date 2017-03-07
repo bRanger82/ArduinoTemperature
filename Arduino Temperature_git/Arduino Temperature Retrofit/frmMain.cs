@@ -560,8 +560,8 @@ namespace Arduino_Temperature_Retrofit
 
             if (DataObjectCapabilities.HasCapability(dbo, dObjExt.Protocol) && dObjExt.DataAvailable)
             {
-                double min = dObjExt.getLogItemMinValue(dbo);
-                double max = dObjExt.getLogItemMaxValue(dbo);
+                double min = dObjExt.getHistoryItemMinValue(dbo);
+                double max = dObjExt.getHistoryItemMaxValue(dbo);
 
                 if ((max - min) < 4)
                 {
@@ -613,7 +613,7 @@ namespace Arduino_Temperature_Retrofit
 
             if (dobjCat != null)
             {
-                if (dobj.getLogItemCount(dobjCat) > 0)
+                if (dobj.getHistoryItemCount(dobjCat) > 0)
                 {
                     Color lineColor = getChartColor(dobjCat);
                     updateChart(dobjCat, dobj, lineColor);
