@@ -36,8 +36,10 @@
             this.lblChartSelection = new System.Windows.Forms.Label();
             this.cboChartSelection = new System.Windows.Forms.ComboBox();
             this.grpBoxSensorOne = new System.Windows.Forms.GroupBox();
+            this.picConnStatus = new System.Windows.Forms.PictureBox();
             this.cboSensors = new System.Windows.Forms.ComboBox();
             this.grpBoxHeatIndex = new System.Windows.Forms.GroupBox();
+            this.picTrendHeatIndex = new System.Windows.Forms.PictureBox();
             this.lblSensorHeatIndexName = new System.Windows.Forms.Label();
             this.lblSensorHeatIndexMaxTime = new System.Windows.Forms.Label();
             this.lblSensorHeatIndexMinTime = new System.Windows.Forms.Label();
@@ -46,9 +48,11 @@
             this.lblSensorHeatIndexMaxName = new System.Windows.Forms.Label();
             this.lblSensorHeatIndexMinName = new System.Windows.Forms.Label();
             this.lblSensorHeatIndexValue = new System.Windows.Forms.Label();
+            this.picColHeatIndex = new System.Windows.Forms.PictureBox();
             this.lblSensorLastUpdated = new System.Windows.Forms.Label();
             this.lblSensor = new System.Windows.Forms.Label();
             this.grpBoxLUX = new System.Windows.Forms.GroupBox();
+            this.picTrendLUX = new System.Windows.Forms.PictureBox();
             this.lblSensorLuxName = new System.Windows.Forms.Label();
             this.lblSensorLuxMaxTime = new System.Windows.Forms.Label();
             this.lblSensorLuxMinTime = new System.Windows.Forms.Label();
@@ -57,7 +61,9 @@
             this.label22 = new System.Windows.Forms.Label();
             this.label23 = new System.Windows.Forms.Label();
             this.lblSensorLuxValue = new System.Windows.Forms.Label();
+            this.picColLUX = new System.Windows.Forms.PictureBox();
             this.grpBoxAirPressure = new System.Windows.Forms.GroupBox();
+            this.picTrendAirPressure = new System.Windows.Forms.PictureBox();
             this.lblSensorPressureName = new System.Windows.Forms.Label();
             this.lblSensorPressureMaxTime = new System.Windows.Forms.Label();
             this.lblSensorPressureMinTime = new System.Windows.Forms.Label();
@@ -66,7 +72,9 @@
             this.label30 = new System.Windows.Forms.Label();
             this.label31 = new System.Windows.Forms.Label();
             this.lblSensorPressureValue = new System.Windows.Forms.Label();
+            this.picColAirPressure = new System.Windows.Forms.PictureBox();
             this.grpBoxHumidity = new System.Windows.Forms.GroupBox();
+            this.picTrendHumidity = new System.Windows.Forms.PictureBox();
             this.lblSensorHumidityName = new System.Windows.Forms.Label();
             this.lblSensorHumidityValueMaxTime = new System.Windows.Forms.Label();
             this.lblSensorHumidityValueMinTime = new System.Windows.Forms.Label();
@@ -75,7 +83,9 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.lblSensorHumidityValue = new System.Windows.Forms.Label();
+            this.picColHumidity = new System.Windows.Forms.PictureBox();
             this.grpBoxTemperature = new System.Windows.Forms.GroupBox();
+            this.picTrendTemp = new System.Windows.Forms.PictureBox();
             this.lblSensorTempName = new System.Windows.Forms.Label();
             this.lblSensorTempMaxTime = new System.Windows.Forms.Label();
             this.lblSensorTempMinTime = new System.Windows.Forms.Label();
@@ -84,6 +94,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.lblSensorTempValue = new System.Windows.Forms.Label();
+            this.picColTemp = new System.Windows.Forms.PictureBox();
             this.chartValues = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.menüToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -98,46 +109,35 @@
             this.picTrendSame = new System.Windows.Forms.PictureBox();
             this.picTrendDown = new System.Windows.Forms.PictureBox();
             this.picTrendUp = new System.Windows.Forms.PictureBox();
-            this.picConnStatus = new System.Windows.Forms.PictureBox();
-            this.picColHeatIndex = new System.Windows.Forms.PictureBox();
-            this.picColLUX = new System.Windows.Forms.PictureBox();
-            this.picColAirPressure = new System.Windows.Forms.PictureBox();
-            this.picColHumidity = new System.Windows.Forms.PictureBox();
-            this.picTrendTemp = new System.Windows.Forms.PictureBox();
-            this.picColTemp = new System.Windows.Forms.PictureBox();
-            this.picTrendHeatIndex = new System.Windows.Forms.PictureBox();
-            this.picTrendAirPressure = new System.Windows.Forms.PictureBox();
-            this.picTrendHumidity = new System.Windows.Forms.PictureBox();
-            this.picTrendLUX = new System.Windows.Forms.PictureBox();
             this.grpBoxSensorOne.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).BeginInit();
             this.grpBoxHeatIndex.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendHeatIndex)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).BeginInit();
             this.grpBoxLUX.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendLUX)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColLUX)).BeginInit();
             this.grpBoxAirPressure.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendAirPressure)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColAirPressure)).BeginInit();
             this.grpBoxHumidity.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendHumidity)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColHumidity)).BeginInit();
             this.grpBoxTemperature.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendTemp)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColTemp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartValues)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendUp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picColLUX)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picColAirPressure)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picColHumidity)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendTemp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picColTemp)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendHeatIndex)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendAirPressure)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendHumidity)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendLUX)).BeginInit();
             this.SuspendLayout();
             // 
             // lblChartSelection
             // 
             this.lblChartSelection.AutoSize = true;
             this.lblChartSelection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblChartSelection.Location = new System.Drawing.Point(221, 484);
+            this.lblChartSelection.Location = new System.Drawing.Point(231, 481);
             this.lblChartSelection.Name = "lblChartSelection";
             this.lblChartSelection.Size = new System.Drawing.Size(109, 16);
             this.lblChartSelection.TabIndex = 35;
@@ -148,7 +148,7 @@
             this.cboChartSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboChartSelection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboChartSelection.FormattingEnabled = true;
-            this.cboChartSelection.Location = new System.Drawing.Point(336, 481);
+            this.cboChartSelection.Location = new System.Drawing.Point(346, 478);
             this.cboChartSelection.Name = "cboChartSelection";
             this.cboChartSelection.Size = new System.Drawing.Size(136, 24);
             this.cboChartSelection.TabIndex = 34;
@@ -167,9 +167,18 @@
             this.grpBoxSensorOne.Controls.Add(this.grpBoxTemperature);
             this.grpBoxSensorOne.Location = new System.Drawing.Point(12, 25);
             this.grpBoxSensorOne.Name = "grpBoxSensorOne";
-            this.grpBoxSensorOne.Size = new System.Drawing.Size(463, 447);
+            this.grpBoxSensorOne.Size = new System.Drawing.Size(470, 447);
             this.grpBoxSensorOne.TabIndex = 33;
             this.grpBoxSensorOne.TabStop = false;
+            // 
+            // picConnStatus
+            // 
+            this.picConnStatus.BackColor = System.Drawing.SystemColors.Control;
+            this.picConnStatus.Location = new System.Drawing.Point(15, 22);
+            this.picConnStatus.Name = "picConnStatus";
+            this.picConnStatus.Size = new System.Drawing.Size(25, 25);
+            this.picConnStatus.TabIndex = 36;
+            this.picConnStatus.TabStop = false;
             // 
             // cboSensors
             // 
@@ -200,6 +209,16 @@
             this.grpBoxHeatIndex.Size = new System.Drawing.Size(225, 110);
             this.grpBoxHeatIndex.TabIndex = 30;
             this.grpBoxHeatIndex.TabStop = false;
+            // 
+            // picTrendHeatIndex
+            // 
+            this.picTrendHeatIndex.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.picTrendHeatIndex.Location = new System.Drawing.Point(181, 35);
+            this.picTrendHeatIndex.Name = "picTrendHeatIndex";
+            this.picTrendHeatIndex.Size = new System.Drawing.Size(30, 30);
+            this.picTrendHeatIndex.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picTrendHeatIndex.TabIndex = 40;
+            this.picTrendHeatIndex.TabStop = false;
             // 
             // lblSensorHeatIndexName
             // 
@@ -276,6 +295,16 @@
             this.lblSensorHeatIndexValue.TabIndex = 1;
             this.lblSensorHeatIndexValue.Text = "Kein Wert";
             // 
+            // picColHeatIndex
+            // 
+            this.picColHeatIndex.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.picColHeatIndex.Location = new System.Drawing.Point(0, 0);
+            this.picColHeatIndex.Name = "picColHeatIndex";
+            this.picColHeatIndex.Size = new System.Drawing.Size(225, 5);
+            this.picColHeatIndex.TabIndex = 0;
+            this.picColHeatIndex.TabStop = false;
+            this.picColHeatIndex.Click += new System.EventHandler(this.picColHeatIndex_Click);
+            // 
             // lblSensorLastUpdated
             // 
             this.lblSensorLastUpdated.AutoSize = true;
@@ -314,6 +343,16 @@
             this.grpBoxLUX.Size = new System.Drawing.Size(225, 110);
             this.grpBoxLUX.TabIndex = 30;
             this.grpBoxLUX.TabStop = false;
+            // 
+            // picTrendLUX
+            // 
+            this.picTrendLUX.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.picTrendLUX.Location = new System.Drawing.Point(181, 35);
+            this.picTrendLUX.Name = "picTrendLUX";
+            this.picTrendLUX.Size = new System.Drawing.Size(30, 30);
+            this.picTrendLUX.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picTrendLUX.TabIndex = 45;
+            this.picTrendLUX.TabStop = false;
             // 
             // lblSensorLuxName
             // 
@@ -390,6 +429,16 @@
             this.lblSensorLuxValue.TabIndex = 1;
             this.lblSensorLuxValue.Text = "Kein Wert";
             // 
+            // picColLUX
+            // 
+            this.picColLUX.BackColor = System.Drawing.Color.Aqua;
+            this.picColLUX.Location = new System.Drawing.Point(0, 0);
+            this.picColLUX.Name = "picColLUX";
+            this.picColLUX.Size = new System.Drawing.Size(225, 5);
+            this.picColLUX.TabIndex = 0;
+            this.picColLUX.TabStop = false;
+            this.picColLUX.Click += new System.EventHandler(this.picColLUX_Click);
+            // 
             // grpBoxAirPressure
             // 
             this.grpBoxAirPressure.Controls.Add(this.picTrendAirPressure);
@@ -408,6 +457,16 @@
             this.grpBoxAirPressure.Size = new System.Drawing.Size(225, 110);
             this.grpBoxAirPressure.TabIndex = 29;
             this.grpBoxAirPressure.TabStop = false;
+            // 
+            // picTrendAirPressure
+            // 
+            this.picTrendAirPressure.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.picTrendAirPressure.Location = new System.Drawing.Point(181, 36);
+            this.picTrendAirPressure.Name = "picTrendAirPressure";
+            this.picTrendAirPressure.Size = new System.Drawing.Size(30, 30);
+            this.picTrendAirPressure.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picTrendAirPressure.TabIndex = 43;
+            this.picTrendAirPressure.TabStop = false;
             // 
             // lblSensorPressureName
             // 
@@ -484,6 +543,16 @@
             this.lblSensorPressureValue.TabIndex = 1;
             this.lblSensorPressureValue.Text = "Kein Wert";
             // 
+            // picColAirPressure
+            // 
+            this.picColAirPressure.BackColor = System.Drawing.Color.Blue;
+            this.picColAirPressure.Location = new System.Drawing.Point(0, 0);
+            this.picColAirPressure.Name = "picColAirPressure";
+            this.picColAirPressure.Size = new System.Drawing.Size(225, 5);
+            this.picColAirPressure.TabIndex = 0;
+            this.picColAirPressure.TabStop = false;
+            this.picColAirPressure.Click += new System.EventHandler(this.picColAirPressure_Click);
+            // 
             // grpBoxHumidity
             // 
             this.grpBoxHumidity.Controls.Add(this.picTrendHumidity);
@@ -502,6 +571,16 @@
             this.grpBoxHumidity.Size = new System.Drawing.Size(225, 110);
             this.grpBoxHumidity.TabIndex = 28;
             this.grpBoxHumidity.TabStop = false;
+            // 
+            // picTrendHumidity
+            // 
+            this.picTrendHumidity.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.picTrendHumidity.Location = new System.Drawing.Point(182, 36);
+            this.picTrendHumidity.Name = "picTrendHumidity";
+            this.picTrendHumidity.Size = new System.Drawing.Size(30, 30);
+            this.picTrendHumidity.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picTrendHumidity.TabIndex = 44;
+            this.picTrendHumidity.TabStop = false;
             // 
             // lblSensorHumidityName
             // 
@@ -578,6 +657,16 @@
             this.lblSensorHumidityValue.TabIndex = 1;
             this.lblSensorHumidityValue.Text = "Kein Wert";
             // 
+            // picColHumidity
+            // 
+            this.picColHumidity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
+            this.picColHumidity.Location = new System.Drawing.Point(0, 0);
+            this.picColHumidity.Name = "picColHumidity";
+            this.picColHumidity.Size = new System.Drawing.Size(225, 5);
+            this.picColHumidity.TabIndex = 0;
+            this.picColHumidity.TabStop = false;
+            this.picColHumidity.Click += new System.EventHandler(this.picColHumidity_Click);
+            // 
             // grpBoxTemperature
             // 
             this.grpBoxTemperature.Controls.Add(this.picTrendTemp);
@@ -596,6 +685,16 @@
             this.grpBoxTemperature.Size = new System.Drawing.Size(225, 110);
             this.grpBoxTemperature.TabIndex = 27;
             this.grpBoxTemperature.TabStop = false;
+            // 
+            // picTrendTemp
+            // 
+            this.picTrendTemp.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.picTrendTemp.Location = new System.Drawing.Point(181, 35);
+            this.picTrendTemp.Name = "picTrendTemp";
+            this.picTrendTemp.Size = new System.Drawing.Size(30, 30);
+            this.picTrendTemp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picTrendTemp.TabIndex = 39;
+            this.picTrendTemp.TabStop = false;
             // 
             // lblSensorTempName
             // 
@@ -672,6 +771,16 @@
             this.lblSensorTempValue.TabIndex = 1;
             this.lblSensorTempValue.Text = "Kein Wert";
             // 
+            // picColTemp
+            // 
+            this.picColTemp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
+            this.picColTemp.Location = new System.Drawing.Point(0, 0);
+            this.picColTemp.Name = "picColTemp";
+            this.picColTemp.Size = new System.Drawing.Size(225, 5);
+            this.picColTemp.TabIndex = 0;
+            this.picColTemp.TabStop = false;
+            this.picColTemp.Click += new System.EventHandler(this.picColTemp_Click);
+            // 
             // chartValues
             // 
             chartArea1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
@@ -690,7 +799,7 @@
             series2.Name = "HeatIndex";
             this.chartValues.Series.Add(series1);
             this.chartValues.Series.Add(series2);
-            this.chartValues.Size = new System.Drawing.Size(460, 147);
+            this.chartValues.Size = new System.Drawing.Size(470, 147);
             this.chartValues.TabIndex = 36;
             this.chartValues.Text = "chart1";
             // 
@@ -701,7 +810,7 @@
             this.kommandosToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(480, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(494, 24);
             this.menuStrip1.TabIndex = 37;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -761,7 +870,7 @@
             // 
             this.lblNumLogEntries.AutoSize = true;
             this.lblNumLogEntries.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNumLogEntries.Location = new System.Drawing.Point(9, 484);
+            this.lblNumLogEntries.Location = new System.Drawing.Point(9, 481);
             this.lblNumLogEntries.Name = "lblNumLogEntries";
             this.lblNumLogEntries.Size = new System.Drawing.Size(136, 16);
             this.lblNumLogEntries.TabIndex = 38;
@@ -797,115 +906,11 @@
             this.picTrendUp.TabIndex = 40;
             this.picTrendUp.TabStop = false;
             // 
-            // picConnStatus
-            // 
-            this.picConnStatus.BackColor = System.Drawing.SystemColors.Control;
-            this.picConnStatus.Location = new System.Drawing.Point(15, 22);
-            this.picConnStatus.Name = "picConnStatus";
-            this.picConnStatus.Size = new System.Drawing.Size(25, 25);
-            this.picConnStatus.TabIndex = 36;
-            this.picConnStatus.TabStop = false;
-            // 
-            // picColHeatIndex
-            // 
-            this.picColHeatIndex.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.picColHeatIndex.Location = new System.Drawing.Point(0, 0);
-            this.picColHeatIndex.Name = "picColHeatIndex";
-            this.picColHeatIndex.Size = new System.Drawing.Size(225, 5);
-            this.picColHeatIndex.TabIndex = 0;
-            this.picColHeatIndex.TabStop = false;
-            // 
-            // picColLUX
-            // 
-            this.picColLUX.BackColor = System.Drawing.Color.Aqua;
-            this.picColLUX.Location = new System.Drawing.Point(0, 0);
-            this.picColLUX.Name = "picColLUX";
-            this.picColLUX.Size = new System.Drawing.Size(225, 5);
-            this.picColLUX.TabIndex = 0;
-            this.picColLUX.TabStop = false;
-            // 
-            // picColAirPressure
-            // 
-            this.picColAirPressure.BackColor = System.Drawing.Color.Blue;
-            this.picColAirPressure.Location = new System.Drawing.Point(0, 0);
-            this.picColAirPressure.Name = "picColAirPressure";
-            this.picColAirPressure.Size = new System.Drawing.Size(225, 5);
-            this.picColAirPressure.TabIndex = 0;
-            this.picColAirPressure.TabStop = false;
-            // 
-            // picColHumidity
-            // 
-            this.picColHumidity.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.picColHumidity.Location = new System.Drawing.Point(0, 0);
-            this.picColHumidity.Name = "picColHumidity";
-            this.picColHumidity.Size = new System.Drawing.Size(225, 5);
-            this.picColHumidity.TabIndex = 0;
-            this.picColHumidity.TabStop = false;
-            // 
-            // picTrendTemp
-            // 
-            this.picTrendTemp.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.picTrendTemp.Location = new System.Drawing.Point(181, 35);
-            this.picTrendTemp.Name = "picTrendTemp";
-            this.picTrendTemp.Size = new System.Drawing.Size(30, 30);
-            this.picTrendTemp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picTrendTemp.TabIndex = 39;
-            this.picTrendTemp.TabStop = false;
-            // 
-            // picColTemp
-            // 
-            this.picColTemp.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(0)))));
-            this.picColTemp.Location = new System.Drawing.Point(0, 0);
-            this.picColTemp.Name = "picColTemp";
-            this.picColTemp.Size = new System.Drawing.Size(225, 5);
-            this.picColTemp.TabIndex = 0;
-            this.picColTemp.TabStop = false;
-            // 
-            // picTrendHeatIndex
-            // 
-            this.picTrendHeatIndex.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.picTrendHeatIndex.Location = new System.Drawing.Point(181, 35);
-            this.picTrendHeatIndex.Name = "picTrendHeatIndex";
-            this.picTrendHeatIndex.Size = new System.Drawing.Size(30, 30);
-            this.picTrendHeatIndex.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picTrendHeatIndex.TabIndex = 40;
-            this.picTrendHeatIndex.TabStop = false;
-            // 
-            // picTrendAirPressure
-            // 
-            this.picTrendAirPressure.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.picTrendAirPressure.Location = new System.Drawing.Point(181, 36);
-            this.picTrendAirPressure.Name = "picTrendAirPressure";
-            this.picTrendAirPressure.Size = new System.Drawing.Size(30, 30);
-            this.picTrendAirPressure.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picTrendAirPressure.TabIndex = 43;
-            this.picTrendAirPressure.TabStop = false;
-            // 
-            // picTrendHumidity
-            // 
-            this.picTrendHumidity.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.picTrendHumidity.Location = new System.Drawing.Point(182, 36);
-            this.picTrendHumidity.Name = "picTrendHumidity";
-            this.picTrendHumidity.Size = new System.Drawing.Size(30, 30);
-            this.picTrendHumidity.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picTrendHumidity.TabIndex = 44;
-            this.picTrendHumidity.TabStop = false;
-            // 
-            // picTrendLUX
-            // 
-            this.picTrendLUX.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.picTrendLUX.Location = new System.Drawing.Point(181, 35);
-            this.picTrendLUX.Name = "picTrendLUX";
-            this.picTrendLUX.Size = new System.Drawing.Size(30, 30);
-            this.picTrendLUX.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picTrendLUX.TabIndex = 45;
-            this.picTrendLUX.TabStop = false;
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(480, 671);
+            this.ClientSize = new System.Drawing.Size(494, 671);
             this.Controls.Add(this.picTrendSame);
             this.Controls.Add(this.picTrendDown);
             this.Controls.Add(this.picTrendUp);
@@ -924,33 +929,33 @@
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.grpBoxSensorOne.ResumeLayout(false);
             this.grpBoxSensorOne.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).EndInit();
             this.grpBoxHeatIndex.ResumeLayout(false);
             this.grpBoxHeatIndex.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendHeatIndex)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).EndInit();
             this.grpBoxLUX.ResumeLayout(false);
             this.grpBoxLUX.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendLUX)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColLUX)).EndInit();
             this.grpBoxAirPressure.ResumeLayout(false);
             this.grpBoxAirPressure.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendAirPressure)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColAirPressure)).EndInit();
             this.grpBoxHumidity.ResumeLayout(false);
             this.grpBoxHumidity.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendHumidity)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColHumidity)).EndInit();
             this.grpBoxTemperature.ResumeLayout(false);
             this.grpBoxTemperature.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendTemp)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picColTemp)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartValues)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendDown)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendUp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picColLUX)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picColAirPressure)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picColHumidity)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendTemp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picColTemp)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendHeatIndex)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendAirPressure)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendHumidity)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendLUX)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

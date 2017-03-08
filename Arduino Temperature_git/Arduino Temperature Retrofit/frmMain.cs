@@ -219,8 +219,8 @@ namespace Arduino_Temperature_Retrofit
 
         private void processDataProtocolV1(string [] data, ref DataObject dobj)
         {
-            dobj.addDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(data[1].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
-            dobj.addDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
+            dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[1].ToString())), DataObjectCategory.Luftfeuchtigkeit, Common.SensorValueType.Humidity);
+            dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Temperatur, Common.SensorValueType.Temperature);
             dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
             dobj.LastUpdated = DateTime.Now;
             dobj.DataAvailable = true;
@@ -231,10 +231,10 @@ namespace Arduino_Temperature_Retrofit
 
         private void processDataProtocolV2(string[] data, ref DataObject dobj)
         {
-            dobj.addDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
-            dobj.addDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
+            dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Luftfeuchtigkeit, Common.SensorValueType.Humidity);
+            dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.Temperatur, Common.SensorValueType.Temperature);
             dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(data[4].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
-            dobj.addDataItem(DataObjectCategory.AirPressure.Value, double.Parse(Common.replaceDecPoint(data[5].ToString())), DataObjectCategory.AirPressure, Common.SensorValueType.AirPressure);
+            dobj.addDataItem(DataObjectCategory.Luftdruck.Value, double.Parse(Common.replaceDecPoint(data[5].ToString())), DataObjectCategory.Luftdruck, Common.SensorValueType.AirPressure);
             dobj.LastUpdated = DateTime.Now;
             dobj.DataAvailable = true;
             dobj.AdditionalInformation = "-";
@@ -244,11 +244,11 @@ namespace Arduino_Temperature_Retrofit
 
         private void processDataProtocolV3(string[] data, ref DataObject dobj)
         {
-            dobj.addDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
-            dobj.addDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
+            dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Luftfeuchtigkeit, Common.SensorValueType.Humidity);
+            dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.Temperatur, Common.SensorValueType.Temperature);
             dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(data[4].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
-            dobj.addDataItem(DataObjectCategory.AirPressure.Value, double.Parse(Common.replaceDecPoint(data[5].ToString())), DataObjectCategory.AirPressure, Common.SensorValueType.AirPressure);
-            dobj.addDataItem(DataObjectCategory.LUX.Value, double.Parse(Common.replaceDecPoint(data[6].ToString())), DataObjectCategory.LUX, Common.SensorValueType.LUX);
+            dobj.addDataItem(DataObjectCategory.Luftdruck.Value, double.Parse(Common.replaceDecPoint(data[5].ToString())), DataObjectCategory.Luftdruck, Common.SensorValueType.AirPressure);
+            dobj.addDataItem(DataObjectCategory.Lichtwert.Value, double.Parse(Common.replaceDecPoint(data[6].ToString())), DataObjectCategory.Lichtwert, Common.SensorValueType.LUX);
 
             dobj.LastUpdated = DateTime.Now; 
             dobj.DataAvailable = true;
@@ -261,10 +261,10 @@ namespace Arduino_Temperature_Retrofit
         {
             if (dobj.DataAvailable)
             {
-                setLabelInformation(lblSensorTempValue, lblSensorTempMin, lblSensorTempMax, lblSensorTempMinTime, lblSensorTempMaxTime, dobj, DataObjectCategory.Temperature, picTrendTemp);
-                setLabelInformation(lblSensorLuxValue, lblSensorLuxMin, lblSensorLuxMax, lblSensorLuxMinTime, lblSensorLuxMaxTime, dobj, DataObjectCategory.LUX, picTrendLUX);
-                setLabelInformation(lblSensorHumidityValue, lblSensorHumidityValueMin, lblSensorHumidityValueMax, lblSensorHumidityValueMinTime, lblSensorHumidityValueMaxTime, dobj, DataObjectCategory.Humidity, picTrendHumidity);
-                setLabelInformation(lblSensorPressureValue, lblSensorPressureMin, lblSensorPressureMax, lblSensorPressureMinTime, lblSensorPressureMaxTime, dobj, DataObjectCategory.AirPressure, picTrendAirPressure);
+                setLabelInformation(lblSensorTempValue, lblSensorTempMin, lblSensorTempMax, lblSensorTempMinTime, lblSensorTempMaxTime, dobj, DataObjectCategory.Temperatur, picTrendTemp);
+                setLabelInformation(lblSensorLuxValue, lblSensorLuxMin, lblSensorLuxMax, lblSensorLuxMinTime, lblSensorLuxMaxTime, dobj, DataObjectCategory.Lichtwert, picTrendLUX);
+                setLabelInformation(lblSensorHumidityValue, lblSensorHumidityValueMin, lblSensorHumidityValueMax, lblSensorHumidityValueMinTime, lblSensorHumidityValueMaxTime, dobj, DataObjectCategory.Luftfeuchtigkeit, picTrendHumidity);
+                setLabelInformation(lblSensorPressureValue, lblSensorPressureMin, lblSensorPressureMax, lblSensorPressureMinTime, lblSensorPressureMaxTime, dobj, DataObjectCategory.Luftdruck, picTrendAirPressure);
                 setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobj, DataObjectCategory.HeatIndex, picTrendHeatIndex);
                 lblSensorLastUpdated.Text = "Zuletzt aktualisiert: " + Common.getCurrentDateTimeFormatted();
             }
@@ -318,13 +318,13 @@ namespace Arduino_Temperature_Retrofit
         {
             if (dobjCat.Value == DataObjectCategory.HeatIndex.Value)
                 return picColHeatIndex.BackColor;
-            else if (dobjCat.Value == DataObjectCategory.Temperature.Value)
+            else if (dobjCat.Value == DataObjectCategory.Temperatur.Value)
                 return picColTemp.BackColor;
-            else if (dobjCat.Value == DataObjectCategory.LUX.Value)
+            else if (dobjCat.Value == DataObjectCategory.Lichtwert.Value)
                 return picColLUX.BackColor;
-            else if (dobjCat.Value == DataObjectCategory.Humidity.Value)
+            else if (dobjCat.Value == DataObjectCategory.Luftfeuchtigkeit.Value)
                 return picColHumidity.BackColor;
-            else if (dobjCat.Value == DataObjectCategory.AirPressure.Value)
+            else if (dobjCat.Value == DataObjectCategory.Luftdruck.Value)
                 return picColAirPressure.BackColor;
             else
                 return Color.Red;
@@ -520,13 +520,25 @@ namespace Arduino_Temperature_Retrofit
 
         }
 
-    public double MilliTimeStamp(DateTime TheDate)
-    {  
-         DateTime d1 = new DateTime(1970, 1, 1);  
-         DateTime d2 = DateTime.SpecifyKind(TheDate, DateTimeKind.Utc);  
-         TimeSpan ts = new TimeSpan(d2.Ticks - d1.Ticks);  
-         return ts.TotalMilliseconds;  
-    }
+        public void changeColor(PictureBox pic)
+        {
+            ColorDialog colDlg = new ColorDialog();
+            colDlg.Color = pic.BackColor;
+            if (colDlg.ShowDialog(this) == DialogResult.OK)
+            {
+                pic.BackColor = colDlg.Color;
+                updateChart(getAcutalDataObject());
+            }
+            colDlg.Dispose();
+        }
+
+        public double MilliTimeStamp(DateTime TheDate)
+        {  
+             DateTime d1 = new DateTime(1970, 1, 1);  
+             DateTime d2 = DateTime.SpecifyKind(TheDate, DateTimeKind.Utc);  
+             TimeSpan ts = new TimeSpan(d2.Ticks - d1.Ticks);  
+             return ts.TotalMilliseconds;  
+        }
 
         private void addChartSerie(List<double> values, List<double> dt, string name, Color color, DateTime minDate, DateTime maxDate, double minY = double.MinValue, double maxY = double.MaxValue)
         {
@@ -621,7 +633,7 @@ namespace Arduino_Temperature_Retrofit
                     
 
                 //Set minimum Value to 0 evept for Temperature values (HeatIndex and Temperature -> it can be colder than 0 degrees ;) )
-                if (min < 0 && !(dbo.Value == DataObjectCategory.HeatIndex.Value || dbo.Value == DataObjectCategory.Temperature.Value))
+                if (min < 0 && !(dbo.Value == DataObjectCategory.HeatIndex.Value || dbo.Value == DataObjectCategory.Temperatur.Value))
                     min = 0;
 
                 Console.WriteLine("Min " + min.ToString() + " - Max: " + max.ToString());
@@ -704,6 +716,31 @@ namespace Arduino_Temperature_Retrofit
         private void blauStatusToolStripMenuItem_Click(object sender, EventArgs e)
         {
             writeCommandToArduino(getAcutalDataObject(), "STATUSLED");
+        }
+
+        private void picColTemp_Click(object sender, EventArgs e)
+        {
+            changeColor(picColTemp);
+        }
+
+        private void picColHeatIndex_Click(object sender, EventArgs e)
+        {
+            changeColor(picColHeatIndex);
+        }
+
+        private void picColAirPressure_Click(object sender, EventArgs e)
+        {
+            changeColor(picColAirPressure);
+        }
+
+        private void picColHumidity_Click(object sender, EventArgs e)
+        {
+            changeColor(picColHumidity);
+        }
+
+        private void picColLUX_Click(object sender, EventArgs e)
+        {
+            changeColor(picColLUX);
         }
     }
 }

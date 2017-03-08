@@ -48,11 +48,11 @@ namespace Arduino_Temperature_Retrofit
 
         public enum itemList
         {
-            Temperature = 0,
+            Temperatur = 0,
             HeatIndex = 1,
-            Humidity = 2,
-            AirPressure = 3,
-            LUX = 4
+            Luftfeuchtigkeit = 2,
+            Luftdruck = 3,
+            Lichtwert = 4
         }
 
         public static List<string> Items = new List<string>(new string[] { "Temperature", "HeatIndex", "Humidity", "AirPressure", "LUX" });
@@ -81,11 +81,11 @@ namespace Arduino_Temperature_Retrofit
             return new DataObjectCategory(Items[Items.IndexOf(item)]);
         }
 
-        public static DataObjectCategory Temperature { get { return new DataObjectCategory(Items[(int)itemList.Temperature]); } }
+        public static DataObjectCategory Temperatur { get { return new DataObjectCategory(Items[(int)itemList.Temperatur]); } }
         public static DataObjectCategory HeatIndex { get { return new DataObjectCategory(Items[(int)itemList.HeatIndex]); } }
-        public static DataObjectCategory Humidity { get { return new DataObjectCategory(Items[(int)itemList.Humidity]); } }
-        public static DataObjectCategory AirPressure { get { return new DataObjectCategory(Items[(int)itemList.AirPressure]); } }
-        public static DataObjectCategory LUX { get { return new DataObjectCategory(Items[(int)itemList.LUX]); } }
+        public static DataObjectCategory Luftfeuchtigkeit { get { return new DataObjectCategory(Items[(int)itemList.Luftfeuchtigkeit]); } }
+        public static DataObjectCategory Luftdruck { get { return new DataObjectCategory(Items[(int)itemList.Luftdruck]); } }
+        public static DataObjectCategory Lichtwert { get { return new DataObjectCategory(Items[(int)itemList.Lichtwert]); } }
     }
 
     public class LogObject
@@ -133,7 +133,7 @@ namespace Arduino_Temperature_Retrofit
         public static bool HasCapability(string dobjCat, DataObjectProtocol dop)
         {
 
-            if (dobjCat == DataObjectCategory.AirPressure.Value)
+            if (dobjCat == DataObjectCategory.Luftdruck.Value)
             {
                 return HasAirPressure(dop);
             }
@@ -141,15 +141,15 @@ namespace Arduino_Temperature_Retrofit
             {
                 return HasHeatIndex(dop);
             }
-            else if (dobjCat == DataObjectCategory.Humidity.Value)
+            else if (dobjCat == DataObjectCategory.Luftfeuchtigkeit.Value)
             {
                 return HasHumidity(dop);
             }
-            else if (dobjCat == DataObjectCategory.LUX.Value)
+            else if (dobjCat == DataObjectCategory.Lichtwert.Value)
             {
                 return HasLUX(dop);
             }
-            else if (dobjCat == DataObjectCategory.Temperature.Value)
+            else if (dobjCat == DataObjectCategory.Temperatur.Value)
             {
                 return HasTemperature(dop);
             }
@@ -162,7 +162,7 @@ namespace Arduino_Temperature_Retrofit
         public static bool HasCapability(DataObjectCategory dobjCat, DataObjectProtocol dop)
         {
 
-            if (dobjCat.Value == DataObjectCategory.AirPressure.Value)
+            if (dobjCat.Value == DataObjectCategory.Luftdruck.Value)
             {
                 return HasAirPressure(dop);
             }
@@ -170,15 +170,15 @@ namespace Arduino_Temperature_Retrofit
             {
                 return HasHeatIndex(dop);
             }
-            else if (dobjCat.Value == DataObjectCategory.Humidity.Value)
+            else if (dobjCat.Value == DataObjectCategory.Luftfeuchtigkeit.Value)
             {
                 return HasHumidity(dop);
             }
-            else if (dobjCat.Value == DataObjectCategory.LUX.Value)
+            else if (dobjCat.Value == DataObjectCategory.Lichtwert.Value)
             {
                 return HasLUX(dop);
             }
-            else if (dobjCat.Value == DataObjectCategory.Temperature.Value)
+            else if (dobjCat.Value == DataObjectCategory.Temperatur.Value)
             {
                 return HasTemperature(dop);
             }
