@@ -548,6 +548,8 @@ namespace Arduino_Temperature_Retrofit
                 chartValues.Series[name].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             }
 
+            //chartValues.Titles[0].Text = "Testtitle";
+            
             chartValues.Series[0].XValueType = ChartValueType.DateTime;
             chartValues.ChartAreas[0].AxisX.LabelStyle.Format = "HH:mm:ss";
             double diff = maxDate.Subtract(minDate).TotalSeconds;

@@ -5,7 +5,7 @@
     <Sensor>
       <Aktiv>Y</Aktiv>
       <Bezeichnung>Tisch</Bezeichnung>
-      <Port>COM8</Port>
+      <Port>COM3</Port>
       <DtrEnabled>N</DtrEnabled>
       <Baudrate>112000</Baudrate>
       <LogEnabled>N</LogEnabled>
@@ -15,7 +15,7 @@
       <maxLogFileSize>4194304</maxLogFileSize>
     </Sensor>
     <Sensor>
-      <Aktiv>Y</Aktiv>
+      <Aktiv>N</Aktiv>
       <Bezeichnung>Boden</Bezeichnung>
       <Port>COM3</Port>
       <DtrEnabled>N</DtrEnabled>
