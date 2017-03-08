@@ -316,7 +316,8 @@ namespace Arduino_Temperature_Retrofit
 
         public void addItemToHistory(LogObject logObj)
         {
-            while (getHistoryItemCount(logObj.Category) > _maxHistoryItemsCount)
+            // >= because an item is added after the while so if max = e.g. 450, the 450th item is removed and then a new item (450) is added
+            while (getHistoryItemCount(logObj.Category) >= _maxHistoryItemsCount)
             {
                 _HistoryData.RemoveAt(0);
             }

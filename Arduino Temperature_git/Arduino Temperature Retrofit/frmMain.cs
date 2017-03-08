@@ -16,17 +16,28 @@ namespace Arduino_Temperature_Retrofit
     {
 
         Dictionary<string, DataObject> dataObjs = new Dictionary<string, DataObject>();
-        Timer tmrCheckConnStatus = new Timer();
+        HTMLSettings htmlSettings = new HTMLSettings();
 
+        Timer tmrCheckConnStatus = new Timer();
+        Timer tmrFileWriter = new Timer(); 
 
         public frmMain()
         {
             InitializeComponent();
         }
         
+        public void loadHtmlSettings()
+        {
+            htmlSettings.Enabled = XML.HtmlEnabled;
+            htmlSettings.Filename = XML.HtmlFile;
+            htmlSettings.HeadText = XML.HtmlHeadText;
+            htmlSettings.UpdateFrequency = XML.HttpUpdateFrequency();
+            htmlSettings.LastRun = DateTime.Now.AddYears(-1); //initial value
+        }
+
         private void LoadDataObjects()
         {
-            List<XMLSensorObject> xmlSensors = clsXML.getSensorItemsFromXML();
+            List<XMLSensorObject> xmlSensors = XML.getSensorItemsFromXML();
             foreach (XMLSensorObject xmlSensor in xmlSensors)
             {
                 DataObject dobj = new DataObject();
@@ -319,11 +330,44 @@ namespace Arduino_Temperature_Retrofit
                 return Color.Red;
         }
 
+        private void setTimerFileWriter(bool enabled)
+        {
+            if (!enabled)
+            {
+                tmrFileWriter.Enabled = false;
+                tmrFileWriter.Stop();
+                return;
+            }
+
+            tmrFileWriter.Interval = 1000;
+            tmrFileWriter.Enabled = true;
+            tmrFileWriter.Tick -= TmrFileWriter_Tick;
+            tmrFileWriter.Tick += TmrFileWriter_Tick;
+            tmrFileWriter.Start();
+        }
+
+        private void writeHTML()
+        {
+            if (DateTime.Now.Subtract(htmlSettings.LastRun).TotalSeconds > htmlSettings.UpdateFrequency)
+            {
+                HTML.writeHTMLFile(htmlSettings.Filename, dataObjs, htmlSettings.HeadText);
+                htmlSettings.LastRun = DateTime.Now;
+            }
+        }
+
+        private void TmrFileWriter_Tick(object sender, EventArgs e)
+        {
+            //html
+
+            Console.WriteLine("TmrFileWriter_Tick");
+        }
+
         private void connectionCheck(bool enabled)
         {
             if (!enabled)
             {
                 tmrCheckConnStatus.Enabled = false;
+                tmrCheckConnStatus.Stop();
                 return;
             }
             tmrCheckConnStatus.Interval = 2000;
@@ -381,8 +425,8 @@ namespace Arduino_Temperature_Retrofit
 
         private void initFormSettings()
         {
-            this.TopMost = clsXML.getTopMost;
-            this.Text = clsXML.Title;
+            this.TopMost = XML.getTopMost;
+            this.Text = XML.Title;
         }
 
         private void setDefaultTrend()
@@ -399,6 +443,7 @@ namespace Arduino_Temperature_Retrofit
             try
             {
                 LoadDataObjects();
+                loadHtmlSettings();
                 UpdateSensorCbo();
                 connectionCheck(true);
                 initToolTip(toolTip1);
@@ -596,7 +641,7 @@ namespace Arduino_Temperature_Retrofit
                 
 
 
-                lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString() + "(max: " + dObjExt.MaxHistoryItemsSet + ")";
+                lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString() + " (max: " + dObjExt.MaxHistoryItemsSet + ")";
             }
 
             if (chartValues.Series.Count > 0)
@@ -635,7 +680,7 @@ namespace Arduino_Temperature_Retrofit
         {
             optionProperties Options = new optionProperties();
             Options.propTopMost = this.TopMost;
-            Options.propWriteHTML = clsXML.HttpEnabled;
+            Options.propWriteHTML = XML.HtmlEnabled;
             frmOptions fOpt = new frmOptions(Options);
 
             fOpt.Show(this);

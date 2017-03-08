@@ -19,7 +19,7 @@ namespace Arduino_Temperature_Retrofit
         public bool DtrEnabled { get; set; }
     }
 
-    public static class clsXML
+    public static class XML
     {
         private static XmlDocument xDoc = new XmlDocument();
         private static string XmlFileName = @"Settings.xml";
@@ -34,10 +34,24 @@ namespace Arduino_Temperature_Retrofit
         }
 
         public static string Title { get { return getValue("/root/titel"); } }
-        public static string getHtmlFile { get { return getValue("/root/HTML/FileHTML"); } }
-        public static string getHtmlHeadText { get { return getValue("/root/HTML/HTMLHEAD"); } }
-        public static bool HttpEnabled { get { return checkBool(getValue("/root/HTML/Enabled")); } }
-        public static bool DtrEnabled { get { return checkBool(getValue("/root/HTML/Enabled")); } }
+        public static string HtmlFile { get { return getValue("/root/HTML/FileHTML"); } }
+        public static string HtmlHeadText { get { return getValue("/root/HTML/HTMLHEAD"); } }
+        public static bool HtmlEnabled { get { return checkBool(getValue("/root/HTML/Enabled")); } }
+
+        public static int HttpUpdateFrequency()
+        {
+            string xmlValue = getValue("/root/HTML/UpdateFrequency");
+            int frequency;
+            if (int.TryParse(xmlValue, out frequency) && frequency >=60) //minimum every 60 seconds
+            {
+                return frequency;
+            }
+            else
+            {
+                return (int)60;
+            }
+        }
+
         public static bool getTopMost { get { return checkBool(getValue("/root/ProgrammEinstellungen/Topmost")); } }
 
         private static string getValue(string nodePath)
@@ -91,6 +105,8 @@ namespace Arduino_Temperature_Retrofit
 
                     tmpSensor.HTMLEnabled = checkBool(getInnerText(child, "WriteHTML"));
 
+                    tmpSensor.DtrEnabled = checkBool(getInnerText(child, "DtrEnabled"));
+
                     tmpSensor.numLogEntries = DataObject.HistoryMinDefaultEntries; //default
                     int numEntries;
                     if (int.TryParse(getInnerText(child, "NumLogItems"), out numEntries))
@@ -138,6 +154,7 @@ namespace Arduino_Temperature_Retrofit
                     Console.WriteLine("tmpSensor.Active        == {0}", (tmpSensor.Active) ? "Y" : "N");
                     Console.WriteLine("tmpSensor.Port          == {0}", tmpSensor.Port);
                     Console.WriteLine("tmpSensor.Baudrate      == {0}", tmpSensor.Baudrate.ToString());
+                    Console.WriteLine("tmpSensor.DtrEnabled    == {0}", (tmpSensor.DtrEnabled) ? "Y" : "N");
                     Console.WriteLine("tmpSensor.LogEnabled    == {0}", (tmpSensor.LogEnabled) ? "Y" : "N");
                     Console.WriteLine("tmpSensor.LogFilePath   == {0}", tmpSensor.LogFilePath);
                     Console.WriteLine("tmpSensor.HTMLEnabled   == {0}", (tmpSensor.HTMLEnabled) ? "Y" : "N");

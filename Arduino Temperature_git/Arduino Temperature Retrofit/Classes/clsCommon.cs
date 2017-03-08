@@ -12,8 +12,23 @@ using System.Web;
 namespace Arduino_Temperature_Retrofit
 {
 
+    public class HTMLSettings
+    {
+        public bool Enabled { get; set; } = false;
+        public string HeadText { get; set; } = string.Empty;
+        public string Filename { get; set; } = string.Empty;
+        public int UpdateFrequency { get; set; } = 60; //seconds
+        public DateTime LastRun { get; set; } = DateTime.Now.AddYears(-1);
+    }
+
     static public class HTML
     {
+
+        public static void writeHTMLFile(string filename, Dictionary<string, DataObject> lDobj, string HeadText)
+        {
+
+        }
+
         private static string getData(DataObject dobjExt, DataObjectCategory dobjCat)
         {
             double temp = dobjExt.getItem(dobjCat);
@@ -28,13 +43,13 @@ namespace Arduino_Temperature_Retrofit
             if (lDojb.Count < 1)
                 return "";
 
-            if (!clsXML.HttpEnabled)
+            if (!XML.HtmlEnabled)
                 return string.Empty;
             
             StringBuilder sb = new StringBuilder();
             sb.Clear();
             sb.AppendLine("<html>");
-            sb.AppendLine("<head>" + HttpUtility.HtmlEncode(clsXML.getHtmlHeadText) + "</head>");
+            sb.AppendLine("<head>" + HttpUtility.HtmlEncode(XML.HtmlHeadText) + "</head>");
             foreach (DataObject dobj in lDojb)
             {
                 if (!dobj.HTMLEnabled)

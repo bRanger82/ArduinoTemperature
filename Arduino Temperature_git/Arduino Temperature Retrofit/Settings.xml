@@ -30,7 +30,8 @@
   <HTML>
     <FileHTML>C:\inetpub\wwwroot\temp.html</FileHTML>
     <HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
-    <Enabled>N</Enabled>  
+    <Enabled>N</Enabled>
+    <UpdateFrequency>60</UpdateFrequency>
   </HTML>
   <ProgrammEinstellungen>
     <maxTimeDifferenceReadData>60</maxTimeDifferenceReadData>
