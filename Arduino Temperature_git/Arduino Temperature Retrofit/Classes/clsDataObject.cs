@@ -233,10 +233,10 @@ namespace Arduino_Temperature_Retrofit
         private string _statusText = string.Empty;
         public string StatusText { get { return _statusText; } set { _statusText = value; } }
 
-        public static int LogMinEntries = 600;
-        public static int LogMaxEntries = 3000;
+        public static int HistoryMinDefaultEntries = 600;
+        public static int HistoryMaxDefaultEntries = 3000;
 
-        private int _maxLogItemsCount = LogMinEntries;
+        private int _maxHistoryItemsCount = HistoryMinDefaultEntries;
 
         public long maxLogFileSize { get; set; } = 4194304;
 
@@ -244,7 +244,7 @@ namespace Arduino_Temperature_Retrofit
 
         public bool LoggingEnabled { get; set; } = false;
 
-        public int MaxLogItemsCount { get { return _maxLogItemsCount; } set { if (value < LogMinEntries || value > LogMaxEntries) return; _maxLogItemsCount = value; } }
+        public int MaxHistoryItemsSet { get { return _maxHistoryItemsCount; } set { if (value < HistoryMinDefaultEntries || value > HistoryMaxDefaultEntries) return; _maxHistoryItemsCount = value; } }
 
         private List<LogObject> _HistoryData = new List<LogObject>();
 
@@ -316,7 +316,7 @@ namespace Arduino_Temperature_Retrofit
 
         public void addItemToHistory(LogObject logObj)
         {
-            while (getHistoryItemCount(logObj.Category) > _maxLogItemsCount)
+            while (getHistoryItemCount(logObj.Category) > _maxHistoryItemsCount)
             {
                 _HistoryData.RemoveAt(0);
             }

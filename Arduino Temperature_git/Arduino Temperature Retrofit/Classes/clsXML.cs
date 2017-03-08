@@ -91,14 +91,14 @@ namespace Arduino_Temperature_Retrofit
 
                     tmpSensor.HTMLEnabled = checkBool(getInnerText(child, "WriteHTML"));
 
-                    tmpSensor.numLogEntries = DataObject.LogMinEntries; //default
+                    tmpSensor.numLogEntries = DataObject.HistoryMinDefaultEntries; //default
                     int numEntries;
                     if (int.TryParse(getInnerText(child, "NumLogItems"), out numEntries))
                     {
-                        if (numEntries >= DataObject.LogMinEntries && numEntries <= DataObject.LogMaxEntries)
+                        if (numEntries >= DataObject.HistoryMinDefaultEntries && numEntries <= DataObject.HistoryMaxDefaultEntries)
                             tmpSensor.numLogEntries = numEntries;
                         else
-                            MessageBox.Show("XML Fehler: Die Anzahl der Num Einträge muss zwischen " + DataObject.LogMinEntries.ToString() + " und " + DataObject.LogMaxEntries.ToString() + " liegen!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            MessageBox.Show("XML Fehler: Die Anzahl der Num Einträge muss zwischen " + DataObject.HistoryMinDefaultEntries.ToString() + " und " + DataObject.HistoryMaxDefaultEntries.ToString() + " liegen!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     } else
                     {
                         MessageBox.Show("XML Fehler: Die Anzahl der Num Einträge kann nicht verarbeitet werden!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);

@@ -34,7 +34,7 @@ namespace Arduino_Temperature_Retrofit
                 dobj.Name = xmlSensor.Name;
                 dobj.Active = xmlSensor.Active;
                 dobj.PortName = xmlSensor.Port;
-                dobj.MaxLogItemsCount = xmlSensor.numLogEntries;
+                dobj.MaxHistoryItemsSet = xmlSensor.numLogEntries;
                 dobj.LoggingEnabled = xmlSensor.LogEnabled;
                 dobj.LogPath = xmlSensor.LogFilePath;
                 dobj.maxLogFileSize = xmlSensor.maxLogFileSize;
@@ -596,7 +596,7 @@ namespace Arduino_Temperature_Retrofit
                 
 
 
-                lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString();
+                lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString() + "(max: " + dObjExt.MaxHistoryItemsSet + ")";
             }
 
             if (chartValues.Series.Count > 0)
