@@ -34,9 +34,9 @@
 #define LEDrot 46 // Farbe rot an Pin 5
 #define LEDgruen 45 // Farbe gruen an Pin 6
 #define delayRGB 500 // p ist eine Pause mit 1000ms also 1 Sekunde
-#define brightness1a 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
-#define brightness1b 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
-#define brightness1c 150 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
+#define brightness1a 125 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
+#define brightness1b 125 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
+#define brightness1c 125 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
 #define dunkel 0 // Zahlenwert 0 bedeutet Spannung 0V – also LED aus.
 
 //cycle will be increased in the loop(), if cycle == CYCLE_UPDATE_TFT --> update TFT and reset cycle to 0
@@ -51,61 +51,10 @@ DHT dht(DHTPIN, DHTTYPE);
 SFE_BMP180 pressure;
 volatile bool ledTestRun = false;
 volatile bool UPDATE_TFT_DATA = false;
-volatile bool dataAvailable = false;
-
-float h = NAN;     //Luftfeuchte auslesen
-float t = NAN;  //Temperatur auslesen
-float r = NAN; //Heat-Index berechnen
-double p0 = 0; //Wert fuer Luftdruck
-uint32_t lux = 0;
-  
-/*
-#define MAXARRAY 5
-float tempArray [MAXARRAY] = {0};
-int lenTempArray = 0;
-
-float calculateTrendY(float y [], int len)
-{
-    float sumMultXY = 0;
-    float sumX = 0;
-    float sumY = 0;
-    float resBOne = 0;
-    float resBTwo = 0;
-
-    for(size_t i=0; i<len; i++)
-    {
-       sumMultXY += i * y[i];
-       sumX += i;
-       sumY += y[i];
-       resBOne += i * i;
-    }
-
-    resBOne *= len;
-    resBTwo = sumX * sumX;
-    float oben = (len * sumMultXY) - (sumX * sumY);
-    float unten = resBOne - resBTwo;
-
-    return (oben / unten);
-}
-
-void addValueToArray(float value)
-{
-  if (lenTempArray >= MAXARRAY)
-  {
-    for ( int i = 0; i<MAXARRAY-1; i++)
-    {
-        tempArray[i] = tempArray[i+1];
-    }
-    tempArray [MAXARRAY-1] = value;
-  } else
-  {
-      tempArray [lenTempArray++] = value;
-  }
-}*/
 
 void initSerial(void)
 {
-  Serial.begin(9600);
+  Serial.begin(112000);
   Serial.flush();   
 }
 
@@ -161,18 +110,51 @@ void setup(void)
   ledTest();
 }
 
+void checkSerialData()
+{
+  for (int i = 1; i <=100; i++)
+  {
+    if ((Serial.available() > 0))
+    {
+      processIncomingData(Serial.readString());
+      Serial.flush();
+    }
+    delay(DELAY_TIME / 100);    
+  }  
+}
+
 void loop(void) 
 {
-  bool sendSerialData = false;
-  if (Serial.available() > 0)
-  {
-    String input = Serial.readString();
-    if (input == "GetInformation")
-      sendSerialData = true;
-  }
-  processData(sendSerialData);
-  delay(DELAY_TIME);
+  processData();
+  checkSerialData();
   cycle++;
+}
+
+void processIncomingData(String data)
+{
+  if (data == "LED")
+  {
+    digitalWrite(LEDblau, !digitalRead(LEDblau));
+    Serial.println("REPLY|BLAU-OK|EOF");
+    return;
+  } else if (data == "STATUSLED")
+  {
+    if (digitalRead(LEDblau) == HIGH)
+      Serial.println("REPLY|BLAU-IST-AN|EOF");
+    else 
+      Serial.println("REPLY|BLAU-IST-AUS|EOF");
+    return;    
+  } else if (data == "PROTOCOL_VERSION")
+  {
+    Serial.println("REPLY|V3|EOF");
+    return;
+  } else if (data == "GET_TEMP_ARDUINO")
+  {
+    Serial.println("REPLY|FOUND_ARDUINO|EOF");
+    return;
+  }
+
+  Serial.println("REPLY|FEHLER: Nicht Implementiert!|EOF");
 }
 
 unsigned long writeTextToTFT(double temp, double humanity, double heatindex, double airpressure, uint32_t lightvalue) 
@@ -232,7 +214,7 @@ void showError(void)
 
 void writeSerialProtocolV1(float humanity, float temperature, float heatIndex)
 {
-  digitalWrite(LEDgruen, HIGH);
+  analogWrite(LEDgruen, brightness1c);
   Serial.print("START");
   Serial.print("|"); // delim
   Serial.print(humanity); // Luftfeuchte
@@ -244,12 +226,12 @@ void writeSerialProtocolV1(float humanity, float temperature, float heatIndex)
   Serial.println("EOF");
   Serial.flush();
   delay(SERIALWAIT);
-  digitalWrite(LEDgruen, LOW);  
+  analogWrite(LEDgruen, dunkel); 
 }
 
 void writeSerialProtocolV2(float humanity, float temperature, float heatIndex, double airPressure)
 {
-  digitalWrite(LEDgruen, HIGH);
+  analogWrite(LEDgruen, brightness1c);
   Serial.print("START");
   Serial.print("|"); // delim
   Serial.print("LEN:4"); //4 Werte werden uebertragen
@@ -265,12 +247,12 @@ void writeSerialProtocolV2(float humanity, float temperature, float heatIndex, d
   Serial.println("EOF");
   Serial.flush();
   delay(SERIALWAIT);
-  digitalWrite(LEDgruen, LOW);
+  analogWrite(LEDgruen, dunkel);
 }
 
 void writeSerialProtocolV3(float humanity, float temperature, float heatIndex, double airPressure, int lux)
 {
-  digitalWrite(LEDgruen, HIGH);
+  analogWrite(LEDgruen, brightness1c);
   Serial.print("START");
   Serial.print("|"); // delim
   Serial.print("LEN:5"); //5 Werte werden uebertragen
@@ -288,7 +270,7 @@ void writeSerialProtocolV3(float humanity, float temperature, float heatIndex, d
   Serial.println("EOF");
   Serial.flush();
   delay(SERIALWAIT);
-  digitalWrite(LEDgruen, LOW);
+  analogWrite(LEDgruen, dunkel);
 }
 
 bool getPressure(double * value)
@@ -321,11 +303,12 @@ bool getPressure(double * value)
   return false;
 }
 
-void processData(bool sendSerialData)
+void processData()
 {
-  h = dht.readHumidity();     //Luftfeuchte auslesen
-  t = dht.readTemperature();  //Temperatur auslesen
-  r = dht.computeHeatIndex(t, h, false); //Heat-Index berechnen
+  float h = dht.readHumidity();     //Luftfeuchte auslesen
+  float t = dht.readTemperature();  //Temperatur auslesen
+  float r = dht.computeHeatIndex(t, h, false); //Heat-Index berechnen
+  double p0 = 0; //Wert fuer Luftdruck
   bool pressAvailable = getPressure(&p0); //Luftdruck lesen
   static bool errorOccured = false;
   uint16_t x = tsl.getLuminosity(TSL2561_VISIBLE);
@@ -333,24 +316,20 @@ void processData(bool sendSerialData)
   uint16_t ir, full;
   ir = lum >> 16;
   full = lum & 0xFFFF;
-  lux = tsl.calculateLux(full, ir);
+  uint32_t lux = tsl.calculateLux(full, ir);
   
   if (isnan(t) || isnan(h) || isnan(r) || !pressAvailable) //Fehler beim Lesen eines der Daten
   {
     showError();
     errorOccured = true;
-    digitalWrite(LEDrot, HIGH);
-    if (sendSerialData)
+    if (Serial)
     {
       Serial.println("Fehler: Daten konnten gelesen werden!");
       Serial.flush();
     }
-    
-    
   } 
   else
-  {    
-    digitalWrite(LEDrot, LOW);
+  {
     //update TFT only the CYCLE_UPDATE_TFT times when a processData is called
     //to avoid each time update of the TFT
     //or if an error occured, update the TFT the next OK time
@@ -361,10 +340,7 @@ void processData(bool sendSerialData)
       UPDATE_TFT_DATA = false;
     }
     
-    if (sendSerialData)
-    {
-      writeSerialProtocolV3(h, t, r, p0, lux);  
-    }
+    writeSerialProtocolV3(h, t, r, p0, lux); 
   }
   
   if (cycle >= CYCLE_UPDATE_TFT)  //otherwise, if it this is done within the else block above AND
@@ -405,5 +381,3 @@ void interruptCall(void)
   printIPInfoOnTFT();
   UPDATE_TFT_DATA = true;
 }
-
-
