@@ -23,7 +23,7 @@ namespace TestEnvironment
         {
 
             List<double> lst = new List<double>();
-            for (int x = 1; x <= 3; x++)
+            for (int x = 1; x <= 10; x++)
                 lst.Add(x);
 
             foreach (double t in lst)
@@ -81,14 +81,7 @@ namespace TestEnvironment
             if (start <= 0 || values.Count < count)
                 return values;
 
-            List<double> ret = new List<double>();
-
-            for (int pos = start; pos < values.Count; pos++)
-            {
-                ret.Add(values[pos]);
-            }
-
-            return ret;
+            return values.GetRange(values.Count - count, count);
         }
 
         public static bool trycreatefile(FileInfo file)

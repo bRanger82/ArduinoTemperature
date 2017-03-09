@@ -229,19 +229,12 @@ namespace Arduino_Temperature_Retrofit
 
         static private List<double> getSubset(List<double> values, int count)
         {
-            int start = values.Count - count;
-
-            if (start <= 0 || values.Count < count)
+            if (values.Count <= count)
                 return values;
 
-            List<double> ret = new List<double>();
+            int start = values.Count - count;
 
-            for (int pos = start; pos < values.Count; pos++)
-            {
-                ret.Add(values[pos]);
-            }
-
-            return ret;
+            return values.GetRange(start, count);
         }
 
         /// <summary>
@@ -249,12 +242,13 @@ namespace Arduino_Temperature_Retrofit
         /// </summary>
         /// <param name="values">Liste von Werten</param>
         /// <returns>Aenderung des naechesten Wertes im Vergleich zum akutuellem Wert</returns>
-        static public double calculateTrend(List<double> historyEntries, int numHistoryEntriesAsBasis = 30)
+        static public double calculateTrend(List<double> historyEntries, int numHistoryEntriesAsBasis = 50)
         {
 
-            if (historyEntries.Count < 1)
+            if (historyEntries.Count < 5) //mindestens 5 Werte sind notwendig
                 return (double)0;
 
+            //nur die letzten Einträge sollen geprüft werden (ein Datensatz, der u.U. mehrere Stunden zurück liegt hat keine Aussagekraft mehr)
             List<double> values = getSubset(historyEntries, numHistoryEntriesAsBasis);
 
             double sumMultXY = 0;
