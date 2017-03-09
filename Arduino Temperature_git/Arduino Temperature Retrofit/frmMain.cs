@@ -348,17 +348,28 @@ namespace Arduino_Temperature_Retrofit
 
         private void writeHTML()
         {
-            if (htmlSettings.Enabled && DateTime.Now.Subtract(htmlSettings.LastRun).TotalSeconds > htmlSettings.UpdateFrequency)
+            try
             {
-                HTML.writeHTMLFile(htmlSettings.Filename, dataObjs, htmlSettings.HeadText);
-                htmlSettings.LastRun = DateTime.Now;
+                if (htmlSettings.Enabled)
+                {
+                    HTML.writeHTMLFile(htmlSettings.Filename, dataObjs, htmlSettings.HeadText);
+                    htmlSettings.LastRun = DateTime.Now;
+                }
+            }
+            catch (Exception ex)
+            {
+                //Inform the user? What if the programm runs in during overnight? show message-boxes every run? ;)
+                Console.WriteLine(ex.Message);
             }
         }
 
         private void TmrFileWriter_Tick(object sender, EventArgs e)
         {
             //html
-            writeHTML();
+            if (DateTime.Now.Subtract(htmlSettings.LastRun).TotalSeconds > htmlSettings.UpdateFrequency)
+            {
+                writeHTML();
+            }
             Console.WriteLine("TmrFileWriter_Tick");
         }
 
@@ -700,17 +711,16 @@ namespace Arduino_Temperature_Retrofit
             Options.propWriteHTML = XML.HtmlEnabled;
             frmOptions fOpt = new frmOptions(Options);
 
-            fOpt.Show(this);
-
             fOpt.Top = (this.Top + (this.Height / 2)) - (fOpt.Height / 2);
             fOpt.Left = (this.Left + (this.Width / 2)) - (fOpt.Width / 2);
             
+            fOpt.ShowDialog(this);
+
             //exit if canceled
             if (fOpt.Cancel == true)
                 return;
 
-            Options = fOpt.OptionProp;
-            this.TopMost = Options.propTopMost;
+            this.TopMost = fOpt.OptionProp.propTopMost;
         }
 
         private void blauAnToolStripMenuItem_Click(object sender, EventArgs e)

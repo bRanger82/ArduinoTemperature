@@ -76,12 +76,12 @@ namespace TestEnvironment
 
         static private List<double> getSubset(List<double> values, int count)
         {
-            int start = values.Count - count;
-
-            if (start <= 0 || values.Count < count)
+            if (values.Count <= count)
                 return values;
 
-            return values.GetRange(values.Count - count, count);
+            int start = values.Count - count;
+
+            return values.GetRange(start, count);
         }
 
         public static bool trycreatefile(FileInfo file)
