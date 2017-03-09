@@ -227,22 +227,42 @@ namespace Arduino_Temperature_Retrofit
             public static bool DefaultDtrEnable = false;
         }
 
+        static private List<double> getSubset(List<double> values, int count)
+        {
+            int start = values.Count - count;
+
+            if (start <= 0 || values.Count < count)
+                return values;
+
+            List<double> ret = new List<double>();
+
+            for (int pos = start; pos < values.Count; pos++)
+            {
+                ret.Add(values[pos]);
+            }
+
+            return ret;
+        }
+
         /// <summary>
         /// Berechnet den naechsten wahrscheinlichen Wert einer Reihe
         /// </summary>
         /// <param name="values">Liste von Werten</param>
         /// <returns>Aenderung des naechesten Wertes im Vergleich zum akutuellem Wert</returns>
-        static public double calculateTrend(List<double> values)
+        static public double calculateTrend(List<double> historyEntries, int numHistoryEntriesAsBasis = 30)
         {
+
+            if (historyEntries.Count < 1)
+                return (double)0;
+
+            List<double> values = getSubset(historyEntries, numHistoryEntriesAsBasis);
+
             double sumMultXY = 0;
             double sumX = 0;
             double sumY = 0;
             double resBOne = 0;
             double resBTwo = 0;
 
-            //Wenn weniger als 30 Werte vorhanden sind soll 0 (*noch* kein Trend berechenbar) zurueck gegeben werden
-            if (values.Count < 30)
-                return (double)0;
 
             for (int i =0; i < values.Count; i++)
             {

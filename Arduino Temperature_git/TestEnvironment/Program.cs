@@ -21,6 +21,21 @@ namespace TestEnvironment
 
         static int Main(string[] args)
         {
+
+            List<double> lst = new List<double>();
+            for (int x = 1; x <= 3; x++)
+                lst.Add(x);
+
+            foreach (double t in lst)
+                Console.WriteLine("Wert von t: " + t);
+            Console.WriteLine("\nSubset\n");
+
+            List<double> sub = getSubset(lst, 5);
+            foreach (double t in sub)
+                Console.WriteLine("Wert von t: " + t);
+
+            Console.ReadKey();
+
             DataObject dojb = new DataObject();
 
             Console.WriteLine(dojb.TemperatureDetail.MinValue);
@@ -57,6 +72,23 @@ namespace TestEnvironment
             HttpUtility.HtmlDecode(myEncodedString, myWriter);
             Console.Write("Decoded string of the above encoded string is " +
                            myWriter.ToString());
+        }
+
+        static private List<double> getSubset(List<double> values, int count)
+        {
+            int start = values.Count - count;
+
+            if (start <= 0 || values.Count < count)
+                return values;
+
+            List<double> ret = new List<double>();
+
+            for (int pos = start; pos < values.Count; pos++)
+            {
+                ret.Add(values[pos]);
+            }
+
+            return ret;
         }
 
         public static bool trycreatefile(FileInfo file)
