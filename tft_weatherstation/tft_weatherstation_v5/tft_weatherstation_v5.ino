@@ -30,14 +30,14 @@
 #define WHITE   0xFFFF
 
 //RGB LED
-#define LEDblau 44 // Farbe blau an Pin 3
-#define LEDrot 46 // Farbe rot an Pin 5
-#define LEDgruen 45 // Farbe gruen an Pin 6
-#define delayRGB 500 // p ist eine Pause mit 1000ms also 1 Sekunde
-#define brightness1a 125 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
-#define brightness1b 125 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
-#define brightness1c 125 // Zahlenwert zwischen 0 und 255 – gibt die Leuchtstärke der einzelnen Farbe an
-#define dunkel 0 // Zahlenwert 0 bedeutet Spannung 0V – also LED aus.
+#define LEDblau 44    // RBG LED Blue
+#define LEDrot 46     // RBG LED Red
+#define LEDgruen 45   // RBG LED Green
+#define delayRGB 500  // RGB LED, Delay between Test Light switches
+#define brightness1a 125 // RGB LED, Brightnesslevel 1
+#define brightness1b 125 // RGB LED, Brightnesslevel 2
+#define brightness1c 125 // RGB LED, Brightnesslevel 3
+#define dunkel 0 // RGB LED, Brightnesslevel 0 = dark
 
 //cycle will be increased in the loop(), if cycle == CYCLE_UPDATE_TFT --> update TFT and reset cycle to 0
 //this will avoid updating the TFT each time when a serial data is sent (no need to update the TFT that often)
@@ -45,11 +45,16 @@
 int cycle = CYCLE_UPDATE_TFT;
 
 #define DELAY_TIME 10000 //Delay Time between each processData() call
+
+//Declare sensors and create instances
 TSL2561 tsl(TSL2561_ADDR_FLOAT); 
 MCUFRIEND_kbv tft;
 DHT dht(DHTPIN, DHTTYPE);
 SFE_BMP180 pressure;
-volatile bool ledTestRun = false;
+
+//Send-Data is called more often than update display
+//if UPDATE_TFT_DATA is set to true, the next Send-Data event also triggers an update of the TFT display
+//after the trigger fired one time, it is set to false again when the TFT display update was done
 volatile bool UPDATE_TFT_DATA = false;
 
 void initSerial(void)
@@ -110,16 +115,20 @@ void setup(void)
   ledTest();
 }
 
+//check if serial data is available and process the data
 void checkSerialData()
 {
-  for (int i = 1; i <=100; i++)
+  //if DELAY_TIME is set to a few seconds or more
+  //the serial read has to wait. this was split up here
+  int numSubSteps = 100;
+  for (int i = 1; i <=numSubSteps; i++)
   {
     if ((Serial.available() > 0))
     {
       processIncomingData(Serial.readString());
       Serial.flush();
     }
-    delay(DELAY_TIME / 100);    
+    delay(DELAY_TIME / numSubSteps);    
   }  
 }
 
@@ -322,11 +331,8 @@ void processData()
   {
     showError();
     errorOccured = true;
-    if (Serial)
-    {
-      Serial.println("Fehler: Daten konnten gelesen werden!");
-      Serial.flush();
-    }
+    Serial.println("Fehler: Daten konnten gelesen werden!");
+    Serial.flush();
   } 
   else
   {
