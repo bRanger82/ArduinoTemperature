@@ -42,69 +42,6 @@ namespace Arduino_Temperature_Retrofit
 
     public class DataObjectCategory
     {
-        private DataObjectCategory(string value) { Value = value; }
-
-        public string Value { get; set; }
-
-        public enum itemList
-        {
-            Temperatur = 0,
-            HeatIndex = 1,
-            Luftfeuchtigkeit = 2,
-            Luftdruck = 3,
-            Lichtwert = 4
-        }
-
-        public static List<string> Items = new List<string>(new string[] { "Temperature", "HeatIndex", "Humidity", "AirPressure", "LUX" });
-
-        public static List <string> getCapableItems(DataObjectProtocol dobj)
-        {
-            List<string> ret = new List<string>();
-            foreach(string s in Items)
-            {
-                if (DataObjectCapabilities.HasCapability(s, dobj))
-                    ret.Add(s);
-            }
-            return ret;
-        }
-
-        public static DataObjectCategory getObjectCategory(itemList item)
-        {
-            return new DataObjectCategory(Items[(int)item]);
-        }
-
-        public static DataObjectCategory getObjectCategory(string item)
-        {
-            if (!Items.Contains(item))
-                return null;
-
-            return new DataObjectCategory(Items[Items.IndexOf(item)]);
-        }
-
-        public static DataObjectCategory Temperatur { get { return new DataObjectCategory(Items[(int)itemList.Temperatur]); } }
-        public static DataObjectCategory HeatIndex { get { return new DataObjectCategory(Items[(int)itemList.HeatIndex]); } }
-        public static DataObjectCategory Luftfeuchtigkeit { get { return new DataObjectCategory(Items[(int)itemList.Luftfeuchtigkeit]); } }
-        public static DataObjectCategory Luftdruck { get { return new DataObjectCategory(Items[(int)itemList.Luftdruck]); } }
-        public static DataObjectCategory Lichtwert { get { return new DataObjectCategory(Items[(int)itemList.Lichtwert]); } }
-    }
-
-    public class LogObject
-    {
-
-        public LogObject(double value, DataObjectCategory category, DateTime timepoint)
-        {
-            this.Value = value;
-            this.Category = category;
-            this.Timepoint = timepoint;
-        }
-
-        public double Value { get; set; }
-        public DataObjectCategory Category { get; set; }
-        public DateTime Timepoint { get; set; }
-    }
-
-    public static class DataObjectCapabilities
-    {
         public static bool HasHumidity(DataObjectProtocol dop)
         {
             return (dop == DataObjectProtocol.PROTOCOL_ONE || dop == DataObjectProtocol.PROTOCOL_TWO || dop == DataObjectProtocol.PROTOCOL_THREE);
@@ -159,6 +96,24 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
+        public static List<DataObjectCategory> GetAvailableProtocols(DataObject dobj)
+        {
+            List<DataObjectCategory> lstProt = new List<DataObjectCategory>();
+
+            if (HasAirPressure(dobj.Protocol))
+                lstProt.Add(DataObjectCategory.Luftdruck);
+            if (HasLUX(dobj.Protocol))
+                lstProt.Add(DataObjectCategory.Lichtwert);
+            if (HasHeatIndex(dobj.Protocol))
+                lstProt.Add(DataObjectCategory.HeatIndex);
+            if (HasTemperature(dobj.Protocol))
+                lstProt.Add(DataObjectCategory.Temperatur);
+            if (HasHumidity(dobj.Protocol))
+                lstProt.Add(DataObjectCategory.Luftfeuchtigkeit);
+
+            return lstProt;
+        }
+
         public static bool HasCapability(DataObjectCategory dobjCat, DataObjectProtocol dop)
         {
 
@@ -187,7 +142,68 @@ namespace Arduino_Temperature_Retrofit
                 return false;
             }
         }
+
+        private DataObjectCategory(string value) { Value = value; }
+
+        public string Value { get; set; }
+
+        public enum itemList
+        {
+            Temperatur = 0,
+            HeatIndex = 1,
+            Luftfeuchtigkeit = 2,
+            Luftdruck = 3,
+            Lichtwert = 4
+        }
+
+        public static List<string> Items = new List<string>(new string[] { "Temperature", "HeatIndex", "Humidity", "AirPressure", "LUX" });
+
+        public static List <string> getCapableItems(DataObjectProtocol dobj)
+        {
+            List<string> ret = new List<string>();
+            foreach(string s in Items)
+            {
+                if (HasCapability(s, dobj))
+                    ret.Add(s);
+            }
+            return ret;
+        }
+
+        public static DataObjectCategory getObjectCategory(itemList item)
+        {
+            return new DataObjectCategory(Items[(int)item]);
+        }
+
+        public static DataObjectCategory getObjectCategory(string item)
+        {
+            if (!Items.Contains(item))
+                return null;
+
+            return new DataObjectCategory(Items[Items.IndexOf(item)]);
+        }
+
+        public static DataObjectCategory Temperatur { get { return new DataObjectCategory(Items[(int)itemList.Temperatur]); } }
+        public static DataObjectCategory HeatIndex { get { return new DataObjectCategory(Items[(int)itemList.HeatIndex]); } }
+        public static DataObjectCategory Luftfeuchtigkeit { get { return new DataObjectCategory(Items[(int)itemList.Luftfeuchtigkeit]); } }
+        public static DataObjectCategory Luftdruck { get { return new DataObjectCategory(Items[(int)itemList.Luftdruck]); } }
+        public static DataObjectCategory Lichtwert { get { return new DataObjectCategory(Items[(int)itemList.Lichtwert]); } }
     }
+
+    public class LogObject
+    {
+
+        public LogObject(double value, DataObjectCategory category, DateTime timepoint)
+        {
+            this.Value = value;
+            this.Category = category;
+            this.Timepoint = timepoint;
+        }
+
+        public double Value { get; set; }
+        public DataObjectCategory Category { get; set; }
+        public DateTime Timepoint { get; set; }
+    }
+
 
     public class DetailsTimePoint
     {

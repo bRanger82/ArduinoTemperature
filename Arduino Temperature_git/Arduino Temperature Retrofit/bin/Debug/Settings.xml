@@ -5,7 +5,7 @@
     <Sensor>
       <Aktiv>Y</Aktiv>
       <Bezeichnung>Tisch</Bezeichnung>
-      <Port>COM5</Port>
+      <Port>COM8</Port>
       <DtrEnabled>N</DtrEnabled>
       <Baudrate>112000</Baudrate>
       <LogEnabled>N</LogEnabled>

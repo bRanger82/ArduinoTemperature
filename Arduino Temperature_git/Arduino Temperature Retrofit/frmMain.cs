@@ -288,7 +288,7 @@ namespace Arduino_Temperature_Retrofit
 
         private void setLabelInformation(Label lblValue, Label lblMinValue, Label lblMaxValue, Label lblMinTime, Label lblMaxTime, DataObject dObjExt, DataObjectCategory dobjcat, PictureBox picTrend)
         {
-            if (dObjExt.ItemExists(dobjcat) && DataObjectCapabilities.HasCapability(dObjExt.Items[dobjcat.Value].DataObjCategory, dObjExt.Protocol))
+            if (dObjExt.ItemExists(dobjcat) && DataObjectCategory.HasCapability(dObjExt.Items[dobjcat.Value].DataObjCategory, dObjExt.Protocol))
             {
                 string unit = Common.getSensorValueUnit(dObjExt.Items[dobjcat.Value].SensorType);
                 lblValue.Text = dObjExt.Items[dobjcat.Value].Value.ToString("#.#0") + unit;
@@ -358,7 +358,7 @@ namespace Arduino_Temperature_Retrofit
         private void TmrFileWriter_Tick(object sender, EventArgs e)
         {
             //html
-
+            writeHTML();
             Console.WriteLine("TmrFileWriter_Tick");
         }
 
@@ -511,6 +511,7 @@ namespace Arduino_Temperature_Retrofit
             List<string> capabaleItems = DataObjectCategory.getCapableItems(getAcutalDataObject().Protocol);
 
             cboChartSelection.Items.Clear();
+
             cboChartSelection.Items.AddRange(capabaleItems.ToArray());
 
             if (cboChartSelection.Items.Count > 0)
@@ -619,7 +620,7 @@ namespace Arduino_Temperature_Retrofit
         {
             chartValues.Series.Clear();
 
-            if (DataObjectCapabilities.HasCapability(dbo, dObjExt.Protocol) && dObjExt.DataAvailable)
+            if (DataObjectCategory.HasCapability(dbo, dObjExt.Protocol) && dObjExt.DataAvailable)
             {
                 double min = dObjExt.getHistoryItemMinValue(dbo);
                 double max = dObjExt.getHistoryItemMaxValue(dbo);

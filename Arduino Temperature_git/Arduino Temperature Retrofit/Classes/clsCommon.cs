@@ -26,7 +26,29 @@ namespace Arduino_Temperature_Retrofit
 
         public static void writeHTMLFile(string filename, Dictionary<string, DataObject> lDobj, string HeadText)
         {
+            StringBuilder sb = new StringBuilder();
 
+            foreach(KeyValuePair<string, DataObject> kvp in lDobj)
+            {
+                DataObject dobj = (DataObject)kvp.Value;
+
+            }
+
+        }
+
+        private static string getHtmlData(DataObject dobj)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Clear();
+
+            foreach(DataObjectCategory cat in DataObjectCategory.GetAvailableProtocols(dobj))
+            {
+                double value = dobj.getItem(cat);
+                string name = cat.Value.ToString();
+
+            }
+
+            return sb.ToString();
         }
 
         private static string getData(DataObject dobjExt, DataObjectCategory dobjCat)
