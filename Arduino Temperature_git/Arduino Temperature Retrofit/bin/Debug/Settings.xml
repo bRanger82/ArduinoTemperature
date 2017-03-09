@@ -5,7 +5,7 @@
     <Sensor>
       <Aktiv>Y</Aktiv>
       <Bezeichnung>Tisch</Bezeichnung>
-      <Port>COM3</Port>
+      <Port>COM5</Port>
       <DtrEnabled>N</DtrEnabled>
       <Baudrate>112000</Baudrate>
       <LogEnabled>N</LogEnabled>
@@ -15,20 +15,20 @@
       <maxLogFileSize>4194304</maxLogFileSize>
     </Sensor>
     <Sensor>
-      <Aktiv>N</Aktiv>
+      <Aktiv>Y</Aktiv>
       <Bezeichnung>Boden</Bezeichnung>
       <Port>COM3</Port>
       <DtrEnabled>N</DtrEnabled>
       <Baudrate>9600</Baudrate>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
-      <LogFile>C:\Temp\Temperatur\Bottom.log</LogFile>
+      <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>
       <NumLogItems>680</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>
     </Sensor>
   </Sensoren>
   <HTML>
-    <FileHTML>C:\inetpub\wwwroot\temp.html</FileHTML>
+    <FileHTML>C:\inetpub\wwwroot\temperatur.html</FileHTML>
     <HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
     <Enabled>N</Enabled>
     <UpdateFrequency>60</UpdateFrequency>

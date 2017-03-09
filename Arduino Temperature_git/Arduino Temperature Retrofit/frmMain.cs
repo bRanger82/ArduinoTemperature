@@ -348,7 +348,7 @@ namespace Arduino_Temperature_Retrofit
 
         private void writeHTML()
         {
-            if (DateTime.Now.Subtract(htmlSettings.LastRun).TotalSeconds > htmlSettings.UpdateFrequency)
+            if (htmlSettings.Enabled && DateTime.Now.Subtract(htmlSettings.LastRun).TotalSeconds > htmlSettings.UpdateFrequency)
             {
                 HTML.writeHTMLFile(htmlSettings.Filename, dataObjs, htmlSettings.HeadText);
                 htmlSettings.LastRun = DateTime.Now;
@@ -445,10 +445,11 @@ namespace Arduino_Temperature_Retrofit
                 LoadDataObjects();
                 loadHtmlSettings();
                 UpdateSensorCbo();
-                connectionCheck(true);
                 initToolTip(toolTip1);
                 initFormSettings();
                 setDefaultTrend();
+                connectionCheck(true);
+                setTimerFileWriter(true);
             }
             catch (Exception ex)
             {
@@ -477,7 +478,8 @@ namespace Arduino_Temperature_Retrofit
 
             tmrCheckConnStatus.Stop();
             tmrCheckConnStatus.Dispose();
-
+            tmrFileWriter.Stop();
+            tmrFileWriter.Dispose();
             foreach (KeyValuePair<string, DataObject> kvp in dataObjs)
             {
                 DataObject dobj = (DataObject)kvp.Value;
