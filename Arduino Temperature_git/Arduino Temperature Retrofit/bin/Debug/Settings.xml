@@ -17,7 +17,7 @@
     <Sensor>
       <Aktiv>Y</Aktiv>
       <Bezeichnung>Boden</Bezeichnung>
-      <Port>COM3</Port>
+      <Port>COM9</Port>
       <DtrEnabled>N</DtrEnabled>
       <Baudrate>9600</Baudrate>
       <LogEnabled>N</LogEnabled>
