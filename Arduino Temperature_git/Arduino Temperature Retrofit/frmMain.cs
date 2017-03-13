@@ -368,6 +368,7 @@ namespace Arduino_Temperature_Retrofit
             //html
             if (DateTime.Now.Subtract(htmlSettings.LastRun).TotalSeconds > htmlSettings.UpdateFrequency)
             {
+                Console.WriteLine("writeHTML");
                 writeHTML();
             }
             Console.WriteLine("TmrFileWriter_Tick");

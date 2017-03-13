@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
@@ -33,10 +34,27 @@ namespace Arduino_Temperature_Retrofit
                 return string.Empty;
         }
 
-        public static string Title { get { return getValue("/root/titel"); } }
-        public static string HtmlFile { get { return getValue("/root/HTML/FileHTML"); } }
-        public static string HtmlHeadText { get { return getValue("/root/HTML/HTMLHEAD"); } }
-        public static bool HtmlEnabled { get { return checkBool(getValue("/root/HTML/Enabled")); } }
+        public static string Title { get { return getValue("/root/titel"); } set { setValue("/root/titel", value); } }
+        public static string HtmlFile { get { return getValue("/root/HTML/FileHTML"); } set { setValue("/root/HTML/FileHTML", value); } }
+        public static string HtmlHeadText { get { return getValue("/root/HTML/HTMLHEAD"); } set { setValue("/root/HTML/HTMLHEAD", value); } }
+        public static bool HtmlEnabled { get { return checkBool(getValue("/root/HTML/Enabled")); } set { setValueBool("/root/HTML/HTMLHEAD", value); } }
+
+        private static void setValueBool(string nodePath, bool value)
+        {
+            if (value)
+                setValue(nodePath, "Y");
+            else
+                setValue(nodePath, "N");
+        }
+
+        private static void setValue(string nodePath, string Value)
+        {
+            loadXML();
+
+            xDoc.SelectSingleNode(nodePath).InnerText = Value;
+            xDoc.Save(XmlFileName);
+
+        }
 
         public static int HttpUpdateFrequency()
         {
@@ -52,25 +70,18 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        public static bool getTopMost { get { return checkBool(getValue("/root/ProgrammEinstellungen/Topmost")); } }
+        public static bool getTopMost { get { return checkBool(getValue("/root/ProgrammEinstellungen/Topmost")); } set { setValueBool("/root/ProgrammEinstellungen/Topmost", value); } }
 
         private static string getValue(string nodePath)
         {
-            try
-            {
-                loadXML();
 
-                XmlNode t = xDoc.SelectSingleNode(nodePath);
-                if (t == null)
-                    return String.Empty;
-                else
-                    return t.InnerText.ToString();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+            loadXML();
+
+            XmlNode t = xDoc.SelectSingleNode(nodePath);
+            if (t == null)
                 return String.Empty;
-            }
+            else
+                return t.InnerText.ToString();
         }
 
         private static bool loadXML()
@@ -86,9 +97,44 @@ namespace Arduino_Temperature_Retrofit
             return (value.ToUpper() == "Y");
         }
 
+        public static void updateSensorValue(string SensorName, string node, bool value)
+        {
+            if (value)
+                updateSensorValue(SensorName, node, "Y");
+            else
+                updateSensorValue(SensorName, node, "N");
+        }
+
+        public static void updateSensorValue(string SensorName, string node, string value)
+        {
+            loadXML();
+            XmlNode nodeXML = null;
+
+            foreach (XmlNode xmln in xDoc.SelectNodes("/root/Sensoren"))
+            {
+                foreach (XmlNode child in xmln.ChildNodes)
+                {
+                    if (getInnerText(child, "Bezeichnung") == SensorName)
+                    {
+                        nodeXML = child;
+                        break;
+                    }
+                }
+            }
+
+            if (nodeXML != null)
+            {
+                nodeXML.SelectSingleNode(node).InnerText = value;
+                xDoc.Save(XmlFileName);
+            }
+
+        }
+
         public static List<XMLSensorObject> getSensorItemsFromXML()
         {
             List<XMLSensorObject> lst = new List<XMLSensorObject>();
+            ArrayList items = new ArrayList();
+            items.Clear();
 
             loadXML();
 
@@ -98,6 +144,13 @@ namespace Arduino_Temperature_Retrofit
                 foreach (XmlNode child in xmln.ChildNodes)
                 {
                     XMLSensorObject tmpSensor = new XMLSensorObject();
+
+                    tmpSensor.Name = getInnerText(child, "Bezeichnung");
+                    //Name = Unique Identifier, not allowed to exist more than one time
+                    if (items.IndexOf(tmpSensor.Name) >= 0)
+                        throw new Exception("Fehler XML: Der Bezeichnung muss für jeden Sensor eindeutig sein.");
+                    else
+                        items.Add(tmpSensor.Name);
 
                     tmpSensor.Active = checkBool(getInnerText(child, "Aktiv"));
 
@@ -114,16 +167,19 @@ namespace Arduino_Temperature_Retrofit
                         if (numEntries >= DataObject.HistoryMinDefaultEntries && numEntries <= DataObject.HistoryMaxDefaultEntries)
                             tmpSensor.numLogEntries = numEntries;
                         else
-                            MessageBox.Show("XML Fehler: Die Anzahl der Num Einträge muss zwischen " + DataObject.HistoryMinDefaultEntries.ToString() + " und " + DataObject.HistoryMaxDefaultEntries.ToString() + " liegen!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            throw new Exception("XML Fehler: Die Anzahl der Num Einträge muss zwischen " + DataObject.HistoryMinDefaultEntries.ToString() + " und " + DataObject.HistoryMaxDefaultEntries.ToString() + " liegen!");
                     } else
                     {
-                        MessageBox.Show("XML Fehler: Die Anzahl der Num Einträge kann nicht verarbeitet werden!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        throw new Exception("XML Fehler: Die Anzahl der Num Einträge kann nicht verarbeitet werden!");
                     }
 
                     int Baudrate;
                     if (int.TryParse(getInnerText(child, "Baudrate"), out Baudrate))
                     {
-                        tmpSensor.Baudrate = Baudrate;
+                        if (Baudrate >= 8)
+                            tmpSensor.Baudrate = Baudrate;
+                        else
+                            throw new Exception("XML Fehler: Baudrate hat einen Wert kleiner 8");
                     } else
                     {
                         tmpSensor.Baudrate = Common.COMSettings.DefaultBaudRate;
@@ -135,15 +191,15 @@ namespace Arduino_Temperature_Retrofit
                         if (maxLogFileSize >= 1048576 && maxLogFileSize <= 1073741824)
                             tmpSensor.maxLogFileSize = maxLogFileSize;
                         else
-                            MessageBox.Show("XML Fehler: Die maximale Größe des Logfiles muss zwischen 1.048.576 und 1.073.741.824 liegen!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            throw new Exception("XML Fehler: Die maximale Größe des Logfiles muss zwischen 1.048.576 und 1.073.741.824 liegen!");
                     }
                     else
                     {
-                        MessageBox.Show("XML Fehler: Die maximale Größe des Logfiles kann nicht verarbeitet werden!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        throw new Exception("XML Fehler: Die maximale Größe des Logfiles kann nicht verarbeitet werden!");
                     }
                     tmpSensor.maxLogFileSize = maxLogFileSize;
 
-                    tmpSensor.Name = getInnerText(child, "Bezeichnung");
+                    
                     tmpSensor.Port = getInnerText(child, "Port");
                     tmpSensor.LogFilePath = getInnerText(child, "LogFile");
 

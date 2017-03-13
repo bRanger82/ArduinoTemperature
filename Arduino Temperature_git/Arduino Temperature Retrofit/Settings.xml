@@ -28,7 +28,7 @@
     </Sensor>
   </Sensoren>
   <HTML>
-    <FileHTML>C:\inetpub\wwwroot\temperatur.html</FileHTML>
+    <FileHTML>C:\Exchange\temperatur.html</FileHTML>
     <HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
     <Enabled>N</Enabled>
     <UpdateFrequency>60</UpdateFrequency>
