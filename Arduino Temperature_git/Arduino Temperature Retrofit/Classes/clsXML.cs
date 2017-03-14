@@ -37,7 +37,7 @@ namespace Arduino_Temperature_Retrofit
         public static string Title { get { return getValue("/root/titel"); } set { setValue("/root/titel", value); } }
         public static string HtmlFile { get { return getValue("/root/HTML/FileHTML"); } set { setValue("/root/HTML/FileHTML", value); } }
         public static string HtmlHeadText { get { return getValue("/root/HTML/HTMLHEAD"); } set { setValue("/root/HTML/HTMLHEAD", value); } }
-        public static bool HtmlEnabled { get { return checkBool(getValue("/root/HTML/Enabled")); } set { setValueBool("/root/HTML/HTMLHEAD", value); } }
+        public static bool HtmlEnabled { get { return checkBool(getValue("/root/HTML/Enabled")); } set { setValueBool("/root/HTML/Enabled", value); } }
 
         private static void setValueBool(string nodePath, bool value)
         {
@@ -54,6 +54,16 @@ namespace Arduino_Temperature_Retrofit
             xDoc.SelectSingleNode(nodePath).InnerText = Value;
             xDoc.Save(XmlFileName);
 
+        }
+
+        private const int minHTMLUpdateFrequency = 60;
+
+        public static void setHttpUpdateFrequency(int val)
+        {
+            if (val < minHTMLUpdateFrequency)
+                throw new ArgumentOutOfRangeException("Fehler: die Update-Frequenz für HTML darf nicht unter " + minHTMLUpdateFrequency.ToString() + " liegen!");
+
+            setValue("/root/HTML/UpdateFrequency", val.ToString());
         }
 
         public static int HttpUpdateFrequency()
@@ -148,7 +158,7 @@ namespace Arduino_Temperature_Retrofit
                     tmpSensor.Name = getInnerText(child, "Bezeichnung");
                     //Name = Unique Identifier, not allowed to exist more than one time
                     if (items.IndexOf(tmpSensor.Name) >= 0)
-                        throw new Exception("Fehler XML: Der Bezeichnung muss für jeden Sensor eindeutig sein.");
+                        throw new Exception("Fehler XML: Die Bezeichnung muss für jeden Sensor eindeutig sein.\nDer Name '" + tmpSensor.Name + "' existiert bereits!");
                     else
                         items.Add(tmpSensor.Name);
 

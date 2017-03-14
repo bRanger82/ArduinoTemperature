@@ -22,6 +22,9 @@ namespace TestEnvironment
         static int Main(string[] args)
         {
 
+            runXMLText();
+            Console.ReadKey();
+            
             List<double> lst = new List<double>();
             for (int x = 1; x <= 10; x++)
                 lst.Add(x);
@@ -58,6 +61,53 @@ namespace TestEnvironment
             return 0;
         }
 
+        public static void runXMLText()
+        {
+            try
+            {
+                List<XMLSensorObject> senLst = new List<XMLSensorObject>();
+                senLst = XML.getSensorItemsFromXML();
+
+                Console.ReadKey();
+
+                //public static string Title { get { return getValue("/root/titel"); } set { setValue("/root/titel", value); } }
+                //public static string HtmlFile { get { return getValue("/root/HTML/FileHTML"); } set { setValue("/root/HTML/FileHTML", value); } }
+                //public static string HtmlHeadText { get { return getValue("/root/HTML/HTMLHEAD"); } set { setValue("/root/HTML/HTMLHEAD", value); } }
+                //public static bool HtmlEnabled { get { return checkBool(getValue("/root/HTML/Enabled")); } set { setValueBool("/root/HTML/HTMLHEAD", value); } }
+                string oldTitle = XML.Title;
+                string oldHtmlFile = XML.HtmlFile;
+                string oldHtmlHeadText = XML.HtmlHeadText;
+                bool oldHtmlEnabled = XML.HtmlEnabled;
+
+                Console.WriteLine("************************************************");
+                Console.WriteLine("Original Values:");
+                Console.WriteLine("Title:          " + XML.Title);
+                Console.WriteLine("HTML File:      " + XML.HtmlFile);
+                Console.WriteLine("HTML Head Text: " + XML.HtmlHeadText);
+                Console.WriteLine("HTML Enabled:   " + XML.HtmlEnabled.ToString());
+                Console.WriteLine("************************************************");
+
+                Console.ReadKey();
+                XML.Title = "Html Changed Value";
+                XML.HtmlFile = @"C:\Temp\doesnotexit.html";
+                XML.HtmlHeadText = "This is a new Head-Text";
+                XML.HtmlEnabled = !oldHtmlEnabled;
+
+                Console.WriteLine("************************************************");
+                Console.WriteLine("Changed Values:");
+                Console.WriteLine("Title:          " + XML.Title);
+                Console.WriteLine("HTML File:      " + XML.HtmlFile);
+                Console.WriteLine("HTML Head Text: " + XML.HtmlHeadText);
+                Console.WriteLine("HTML Enabled:   " + XML.HtmlEnabled.ToString());
+                Console.WriteLine("************************************************");
+            }
+            catch (Exception ex)
+            {
+
+                Console.WriteLine(ex.Message);
+            }
+            
+        }
         public static void htmlconvert()
         {
             String myString;

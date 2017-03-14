@@ -16,7 +16,7 @@
     </Sensor>
     <Sensor>
       <Aktiv>Y</Aktiv>
-      <Bezeichnung>Boden</Bezeichnung>
+      <Bezeichnung>Tisch</Bezeichnung>
       <Port>COM9</Port>
       <DtrEnabled>N</DtrEnabled>
       <Baudrate>9600</Baudrate>
