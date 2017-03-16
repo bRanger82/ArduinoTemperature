@@ -219,9 +219,9 @@ namespace Arduino_Temperature_Retrofit
 
         private void processDataProtocolV1(string [] data, ref DataObject dobj)
         {
-            dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[1].ToString())), DataObjectCategory.Luftfeuchtigkeit, Common.SensorValueType.Humidity);
-            dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Temperatur, Common.SensorValueType.Temperature);
-            dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
+            dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[1].ToString())), DataObjectCategory.Luftfeuchtigkeit);
+            dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Temperatur);
+            dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.HeatIndex);
             dobj.LastUpdated = DateTime.Now;
             dobj.DataAvailable = true;
             dobj.AdditionalInformation = "-";
@@ -231,10 +231,10 @@ namespace Arduino_Temperature_Retrofit
 
         private void processDataProtocolV2(string[] data, ref DataObject dobj)
         {
-            dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Luftfeuchtigkeit, Common.SensorValueType.Humidity);
-            dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.Temperatur, Common.SensorValueType.Temperature);
-            dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(data[4].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
-            dobj.addDataItem(DataObjectCategory.Luftdruck.Value, double.Parse(Common.replaceDecPoint(data[5].ToString())), DataObjectCategory.Luftdruck, Common.SensorValueType.AirPressure);
+            dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Luftfeuchtigkeit);
+            dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.Temperatur);
+            dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(data[4].ToString())), DataObjectCategory.HeatIndex);
+            dobj.addDataItem(DataObjectCategory.Luftdruck.Value, double.Parse(Common.replaceDecPoint(data[5].ToString())), DataObjectCategory.Luftdruck);
             dobj.LastUpdated = DateTime.Now;
             dobj.DataAvailable = true;
             dobj.AdditionalInformation = "-";
@@ -244,11 +244,11 @@ namespace Arduino_Temperature_Retrofit
 
         private void processDataProtocolV3(string[] data, ref DataObject dobj)
         {
-            dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Luftfeuchtigkeit, Common.SensorValueType.Humidity);
-            dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.Temperatur, Common.SensorValueType.Temperature);
-            dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(data[4].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
-            dobj.addDataItem(DataObjectCategory.Luftdruck.Value, double.Parse(Common.replaceDecPoint(data[5].ToString())), DataObjectCategory.Luftdruck, Common.SensorValueType.AirPressure);
-            dobj.addDataItem(DataObjectCategory.Lichtwert.Value, double.Parse(Common.replaceDecPoint(data[6].ToString())), DataObjectCategory.Lichtwert, Common.SensorValueType.LUX);
+            dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Luftfeuchtigkeit);
+            dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.Temperatur);
+            dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(data[4].ToString())), DataObjectCategory.HeatIndex);
+            dobj.addDataItem(DataObjectCategory.Luftdruck.Value, double.Parse(Common.replaceDecPoint(data[5].ToString())), DataObjectCategory.Luftdruck);
+            dobj.addDataItem(DataObjectCategory.Lichtwert.Value, double.Parse(Common.replaceDecPoint(data[6].ToString())), DataObjectCategory.Lichtwert);
 
             dobj.LastUpdated = DateTime.Now; 
             dobj.DataAvailable = true;
@@ -290,10 +290,11 @@ namespace Arduino_Temperature_Retrofit
         {
             if (dObjExt.ItemExists(dobjcat) && DataObjectCategory.HasCapability(dObjExt.Items[dobjcat.Value].DataObjCategory, dObjExt.Protocol))
             {
-                string unit = Common.getSensorValueUnit(dObjExt.Items[dobjcat.Value].SensorType);
-                lblValue.Text = dObjExt.Items[dobjcat.Value].Value.ToString("#.#0") + unit;
-                lblMinValue.Text = dObjExt.Items[dobjcat.Value].MinValue.ToString("#.#0") + unit;
-                lblMaxValue.Text = dObjExt.Items[dobjcat.Value].MaxValue.ToString("#.#0") + unit;
+                string unit = DataObjectCategory.getSensorValueUnit(dobjcat);
+
+                lblValue.Text = dObjExt.Items[dobjcat.Value].Value.ToString("F") + unit;
+                lblMinValue.Text = dObjExt.Items[dobjcat.Value].MinValue.ToString("F") + unit;
+                lblMaxValue.Text = dObjExt.Items[dobjcat.Value].MaxValue.ToString("F") + unit;
                 lblMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MinTimepoint);
                 lblMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MaxTimepoint);
                 string trendInfo;
@@ -562,7 +563,7 @@ namespace Arduino_Temperature_Retrofit
                 chartValues.Series.Add(name);
                 chartValues.Series[name].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
             }
-
+            
             //chartValues.Titles[0].Text = "Testtitle";
             
             chartValues.Series[0].XValueType = ChartValueType.DateTime;
@@ -668,9 +669,12 @@ namespace Arduino_Temperature_Retrofit
                 
                 addChartSerie(values, dt, dbo.Value.ToString(), lineColor, minDate, maxDate, min, max);
                 
-
-
                 lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString() + " (max: " + dObjExt.MaxHistoryItemsSet + ")";
+
+                if (detailierteInformationenToolStripMenuItem.Checked)
+                {
+                    updateListView();
+                }
             }
 
             if (chartValues.Series.Count > 0)
@@ -680,10 +684,15 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        private void updateChart(DataObject dobj)
+        public DataObjectCategory getActualDataObjectCategory()
         {
             string selected = this.cboChartSelection.GetItemText(this.cboChartSelection.SelectedItem);
-            DataObjectCategory dobjCat = DataObjectCategory.getObjectCategory(selected);
+            return DataObjectCategory.getObjectCategory(selected);
+        }
+
+        private void updateChart(DataObject dobj)
+        {
+            DataObjectCategory dobjCat = getActualDataObjectCategory();
 
             if (dobjCat != null)
             {
@@ -757,6 +766,95 @@ namespace Arduino_Temperature_Retrofit
         private void picColLUX_Click(object sender, EventArgs e)
         {
             changeColor(picColLUX);
+        }
+
+        private void updateListView()
+        {
+            DataObject dobj = getAcutalDataObject();
+            lstViewDetail.Clear();
+            lstViewDetail.View = View.Details;
+            lstViewDetail.MultiSelect = true;
+            lstViewDetail.FullRowSelect = true;
+            lstViewDetail.Columns.Add("Datum/Uhrzeit");
+            lstViewDetail.Columns.Add("Wert");
+            foreach(ColumnHeader ch in lstViewDetail.Columns)
+            {
+                ch.Width = (lstViewDetail.Width / lstViewDetail.Columns.Count) - 5;
+            }
+            
+            if (!dobj.DataAvailable)
+                return;
+
+            DataObjectCategory cat = getActualDataObjectCategory();
+            lstViewDetail.BeginUpdate();
+
+            try
+            {
+                foreach (logItem li in dobj.getLogItems(cat))
+                {
+                    ListViewItem lvItem = new ListViewItem();
+                    lvItem.Text = li.Timepoint.ToString("dd.MM.yyyy hh:mm:ss");
+                    lvItem.SubItems.Add(li.Value.ToString("F") + DataObjectCategory.getSensorValueUnit(li.DataObjectCat));
+                    lstViewDetail.Items.Add(lvItem);
+                }
+
+                lstViewDetail.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                lstViewDetail.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            }
+            finally
+            {
+                lstViewDetail.EndUpdate();
+            }
+        }
+
+        private void detailierteInformationenToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            detailierteInformationenToolStripMenuItem.Checked = !detailierteInformationenToolStripMenuItem.Checked;
+
+            if (detailierteInformationenToolStripMenuItem.Checked)
+            {
+                this.Width = lstViewDetail.Left + lstViewDetail.Width + 30;
+                updateListView();
+            }
+            else
+            {
+                this.Width = grpBoxSensor.Left + grpBoxSensor.Width + 30;
+            }
+            
+
+        }
+
+        Point? prevPosition = null;
+        ToolTip tooltip = new ToolTip();
+
+        private void chartValues_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point pos = e.Location;
+            if (prevPosition.HasValue && pos == prevPosition.Value)
+                return;
+            tooltip.RemoveAll();
+            prevPosition = pos;
+            HitTestResult [] results = chartValues.HitTest(pos.X, pos.Y, false, ChartElementType.DataPoint);
+            foreach (HitTestResult result in results)
+            {
+                if (result.ChartElementType == ChartElementType.DataPoint)
+                {
+                    var prop = result.Object as DataPoint;
+                    if (prop != null)
+                    {
+                        var pointXPixel = result.ChartArea.AxisX.ValueToPixelPosition(prop.XValue);
+                        var pointYPixel = result.ChartArea.AxisY.ValueToPixelPosition(prop.YValues[0]);
+                        
+                        // check if the cursor is really close to the point (2 pixels around the point)
+                        if (Math.Abs(pos.X - pointXPixel) < 5 &&
+                            Math.Abs(pos.Y - pointYPixel) < 5)
+                        {
+                            tooltip.Show("X=" + DateTime.FromOADate(prop.XValue).ToString("dd.MM.yyyy hh:mm:ss") + ", Y=" + prop.YValues[0], this.chartValues,
+                                            pos.X, pos.Y - 15);
+                        }
+                    }
+                }
+            }
         }
     }
 }

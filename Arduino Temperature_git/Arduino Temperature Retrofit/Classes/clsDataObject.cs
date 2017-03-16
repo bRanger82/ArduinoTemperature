@@ -10,14 +10,14 @@ namespace Arduino_Temperature_Retrofit
 {
     public enum DataObjectType
     {
-        Temperature,
-        HeatIndex,
-        Humidity,
-        AirPressure,
-        LUX,
-        Undefined
+        Temperatur = 0,
+        HeatIndex = 1,
+        Luftfeuchtigkeit = 2,
+        Luftdruck = 3,
+        Lichtwert = 4,
+        NichtDefiniert = 5
     }
-
+    
     public class DataObjectDetails
     {
         private DetailsTimePoint _TemperatureDetail = new DetailsTimePoint();
@@ -147,16 +147,25 @@ namespace Arduino_Temperature_Retrofit
 
         public string Value { get; set; }
 
-        public enum itemList
+        static public string getSensorValueUnit(DataObjectCategory typ, bool leadingSpace = true)
         {
-            Temperatur = 0,
-            HeatIndex = 1,
-            Luftfeuchtigkeit = 2,
-            Luftdruck = 3,
-            Lichtwert = 4
+            string ret = (leadingSpace) ? " " : "";
+
+            if (typ.Value == DataObjectCategory.Luftdruck.Value)
+                return ret + "mb";
+            else if (typ.Value == DataObjectCategory.Temperatur.Value)
+                return ret + "°C";
+            else if (typ.Value == DataObjectCategory.HeatIndex.Value)
+                return ret + "°C";
+            else if (typ.Value == DataObjectCategory.Luftfeuchtigkeit.Value)
+                return ret + "%";
+            else if (typ.Value == DataObjectCategory.Lichtwert.Value)
+                return ret + "lux";
+            else
+                return "N/A";
         }
 
-        public static List<string> Items = new List<string>(new string[] { "Temperature", "HeatIndex", "Humidity", "AirPressure", "LUX" });
+        public static List<string> Items = new List<string>(Enum.GetNames(typeof(DataObjectType)));
 
         public static List <string> getCapableItems(DataObjectProtocol dobj)
         {
@@ -169,7 +178,7 @@ namespace Arduino_Temperature_Retrofit
             return ret;
         }
 
-        public static DataObjectCategory getObjectCategory(itemList item)
+        public static DataObjectCategory getObjectCategory(DataObjectType item)
         {
             return new DataObjectCategory(Items[(int)item]);
         }
@@ -182,11 +191,11 @@ namespace Arduino_Temperature_Retrofit
             return new DataObjectCategory(Items[Items.IndexOf(item)]);
         }
 
-        public static DataObjectCategory Temperatur { get { return new DataObjectCategory(Items[(int)itemList.Temperatur]); } }
-        public static DataObjectCategory HeatIndex { get { return new DataObjectCategory(Items[(int)itemList.HeatIndex]); } }
-        public static DataObjectCategory Luftfeuchtigkeit { get { return new DataObjectCategory(Items[(int)itemList.Luftfeuchtigkeit]); } }
-        public static DataObjectCategory Luftdruck { get { return new DataObjectCategory(Items[(int)itemList.Luftdruck]); } }
-        public static DataObjectCategory Lichtwert { get { return new DataObjectCategory(Items[(int)itemList.Lichtwert]); } }
+        public static DataObjectCategory Temperatur { get { return new DataObjectCategory(Items[(int)DataObjectType.Temperatur]); } }
+        public static DataObjectCategory HeatIndex { get { return new DataObjectCategory(Items[(int)DataObjectType.HeatIndex]); } }
+        public static DataObjectCategory Luftfeuchtigkeit { get { return new DataObjectCategory(Items[(int)DataObjectType.Luftfeuchtigkeit]); } }
+        public static DataObjectCategory Luftdruck { get { return new DataObjectCategory(Items[(int)DataObjectType.Luftdruck]); } }
+        public static DataObjectCategory Lichtwert { get { return new DataObjectCategory(Items[(int)DataObjectType.Lichtwert]); } }
     }
 
     public class LogObject
@@ -213,7 +222,6 @@ namespace Arduino_Temperature_Retrofit
         public DateTime MaxTimepoint { get; set; } = DateTime.Now;
         public double Value { get; set; } = 0;
         public DataObjectCategory DataObjCategory { get; set; }
-        public Common.SensorValueType SensorType { get; set; }
     }
 
     public enum Trend
@@ -272,7 +280,7 @@ namespace Arduino_Temperature_Retrofit
             {
                 if (logObj.Category.Value == dobj.Value)
                 {
-                    lst.Add(new logItem(logObj.Value, logObj.Timepoint));
+                    lst.Add(new logItem(logObj.Value, logObj.Timepoint, logObj.Category));
                 }
             }
             
@@ -364,7 +372,7 @@ namespace Arduino_Temperature_Retrofit
             return _Items[dobjCat.Value].Value;
         }
 
-        public void addDataItem(string name, double value, DataObjectCategory dObjCat, Common.SensorValueType SensorType)
+        public void addDataItem(string name, double value, DataObjectCategory dObjCat)
         {
             DateTime timepoint = DateTime.Now;
 
@@ -376,14 +384,12 @@ namespace Arduino_Temperature_Retrofit
                 dtp.MaxValue = value;
                 dtp.MinTimepoint = timepoint;
                 dtp.MaxTimepoint = timepoint;
-                dtp.SensorType = SensorType;
                 dtp.DataObjCategory = dObjCat;
                 _Items.Add(name, dtp);
             }
             else
             {
                 _Items[name].Value = value;
-                _Items[name].SensorType = SensorType;
                 _Items[name].DataObjCategory = dObjCat;
                 if (_Items[name].MinValue > value)
                 {
@@ -407,10 +413,13 @@ namespace Arduino_Temperature_Retrofit
     {
         public double Value { get; set; }
         public DateTime Timepoint { get; set; }
-        public logItem(double Value, DateTime Timepoint)
+        public DataObjectCategory DataObjectCat { get; set; }
+
+        public logItem(double Value, DateTime Timepoint, DataObjectCategory dobjCat)
         {
             this.Value = Value;
             this.Timepoint = Timepoint;
+            this.DataObjectCat = dobjCat;
         }
     }
 }

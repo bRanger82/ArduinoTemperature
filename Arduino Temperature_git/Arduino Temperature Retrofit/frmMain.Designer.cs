@@ -35,8 +35,11 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.lblChartSelection = new System.Windows.Forms.Label();
             this.cboChartSelection = new System.Windows.Forms.ComboBox();
-            this.grpBoxSensorOne = new System.Windows.Forms.GroupBox();
+            this.grpBoxSensor = new System.Windows.Forms.GroupBox();
+            this.picTrendSame = new System.Windows.Forms.PictureBox();
             this.picConnStatus = new System.Windows.Forms.PictureBox();
+            this.picTrendDown = new System.Windows.Forms.PictureBox();
+            this.picTrendUp = new System.Windows.Forms.PictureBox();
             this.cboSensors = new System.Windows.Forms.ComboBox();
             this.grpBoxHeatIndex = new System.Windows.Forms.GroupBox();
             this.picTrendHeatIndex = new System.Windows.Forms.PictureBox();
@@ -106,11 +109,15 @@
             this.blauStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.lblNumLogEntries = new System.Windows.Forms.Label();
-            this.picTrendSame = new System.Windows.Forms.PictureBox();
-            this.picTrendDown = new System.Windows.Forms.PictureBox();
-            this.picTrendUp = new System.Windows.Forms.PictureBox();
-            this.grpBoxSensorOne.SuspendLayout();
+            this.zusatzToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.detailierteInformationenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lstViewDetail = new System.Windows.Forms.ListView();
+            this.lblHistoryDataLV = new System.Windows.Forms.Label();
+            this.grpBoxSensor.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendDown)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendUp)).BeginInit();
             this.grpBoxHeatIndex.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendHeatIndex)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picColHeatIndex)).BeginInit();
@@ -128,9 +135,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.picColTemp)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartValues)).BeginInit();
             this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendDown)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendUp)).BeginInit();
             this.SuspendLayout();
             // 
             // lblChartSelection
@@ -148,31 +152,42 @@
             this.cboChartSelection.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboChartSelection.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cboChartSelection.FormattingEnabled = true;
-            this.cboChartSelection.Location = new System.Drawing.Point(453, 486);
+            this.cboChartSelection.Location = new System.Drawing.Point(450, 486);
             this.cboChartSelection.Name = "cboChartSelection";
             this.cboChartSelection.Size = new System.Drawing.Size(169, 24);
             this.cboChartSelection.TabIndex = 34;
             this.cboChartSelection.SelectedIndexChanged += new System.EventHandler(this.cboChartSelection_SelectedIndexChanged);
             // 
-            // grpBoxSensorOne
+            // grpBoxSensor
             // 
-            this.grpBoxSensorOne.Controls.Add(this.picTrendSame);
-            this.grpBoxSensorOne.Controls.Add(this.picConnStatus);
-            this.grpBoxSensorOne.Controls.Add(this.picTrendDown);
-            this.grpBoxSensorOne.Controls.Add(this.picTrendUp);
-            this.grpBoxSensorOne.Controls.Add(this.cboSensors);
-            this.grpBoxSensorOne.Controls.Add(this.grpBoxHeatIndex);
-            this.grpBoxSensorOne.Controls.Add(this.lblSensorLastUpdated);
-            this.grpBoxSensorOne.Controls.Add(this.lblSensor);
-            this.grpBoxSensorOne.Controls.Add(this.grpBoxLUX);
-            this.grpBoxSensorOne.Controls.Add(this.grpBoxAirPressure);
-            this.grpBoxSensorOne.Controls.Add(this.grpBoxHumidity);
-            this.grpBoxSensorOne.Controls.Add(this.grpBoxTemperature);
-            this.grpBoxSensorOne.Location = new System.Drawing.Point(12, 25);
-            this.grpBoxSensorOne.Name = "grpBoxSensorOne";
-            this.grpBoxSensorOne.Size = new System.Drawing.Size(610, 450);
-            this.grpBoxSensorOne.TabIndex = 33;
-            this.grpBoxSensorOne.TabStop = false;
+            this.grpBoxSensor.Controls.Add(this.picTrendSame);
+            this.grpBoxSensor.Controls.Add(this.picConnStatus);
+            this.grpBoxSensor.Controls.Add(this.picTrendDown);
+            this.grpBoxSensor.Controls.Add(this.picTrendUp);
+            this.grpBoxSensor.Controls.Add(this.cboSensors);
+            this.grpBoxSensor.Controls.Add(this.grpBoxHeatIndex);
+            this.grpBoxSensor.Controls.Add(this.lblSensorLastUpdated);
+            this.grpBoxSensor.Controls.Add(this.lblSensor);
+            this.grpBoxSensor.Controls.Add(this.grpBoxLUX);
+            this.grpBoxSensor.Controls.Add(this.grpBoxAirPressure);
+            this.grpBoxSensor.Controls.Add(this.grpBoxHumidity);
+            this.grpBoxSensor.Controls.Add(this.grpBoxTemperature);
+            this.grpBoxSensor.Location = new System.Drawing.Point(10, 25);
+            this.grpBoxSensor.Name = "grpBoxSensor";
+            this.grpBoxSensor.Size = new System.Drawing.Size(610, 450);
+            this.grpBoxSensor.TabIndex = 33;
+            this.grpBoxSensor.TabStop = false;
+            // 
+            // picTrendSame
+            // 
+            this.picTrendSame.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.picTrendSame.Image = global::Arduino_Temperature_Retrofit.Properties.Resources.Trend_Same;
+            this.picTrendSame.Location = new System.Drawing.Point(408, 353);
+            this.picTrendSame.Name = "picTrendSame";
+            this.picTrendSame.Size = new System.Drawing.Size(30, 30);
+            this.picTrendSame.TabIndex = 42;
+            this.picTrendSame.TabStop = false;
+            this.picTrendSame.Visible = false;
             // 
             // picConnStatus
             // 
@@ -182,6 +197,28 @@
             this.picConnStatus.Size = new System.Drawing.Size(25, 25);
             this.picConnStatus.TabIndex = 36;
             this.picConnStatus.TabStop = false;
+            // 
+            // picTrendDown
+            // 
+            this.picTrendDown.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.picTrendDown.Image = global::Arduino_Temperature_Retrofit.Properties.Resources.Trend_Down;
+            this.picTrendDown.Location = new System.Drawing.Point(408, 317);
+            this.picTrendDown.Name = "picTrendDown";
+            this.picTrendDown.Size = new System.Drawing.Size(30, 30);
+            this.picTrendDown.TabIndex = 41;
+            this.picTrendDown.TabStop = false;
+            this.picTrendDown.Visible = false;
+            // 
+            // picTrendUp
+            // 
+            this.picTrendUp.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.picTrendUp.Image = global::Arduino_Temperature_Retrofit.Properties.Resources.Trend_UP;
+            this.picTrendUp.Location = new System.Drawing.Point(444, 317);
+            this.picTrendUp.Name = "picTrendUp";
+            this.picTrendUp.Size = new System.Drawing.Size(30, 30);
+            this.picTrendUp.TabIndex = 40;
+            this.picTrendUp.TabStop = false;
+            this.picTrendUp.Visible = false;
             // 
             // cboSensors
             // 
@@ -789,7 +826,7 @@
             chartArea1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
             chartArea1.Name = "ChartArea1";
             this.chartValues.ChartAreas.Add(chartArea1);
-            this.chartValues.Location = new System.Drawing.Point(12, 516);
+            this.chartValues.Location = new System.Drawing.Point(10, 516);
             this.chartValues.Name = "chartValues";
             this.chartValues.Palette = System.Windows.Forms.DataVisualization.Charting.ChartColorPalette.None;
             series1.ChartArea = "ChartArea1";
@@ -802,15 +839,17 @@
             series2.Name = "HeatIndex";
             this.chartValues.Series.Add(series1);
             this.chartValues.Series.Add(series2);
-            this.chartValues.Size = new System.Drawing.Size(610, 173);
+            this.chartValues.Size = new System.Drawing.Size(609, 173);
             this.chartValues.TabIndex = 36;
             this.chartValues.Text = "chart1";
+            this.chartValues.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chartValues_MouseMove);
             // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menüToolStripMenuItem,
-            this.kommandosToolStripMenuItem});
+            this.kommandosToolStripMenuItem,
+            this.zusatzToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(634, 24);
@@ -873,55 +912,58 @@
             // 
             this.lblNumLogEntries.AutoSize = true;
             this.lblNumLogEntries.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNumLogEntries.Location = new System.Drawing.Point(9, 489);
+            this.lblNumLogEntries.Location = new System.Drawing.Point(7, 489);
             this.lblNumLogEntries.Name = "lblNumLogEntries";
             this.lblNumLogEntries.Size = new System.Drawing.Size(136, 16);
             this.lblNumLogEntries.TabIndex = 38;
             this.lblNumLogEntries.Text = "Datensätze: <N/A>";
             // 
-            // picTrendSame
+            // zusatzToolStripMenuItem
             // 
-            this.picTrendSame.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.picTrendSame.Image = global::Arduino_Temperature_Retrofit.Properties.Resources.Trend_Same;
-            this.picTrendSame.Location = new System.Drawing.Point(408, 353);
-            this.picTrendSame.Name = "picTrendSame";
-            this.picTrendSame.Size = new System.Drawing.Size(30, 30);
-            this.picTrendSame.TabIndex = 42;
-            this.picTrendSame.TabStop = false;
-            this.picTrendSame.Visible = false;
+            this.zusatzToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.detailierteInformationenToolStripMenuItem});
+            this.zusatzToolStripMenuItem.Name = "zusatzToolStripMenuItem";
+            this.zusatzToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
+            this.zusatzToolStripMenuItem.Text = "Zusatz";
             // 
-            // picTrendDown
+            // detailierteInformationenToolStripMenuItem
             // 
-            this.picTrendDown.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.picTrendDown.Image = global::Arduino_Temperature_Retrofit.Properties.Resources.Trend_Down;
-            this.picTrendDown.Location = new System.Drawing.Point(408, 317);
-            this.picTrendDown.Name = "picTrendDown";
-            this.picTrendDown.Size = new System.Drawing.Size(30, 30);
-            this.picTrendDown.TabIndex = 41;
-            this.picTrendDown.TabStop = false;
-            this.picTrendDown.Visible = false;
+            this.detailierteInformationenToolStripMenuItem.Name = "detailierteInformationenToolStripMenuItem";
+            this.detailierteInformationenToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.detailierteInformationenToolStripMenuItem.Text = "Detailierte Informationen";
+            this.detailierteInformationenToolStripMenuItem.Click += new System.EventHandler(this.detailierteInformationenToolStripMenuItem_Click);
             // 
-            // picTrendUp
+            // lstViewDetail
             // 
-            this.picTrendUp.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.picTrendUp.Image = global::Arduino_Temperature_Retrofit.Properties.Resources.Trend_UP;
-            this.picTrendUp.Location = new System.Drawing.Point(444, 317);
-            this.picTrendUp.Name = "picTrendUp";
-            this.picTrendUp.Size = new System.Drawing.Size(30, 30);
-            this.picTrendUp.TabIndex = 40;
-            this.picTrendUp.TabStop = false;
-            this.picTrendUp.Visible = false;
+            this.lstViewDetail.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lstViewDetail.Location = new System.Drawing.Point(638, 94);
+            this.lstViewDetail.Name = "lstViewDetail";
+            this.lstViewDetail.Size = new System.Drawing.Size(284, 595);
+            this.lstViewDetail.TabIndex = 39;
+            this.lstViewDetail.UseCompatibleStateImageBehavior = false;
+            // 
+            // lblHistoryDataLV
+            // 
+            this.lblHistoryDataLV.AutoSize = true;
+            this.lblHistoryDataLV.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblHistoryDataLV.Location = new System.Drawing.Point(632, 44);
+            this.lblHistoryDataLV.Name = "lblHistoryDataLV";
+            this.lblHistoryDataLV.Size = new System.Drawing.Size(256, 31);
+            this.lblHistoryDataLV.TabIndex = 40;
+            this.lblHistoryDataLV.Text = "Historische Daten:";
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(634, 701);
+            this.Controls.Add(this.lblHistoryDataLV);
+            this.Controls.Add(this.lstViewDetail);
             this.Controls.Add(this.lblNumLogEntries);
             this.Controls.Add(this.chartValues);
             this.Controls.Add(this.lblChartSelection);
             this.Controls.Add(this.cboChartSelection);
-            this.Controls.Add(this.grpBoxSensorOne);
+            this.Controls.Add(this.grpBoxSensor);
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -930,9 +972,12 @@
             this.Text = "Arduino Temperature";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             this.Load += new System.EventHandler(this.frmMain_Load);
-            this.grpBoxSensorOne.ResumeLayout(false);
-            this.grpBoxSensorOne.PerformLayout();
+            this.grpBoxSensor.ResumeLayout(false);
+            this.grpBoxSensor.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendDown)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picTrendUp)).EndInit();
             this.grpBoxHeatIndex.ResumeLayout(false);
             this.grpBoxHeatIndex.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendHeatIndex)).EndInit();
@@ -956,9 +1001,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.chartValues)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendDown)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.picTrendUp)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -968,7 +1010,7 @@
 
         private System.Windows.Forms.Label lblChartSelection;
         private System.Windows.Forms.ComboBox cboChartSelection;
-        private System.Windows.Forms.GroupBox grpBoxSensorOne;
+        private System.Windows.Forms.GroupBox grpBoxSensor;
         private System.Windows.Forms.ComboBox cboSensors;
         private System.Windows.Forms.GroupBox grpBoxHeatIndex;
         private System.Windows.Forms.Label lblSensorHeatIndexName;
@@ -1042,6 +1084,10 @@
         private System.Windows.Forms.PictureBox picTrendLUX;
         private System.Windows.Forms.PictureBox picTrendAirPressure;
         private System.Windows.Forms.PictureBox picTrendHumidity;
+        private System.Windows.Forms.ToolStripMenuItem zusatzToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem detailierteInformationenToolStripMenuItem;
+        private System.Windows.Forms.ListView lstViewDetail;
+        private System.Windows.Forms.Label lblHistoryDataLV;
     }
 }
 

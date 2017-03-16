@@ -205,30 +205,6 @@ namespace Arduino_Temperature_Retrofit
             return temp;
         }
 
-        static public string getSensorValueUnit(SensorValueType typ, bool leadingSpace = true)
-        {
-            string ret = (leadingSpace) ? " " : "";
-
-            switch (typ)
-            {
-                case SensorValueType.AirPressure: ret = ret + "mb"; break;
-                case SensorValueType.Temperature: ret = ret + "°C"; break;
-                case SensorValueType.Humidity: ret = ret + "%"; break;
-                case SensorValueType.LUX: ret = ret + "lux"; break;
-                default: ret = "N/A"; break;
-            }
-            return ret;
-        }
-
-        public enum SensorValueType
-        {
-            Temperature,
-            Humidity,
-            LUX,
-            AirPressure,
-            HeatIndex
-        }
-
         static public class COMSettings
         {
             public static StopBits DefaultStopBits { get { return StopBits.One; } }
