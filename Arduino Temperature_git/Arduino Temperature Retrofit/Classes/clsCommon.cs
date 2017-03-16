@@ -27,15 +27,31 @@ namespace Arduino_Temperature_Retrofit
         public static void writeHTMLFile(string filename, Dictionary<string, DataObject> lDobj, string HeadText)
         {
             StringBuilder sb = new StringBuilder();
-            List<DataObject> dobjList = new List<DataObject>();
 
-            foreach(KeyValuePair<string, DataObject> kvp in lDobj)
+            sb.AppendLine("<html>");
+            sb.AppendLine("<head>" + HttpUtility.HtmlEncode(XML.HtmlHeadText) + "</head>");
+            sb.AppendLine("<style>");
+            sb.AppendLine("table, th, td {");
+            sb.AppendLine("   border: 1px solid black;");
+            sb.AppendLine("}");
+            sb.AppendLine("table {");
+            sb.AppendLine("    border-collapse: collapse;");
+            sb.AppendLine("    width: 100%;");
+            sb.AppendLine("}");
+            sb.AppendLine("");
+            sb.AppendLine("th, td {");
+            sb.AppendLine("    text-align: left;");
+            sb.AppendLine("    padding: 8px;");
+            sb.AppendLine("}");
+            sb.AppendLine("tr:nth-child(even){background-color: #f2f2f2}");
+            sb.AppendLine("</style>");
+            foreach (KeyValuePair<string, DataObject> kvp in lDobj)
             {
-                DataObject dobj = (DataObject)kvp.Value;
-                dobjList.Add(dobj);
-                
+                if (((DataObject)kvp.Value).DataAvailable)
+                    sb.Append(createHTMLTableString((DataObject)kvp.Value));
             }
-            sb.Append(createHTMLTableString(dobjList));
+            sb.AppendLine("Zuletzt aktualisiert: " + Common.getCurrentDateTimeFormatted());
+            sb.AppendLine("</html>");
 
             using (StreamWriter sw = new StreamWriter(filename))
             {
@@ -70,70 +86,61 @@ namespace Arduino_Temperature_Retrofit
             return HttpUtility.HtmlEncode(temp.ToString());
         }
 
-        private static string createHTMLTableString(List<DataObject> lDojb)
+        private static string createHTMLTableString(DataObject dobj)
         {
-            if (lDojb.Count < 1)
-                return "";
-
             if (!XML.HtmlEnabled)
                 return string.Empty;
             
             StringBuilder sb = new StringBuilder();
             sb.Clear();
-            sb.AppendLine("<html>");
-            sb.AppendLine("<head>" + HttpUtility.HtmlEncode(XML.HtmlHeadText) + "</head>");
-            foreach (DataObject dobj in lDojb)
+            
+
+
+            List<string> capabaleItems = DataObjectCategory.getCapableItems(dobj.Protocol);
+
+            sb.AppendLine("</br><h3>" + dobj.Name + "</h3>");
+            sb.AppendLine(@"<table style=""width:100%"">");
+            sb.AppendLine("  <tr>");
+            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Datum und Uhrzeit") + "</th>");
+            foreach(string s in capabaleItems)
             {
-                if (!dobj.HTMLEnabled)
-                    continue;
+                sb.AppendLine("    <th>" + HttpUtility.HtmlEncode(s) + "</th>");
+            }
+            sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Zusatz-Info") + "</th>");
+            sb.AppendLine("  </tr>");
 
-                List<string> capabaleItems = DataObjectCategory.getCapableItems(dobj.Protocol);
 
-                sb.AppendLine("</br><h3>" + dobj.Name + "</h3>");
-                sb.AppendLine(@"<table style=""width:100%"">");
-                sb.AppendLine("  <tr>");
-                sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Datum und Uhrzeit") + "</th>");
+            sb.AppendLine("  <tr>");
+            sb.AppendLine("    <td>" + dobj.LastUpdated.ToShortDateString() + " " + dobj.LastUpdated.ToLongTimeString() + "</td>");
+
+            if (dobj.DataAvailable)
+            {
                 foreach(string s in capabaleItems)
                 {
-                    sb.AppendLine("    <th>" + HttpUtility.HtmlEncode(s) + "</th>");
+                    DataObjectCategory dobjCat = DataObjectCategory.getObjectCategory(s);
+                    sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(getData(dobj, dobjCat)) + "</td>");
                 }
-                sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Zusatz-Info") + "</th>");
-                sb.AppendLine("  </tr>");
 
-
-                sb.AppendLine("  <tr>");
-                sb.AppendLine("    <td>" + dobj.LastUpdated.ToShortDateString() + " " + dobj.LastUpdated.ToLongTimeString() + "</td>");
-
-                if (dobj.DataAvailable)
+                sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.AdditionalInformation) + "</td>");
+            }
+            else
+            {
+                foreach (string s in capabaleItems)
                 {
-                    foreach(string s in capabaleItems)
-                    {
-                        DataObjectCategory dobjCat = DataObjectCategory.getObjectCategory(s);
-                        sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(getData(dobj, dobjCat)) + "</td>");
-                    }
-
-                    sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.AdditionalInformation) + "</td>");
-                }
-                else
-                {
-                    foreach (string s in capabaleItems)
-                    {
-                        DataObjectCategory dobjCat = DataObjectCategory.getObjectCategory(s);
-                        sb.AppendLine("    <td>Keine Daten</td>");
-                    }
-
-                    sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.AdditionalInformation) + "</td>");
+                    DataObjectCategory dobjCat = DataObjectCategory.getObjectCategory(s);
+                    sb.AppendLine("    <td>Keine Daten</td>");
                 }
 
-                sb.AppendLine("  </tr>");
-                
-
-                sb.AppendLine("  </table> ");
-
-                sb.AppendLine("</br>");
+                sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.AdditionalInformation) + "</td>");
             }
 
-            sb.AppendLine("</html>");
+            sb.AppendLine("  </tr>");
+                
+
+            sb.AppendLine("  </table> ");
+
+            sb.AppendLine("</br>");
+
             return sb.ToString();
         }
     }
