@@ -11,6 +11,13 @@ using System.Web;
 
 namespace Arduino_Temperature_Retrofit
 {
+    public static class EnumUtil
+    {
+        public static IEnumerable<T> GetValues<T>()
+        {
+            return Enum.GetValues(typeof(T)).Cast<T>();
+        }
+    }
 
     public class HTMLSettings
     {
@@ -20,7 +27,7 @@ namespace Arduino_Temperature_Retrofit
         public int UpdateFrequency { get; set; } = 60; //seconds
         public DateTime LastRun { get; set; } = DateTime.Now.AddYears(-1);
     }
-
+    
     static public class HTML
     {
 
@@ -111,32 +118,22 @@ namespace Arduino_Temperature_Retrofit
 
             if (dobj.DataAvailable)
             {
-                //TODO: Tabelle enthaelt Werte welche zu den Tabellenheader vertauscht sind (bswp. werden die Temperatur-Wert unter Luftfeuchtigkeit angezeigt)
                 foreach(string dt in dobj.getLogTimings())
                 {
                     sb.AppendLine("  <tr>");
                     sb.AppendLine("    <td>" + dt + "</td>");
-                    foreach (KeyValuePair<DataObjectCategory, logItem> kvp in dobj.getLogItems(dt))
+
+                    foreach (string s in capabaleItems)
                     {
-                        logItem li = (logItem)kvp.Value;
-                        sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(li.Value + DataObjectCategory.getSensorValueUnit(kvp.Key)) + "</td>");
+                            sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.getLogItem(dt, s) + DataObjectCategory.getSensorValueUnit(s)) + "</td>");
                     }
+
                     sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.AdditionalInformation) + "</td>");
                     sb.AppendLine("  </tr>");
                 }
-                /*
-                foreach (string s in capabaleItems)
-                {
-                    DataObjectCategory dobjCat = DataObjectCategory.getObjectCategory(s);
-                    sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(getData(dobj, dobjCat)) + "</td>");
-                } 
-                sb.AppendLine("  </tr>");
-                */
-
             }
             else
             {
-
                 foreach (string s in capabaleItems)
                 {
                     DataObjectCategory dobjCat = DataObjectCategory.getObjectCategory(s);
@@ -146,17 +143,14 @@ namespace Arduino_Temperature_Retrofit
                 sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.AdditionalInformation) + "</td>");
                 sb.AppendLine("  </tr>");
             }
-
             
-                
-
             sb.AppendLine("  </table> ");
-
             sb.AppendLine("</br>");
 
             return sb.ToString();
         }
     }
+
     static public class LOG
     {
         public enum LogDataReturnValue

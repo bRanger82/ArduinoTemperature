@@ -14,10 +14,11 @@ namespace Arduino_Temperature_Retrofit
         HeatIndex = 1,
         Luftfeuchtigkeit = 2,
         Luftdruck = 3,
-        Lichtwert = 4,
-        NichtDefiniert = 5
+        Lichtwert = 4
     }
-    
+
+
+
     public class DataObjectDetails
     {
         private DetailsTimePoint _TemperatureDetail = new DetailsTimePoint();
@@ -147,6 +148,24 @@ namespace Arduino_Temperature_Retrofit
 
         public string Value { get; set; }
 
+        static public string getSensorValueUnit(string DataObjectCat, bool leadingSpace = true)
+        {
+            string ret = (leadingSpace) ? " " : "";
+
+            if (DataObjectCat == DataObjectCategory.Luftdruck.Value)
+                return ret + "mb";
+            else if (DataObjectCat == DataObjectCategory.Temperatur.Value)
+                return ret + "°C";
+            else if (DataObjectCat == DataObjectCategory.HeatIndex.Value)
+                return ret + "°C";
+            else if (DataObjectCat == DataObjectCategory.Luftfeuchtigkeit.Value)
+                return ret + "%";
+            else if (DataObjectCat == DataObjectCategory.Lichtwert.Value)
+                return ret + "lux";
+            else
+                return "N/A";
+        }
+
         static public string getSensorValueUnit(DataObjectCategory typ, bool leadingSpace = true)
         {
             string ret = (leadingSpace) ? " " : "";
@@ -165,6 +184,7 @@ namespace Arduino_Temperature_Retrofit
                 return "N/A";
         }
 
+        
         public static List<string> Items = new List<string>(Enum.GetNames(typeof(DataObjectType)));
 
         public static List <string> getCapableItems(DataObjectProtocol dobj)
@@ -281,6 +301,32 @@ namespace Arduino_Temperature_Retrofit
                     lstDt.Add(logObj.Timepoint.ToString("dd.MM.yyyy HH:mm:ss"));
             }
             return lstDt;
+        }
+
+        public double getLogItem(string timepoint, string DataObjectCat)
+        {
+            Dictionary<DataObjectCategory, logItem> items = new Dictionary<DataObjectCategory, logItem>();
+            foreach (LogObject logObj in _HistoryData)
+            {
+                if (logObj.Timepoint.ToString("dd.MM.yyyy HH:mm:ss") == timepoint && logObj.Category.Value == DataObjectCat)
+                {
+                    return logObj.Value;
+                }
+            }
+            throw new MissingFieldException(string.Format("Es wurde kein Wert zum Zeitpunkt '{0}' und zur Kategorie '{1}' gefunden.", timepoint, DataObjectCat));
+        }
+
+        public double getLogItem(string timepoint, DataObjectCategory Category)
+        {
+            Dictionary<DataObjectCategory, logItem> items = new Dictionary<DataObjectCategory, logItem>();
+            foreach (LogObject logObj in _HistoryData)
+            {
+                if (logObj.Timepoint.ToString("dd.MM.yyyy HH:mm:ss") == timepoint && logObj.Category.Value == Category.Value)
+                {
+                    return logObj.Value;
+                }
+            }
+            throw new MissingFieldException(string.Format("Es wurde kein Wert zum Zeitpunkt {0} und zur Kategorie {1} gefunden.", timepoint, Category.Value));
         }
 
         public Dictionary<DataObjectCategory, logItem> getLogItems(string timepoint)

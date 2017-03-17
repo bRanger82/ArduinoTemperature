@@ -30,8 +30,8 @@
   <HTML>
     <FileHTML>B:\Exchange\temperatur.html</FileHTML>
     <HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
-    <Enabled>Y</Enabled>
-    <UpdateFrequency>15</UpdateFrequency>
+    <Enabled>N</Enabled>
+    <UpdateFrequency>60</UpdateFrequency>
   </HTML>
   <ProgrammEinstellungen>
     <maxTimeDifferenceReadData>60</maxTimeDifferenceReadData>
