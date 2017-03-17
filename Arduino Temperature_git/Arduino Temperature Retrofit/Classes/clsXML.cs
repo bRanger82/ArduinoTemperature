@@ -70,7 +70,7 @@ namespace Arduino_Temperature_Retrofit
         {
             string xmlValue = getValue("/root/HTML/UpdateFrequency");
             int frequency;
-            if (int.TryParse(xmlValue, out frequency) && frequency >=60) //minimum every 60 seconds
+            if (int.TryParse(xmlValue, out frequency) && frequency >=15) //minimum every 60 seconds
             {
                 return frequency;
             }

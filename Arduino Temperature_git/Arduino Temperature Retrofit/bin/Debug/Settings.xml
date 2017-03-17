@@ -3,7 +3,7 @@
   <titel>Arduino Temperatur Anzeige</titel>
   <Sensoren>
     <Sensor>
-      <Aktiv>Y</Aktiv>
+      <Aktiv>N</Aktiv>
       <Bezeichnung>Tisch</Bezeichnung>
       <Port>COM8</Port>
       <DtrEnabled>N</DtrEnabled>
@@ -31,7 +31,7 @@
     <FileHTML>B:\Exchange\temperatur.html</FileHTML>
     <HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
     <Enabled>Y</Enabled>
-    <UpdateFrequency>60</UpdateFrequency>
+    <UpdateFrequency>15</UpdateFrequency>
   </HTML>
   <ProgrammEinstellungen>
     <maxTimeDifferenceReadData>60</maxTimeDifferenceReadData>

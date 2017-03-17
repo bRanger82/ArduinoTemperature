@@ -272,6 +272,40 @@ namespace Arduino_Temperature_Retrofit
 
         private List<LogObject> _HistoryData = new List<LogObject>();
 
+        public List<string> getLogTimings()
+        {
+            List<string> lstDt = new List<string>();
+            foreach(LogObject logObj in _HistoryData)
+            {
+                if (!lstDt.Contains(logObj.Timepoint.ToString("dd.MM.yyyy HH:mm:ss")))
+                    lstDt.Add(logObj.Timepoint.ToString("dd.MM.yyyy HH:mm:ss"));
+            }
+            return lstDt;
+        }
+
+        public Dictionary<DataObjectCategory, logItem> getLogItems(string timepoint)
+        {
+            Dictionary<DataObjectCategory, logItem> items = new Dictionary<DataObjectCategory, logItem>();
+            foreach(LogObject logObj in _HistoryData)
+            {
+                if (logObj.Timepoint.ToString("dd.MM.yyyy HH:mm:ss") == timepoint)
+                {
+                    items.Add(logObj.Category, new logItem(logObj.Value, logObj.Timepoint, logObj.Category));
+                }
+            }
+            return items;
+        }
+
+        public List<logItem> getLogItems()
+        {
+            List<logItem> lst = new List<logItem>();
+            foreach (LogObject logObj in _HistoryData)
+            {
+                lst.Add(new logItem(logObj.Value, logObj.Timepoint, logObj.Category));
+            }
+            return lst;
+        }
+
         public List<logItem> getLogItems(DataObjectCategory dobj)
         {
             List<logItem> lst = new List<logItem>();
