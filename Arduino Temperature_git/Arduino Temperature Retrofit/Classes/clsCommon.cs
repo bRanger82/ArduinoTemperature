@@ -34,6 +34,7 @@ namespace Arduino_Temperature_Retrofit
         public static void writeHTMLFile(string filename, Dictionary<string, DataObject> lDobj, string HeadText)
         {
             StringBuilder sb = new StringBuilder();
+            bool dataAvailable = false;
 
             sb.AppendLine("<html>");
             sb.AppendLine("<head><h2>" + HttpUtility.HtmlEncode(XML.HtmlHeadText) + "</h2></head>");
@@ -57,14 +58,19 @@ namespace Arduino_Temperature_Retrofit
             sb.AppendLine("}");
             sb.AppendLine("tr:nth-child(even){background-color: #f5f5f5}");
             sb.AppendLine("</style>");
+
             foreach (KeyValuePair<string, DataObject> kvp in lDobj)
             {
                 if (((DataObject)kvp.Value).DataAvailable)
                 {
                     sb.Append(createTopOfHtml((DataObject)kvp.Value));
                     sb.AppendLine("</br>");
+                    dataAvailable = true;
                 }
             }
+
+            
+
             foreach (KeyValuePair<string, DataObject> kvp in lDobj)
             {
                 if (((DataObject)kvp.Value).DataAvailable)
@@ -72,6 +78,17 @@ namespace Arduino_Temperature_Retrofit
             }
             sb.AppendLine("Zuletzt aktualisiert: " + Common.getCurrentDateTimeFormatted());
             sb.AppendLine("</html>");
+
+            // if no data is available to write in html set missing data text
+            if (!dataAvailable)
+            {
+                sb.Clear();
+                sb.AppendLine("<html>");
+                sb.AppendLine("<head><h2>" + HttpUtility.HtmlEncode(XML.HtmlHeadText) + "</h2></head>");
+                sb.AppendLine("<h3>" + HttpUtility.HtmlEncode("Es sind noch keine Daten verfügbar!") + "</h3>");
+                sb.AppendLine("<h3>" + HttpUtility.HtmlEncode("Bitte versuchen Sie es später noch einmal.") + "</h3>");
+                sb.AppendLine("</html>");
+            }
 
             using (StreamWriter sw = new StreamWriter(filename))
             {
@@ -118,16 +135,25 @@ namespace Arduino_Temperature_Retrofit
             
             sb.AppendLine("</br><h3>" 
                           + HttpUtility.HtmlEncode("Sensor: " + dobj.Name) 
-                          + "</h3>" 
-                          + HttpUtility.HtmlEncode("Zuletzt aktualisiert: " 
-                          + Common.getCurrentDateTimeFormatted()) 
-                          + "</br>");
+                          + "</h3>");
+
+            sb.AppendLine("<table>");
+            sb.AppendLine("  <tr>");
+            sb.AppendLine("		<th>Bezeichnung</th>");
+            sb.AppendLine("		<th>Wert</th>");
+            sb.AppendLine("  </tr>");
 
             foreach (string s in capabaleItems)
             {
-                sb.AppendLine(HttpUtility.HtmlEncode(s) + " " + getData(dobj, s) + "</br>");
+                sb.AppendLine("<tr>");
+                sb.AppendLine("<td>" + HttpUtility.HtmlEncode(s) + "</td><td>" + getData(dobj, s) + "</td>");
+                sb.AppendLine("</tr>");
             }
-            
+
+            sb.AppendLine("</table>");
+            sb.AppendLine(HttpUtility.HtmlEncode("Zuletzt aktualisiert: "
+                          + Common.getCurrentDateTimeFormatted())
+                          + "</br>");
             return sb.ToString();
         }
 
