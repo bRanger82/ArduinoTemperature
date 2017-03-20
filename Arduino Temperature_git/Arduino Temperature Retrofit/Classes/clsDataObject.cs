@@ -444,6 +444,14 @@ namespace Arduino_Temperature_Retrofit
 
         public bool EnableAddDataToHistory { get; set; } = true;
 
+        public double getItem(string dobjCat)
+        {
+            if (!_Items.ContainsKey(dobjCat))
+                return double.MinValue;
+
+            return _Items[dobjCat].Value;
+        }
+
         public double getItem(DataObjectCategory dobjCat)
         {
             if (!ItemExists(dobjCat))
