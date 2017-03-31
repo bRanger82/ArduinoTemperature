@@ -392,6 +392,9 @@ namespace Arduino_Temperature_Retrofit
 
         private void TmrCheckConnStatus_Tick(object sender, EventArgs e)
         {
+            if (cboSensors.Items.Count < 1)
+                return;
+
             DataObject dobj = getAcutalDataObject();
             int maxConnectionRetries = 10;
 
@@ -463,10 +466,15 @@ namespace Arduino_Temperature_Retrofit
                 setDefaultTrend();
                 connectionCheck(true);
                 setTimerFileWriter(true);
+                
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Ein Fehler ist aufgetreten:\n" + ex.Message, "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            } finally
+            {
+                this.detailierteInformationenToolStripMenuItem.Enabled = (cboChartSelection.Items.Count > 0);
+
             }
         }
 
@@ -510,10 +518,14 @@ namespace Arduino_Temperature_Retrofit
             DataObject dojb = getAcutalDataObject();
             showData(dojb);
             UpdateStatus(dojb);
+            this.detailierteInformationenToolStripMenuItem.Enabled = (cboChartSelection.Items.Count > 0);
         }
 
         private DataObject getAcutalDataObject()
         {
+            if (this.cboSensors.Items.Count < 1)
+                return null;
+
             return dataObjs[this.cboSensors.GetItemText(this.cboSensors.SelectedItem)];
         }
 
