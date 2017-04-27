@@ -92,9 +92,9 @@ namespace Arduino_Temperature_Retrofit
                     } else if (values.Length == 8 && values[0].StartsWith("START") && values[7].StartsWith("EOF")) //Protocol third version
                     {
                         processDataProtocolV3(values, ref dobj);
-                    } else if (values.Length == 3 && values[0].StartsWith("REPLY") && values[2].StartsWith("EOF")) //Reply Message from Arudino
+                    } else if (values[0].StartsWith("REPLY") && values[values.Length - 1].StartsWith("EOF")) // returns all commands which can be handled by the arduino
                     {
-                        parseArduinoReply(dobj, values[1]);
+                        parseArduinoReply(dobj, values);
                         return;
                     } else
                     {
@@ -102,6 +102,7 @@ namespace Arduino_Temperature_Retrofit
                         dobj.LastUpdated = DateTime.Now;
                         dobj.Protocol = DataObjectProtocol.NONE;
                         dobj.AdditionalInformation = "Daten empfangen: Datenprotokoll unbekannt";
+                        Console.WriteLine(information);
                     }
                 }
                 catch (Exception)
@@ -122,6 +123,16 @@ namespace Arduino_Temperature_Retrofit
             if (dobj.DataAvailable)
                 processIncomingDataSet(ref dobj, name);
 
+        }
+
+        private void parseArduinoReply(DataObject dobj, string[] items)
+        {
+            string message = string.Empty;
+            for (int pos = 1; pos < items.Length - 1; pos++)
+                message += "\n" + items[pos];
+            Console.WriteLine(message);
+
+            MessageBox.Show("Received reply:\n" + message);
         }
 
         private string getToolTip(DataObject dobj)
@@ -173,18 +184,6 @@ namespace Arduino_Temperature_Retrofit
             {
                 dobj.Write(command);
             }
-        }
-
-        private void parseArduinoReply(DataObject dobj, string message)
-        {
-            switch(message)
-            {
-                case "BLAU-IST-AN": break;
-                case "BLAU-IST-AUS": break;
-                case "BLAU-OK": break;
-                default: Console.WriteLine("Unbekannte Antwort erhalten: " + message); break;
-            }
-
         }
 
         private void processIncomingDataSet(ref DataObject dobj, string name)
@@ -466,7 +465,12 @@ namespace Arduino_Temperature_Retrofit
                 setDefaultTrend();
                 connectionCheck(true);
                 setTimerFileWriter(true);
-                
+                if (cboChartSelection.Items.Count > 0 && cboChartSelection.SelectedIndex > -1)
+                {
+                    Console.WriteLine("Get first dataset from selected combobox entry");
+                    System.Threading.Thread.Sleep(250);
+                    writeCommandToArduino(getAcutalDataObject(), "DATA");
+                }
             }
             catch (Exception ex)
             {
@@ -867,6 +871,26 @@ namespace Arduino_Temperature_Retrofit
                     }
                 }
             }
+        }
+
+        private void helpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeCommandToArduino(getAcutalDataObject(), "HELP");
+        }
+
+        private void getVersionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeCommandToArduino(getAcutalDataObject(), "PROTOCOL_VERSION");
+        }
+
+        private void getActualDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeCommandToArduino(getAcutalDataObject(), "DATA");
+        }
+
+        private void testInvalidesKommandoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            writeCommandToArduino(getAcutalDataObject(), "InvalidBlaBla");
         }
     }
 }

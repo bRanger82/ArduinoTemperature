@@ -87,3 +87,4 @@ C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Te
 C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino_Temperature.Properties.Resources.resources
 C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino Temperature.csproj.GenerateResource.Cache
 C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino Temperature.csprojResolveAssemblyReference.cache
+C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature\obj\Debug\Arduino Temperature.csprojResolveAssemblyReference.cache

@@ -107,12 +107,16 @@
             this.kommandosToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blauAnToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.blauStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.lblNumLogEntries = new System.Windows.Forms.Label();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.getVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zusatzToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.detailierteInformationenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.lblNumLogEntries = new System.Windows.Forms.Label();
             this.lstViewDetail = new System.Windows.Forms.ListView();
             this.lblHistoryDataLV = new System.Windows.Forms.Label();
+            this.getActualDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testInvalidesKommandoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpBoxSensor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).BeginInit();
@@ -889,7 +893,11 @@
             // 
             this.kommandosToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.blauAnToolStripMenuItem,
-            this.blauStatusToolStripMenuItem});
+            this.blauStatusToolStripMenuItem,
+            this.helpToolStripMenuItem,
+            this.getVersionToolStripMenuItem,
+            this.getActualDataToolStripMenuItem,
+            this.testInvalidesKommandoToolStripMenuItem});
             this.kommandosToolStripMenuItem.Name = "kommandosToolStripMenuItem";
             this.kommandosToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
             this.kommandosToolStripMenuItem.Text = "Kommandos";
@@ -897,26 +905,30 @@
             // blauAnToolStripMenuItem
             // 
             this.blauAnToolStripMenuItem.Name = "blauAnToolStripMenuItem";
-            this.blauAnToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.blauAnToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.blauAnToolStripMenuItem.Text = "Blau ändern";
             this.blauAnToolStripMenuItem.Click += new System.EventHandler(this.blauAnToolStripMenuItem_Click);
             // 
             // blauStatusToolStripMenuItem
             // 
             this.blauStatusToolStripMenuItem.Name = "blauStatusToolStripMenuItem";
-            this.blauStatusToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.blauStatusToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.blauStatusToolStripMenuItem.Text = "Blau Status";
             this.blauStatusToolStripMenuItem.Click += new System.EventHandler(this.blauStatusToolStripMenuItem_Click);
             // 
-            // lblNumLogEntries
+            // helpToolStripMenuItem
             // 
-            this.lblNumLogEntries.AutoSize = true;
-            this.lblNumLogEntries.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblNumLogEntries.Location = new System.Drawing.Point(7, 489);
-            this.lblNumLogEntries.Name = "lblNumLogEntries";
-            this.lblNumLogEntries.Size = new System.Drawing.Size(136, 16);
-            this.lblNumLogEntries.TabIndex = 38;
-            this.lblNumLogEntries.Text = "Datensätze: <N/A>";
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.helpToolStripMenuItem.Text = "Help";
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
+            // 
+            // getVersionToolStripMenuItem
+            // 
+            this.getVersionToolStripMenuItem.Name = "getVersionToolStripMenuItem";
+            this.getVersionToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.getVersionToolStripMenuItem.Text = "Get Version";
+            this.getVersionToolStripMenuItem.Click += new System.EventHandler(this.getVersionToolStripMenuItem_Click);
             // 
             // zusatzToolStripMenuItem
             // 
@@ -932,6 +944,16 @@
             this.detailierteInformationenToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.detailierteInformationenToolStripMenuItem.Text = "Detailierte Informationen";
             this.detailierteInformationenToolStripMenuItem.Click += new System.EventHandler(this.detailierteInformationenToolStripMenuItem_Click);
+            // 
+            // lblNumLogEntries
+            // 
+            this.lblNumLogEntries.AutoSize = true;
+            this.lblNumLogEntries.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNumLogEntries.Location = new System.Drawing.Point(7, 489);
+            this.lblNumLogEntries.Name = "lblNumLogEntries";
+            this.lblNumLogEntries.Size = new System.Drawing.Size(136, 16);
+            this.lblNumLogEntries.TabIndex = 38;
+            this.lblNumLogEntries.Text = "Datensätze: <N/A>";
             // 
             // lstViewDetail
             // 
@@ -951,6 +973,20 @@
             this.lblHistoryDataLV.Size = new System.Drawing.Size(256, 31);
             this.lblHistoryDataLV.TabIndex = 40;
             this.lblHistoryDataLV.Text = "Historische Daten:";
+            // 
+            // getActualDataToolStripMenuItem
+            // 
+            this.getActualDataToolStripMenuItem.Name = "getActualDataToolStripMenuItem";
+            this.getActualDataToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.getActualDataToolStripMenuItem.Text = "Get latest data";
+            this.getActualDataToolStripMenuItem.Click += new System.EventHandler(this.getActualDataToolStripMenuItem_Click);
+            // 
+            // testInvalidesKommandoToolStripMenuItem
+            // 
+            this.testInvalidesKommandoToolStripMenuItem.Name = "testInvalidesKommandoToolStripMenuItem";
+            this.testInvalidesKommandoToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.testInvalidesKommandoToolStripMenuItem.Text = "Test invalides cmd";
+            this.testInvalidesKommandoToolStripMenuItem.Click += new System.EventHandler(this.testInvalidesKommandoToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -1088,6 +1124,10 @@
         private System.Windows.Forms.ToolStripMenuItem detailierteInformationenToolStripMenuItem;
         private System.Windows.Forms.ListView lstViewDetail;
         private System.Windows.Forms.Label lblHistoryDataLV;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem getVersionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem getActualDataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testInvalidesKommandoToolStripMenuItem;
     }
 }
 
