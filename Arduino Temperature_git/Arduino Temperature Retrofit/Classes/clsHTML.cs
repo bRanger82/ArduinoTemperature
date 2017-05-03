@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace Arduino_Temperature_Retrofit.Classes
+namespace Arduino_Temperature_Retrofit
 {
 
     public class HTMLSettings

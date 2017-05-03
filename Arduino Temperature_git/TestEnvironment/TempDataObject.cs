@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace TestEnvironment
+namespace Arduino_Temperature_Retrofit
 {
 
     public class XMLSensorObject

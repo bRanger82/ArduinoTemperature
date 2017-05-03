@@ -11,7 +11,7 @@ using System.Management.Automation;
 using System.Web;
 
 
-namespace TestEnvironment
+namespace Arduino_Temperature_Retrofit
 {
     class Program
     {
