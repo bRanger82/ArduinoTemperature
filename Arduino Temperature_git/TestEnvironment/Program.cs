@@ -18,9 +18,22 @@ namespace Arduino_Temperature_Retrofit
                 
         static WindowsIdentity _currentUser = WindowsIdentity.GetCurrent();
         static WindowsPrincipal _currentPrincipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
+        static string url = "http://demo.volkszaehler.org/middleware.php/data";
+        static string guid = "3997b980-36d2-11e7-9b67-a9b45d523c05";
 
         static int Main(string[] args)
         {
+
+            Volkszaehler.EvtPushDataAnswer += Volkszaehler_EvtPushDataAnswer;
+            Volkszaehler.GUID = guid;
+            Volkszaehler.URL = url;
+            for (int u =0;u<=10;u++)
+            {
+                if (!Volkszaehler.runTest())
+                    Console.WriteLine("Fehler beim Aufruf");
+                
+                Console.ReadKey();
+            }
 
             runXMLText();
             Console.ReadKey();
@@ -59,6 +72,11 @@ namespace Arduino_Temperature_Retrofit
             Console.WriteLine();
             Console.ReadKey();
             return 0;
+        }
+
+        private static void Volkszaehler_EvtPushDataAnswer(object sender, pushDataAnswer e)
+        {
+            Console.WriteLine(e.Answer);
         }
 
         public static void runXMLText()
