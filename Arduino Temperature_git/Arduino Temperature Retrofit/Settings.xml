@@ -34,15 +34,17 @@
       <maxLogFileSize>4194304</maxLogFileSize>
     </Sensor>
     <Sensor>
-      <Aktiv>N</Aktiv>
-      <Bezeichnung>Boden</Bezeichnung>
+      <Aktiv>Y</Aktiv>
+      <Bezeichnung>OGD</Bezeichnung>
       <Protocol>HTTP</Protocol>
       <COM>
-        <Port>COM9</Port>
-        <DtrEnabled>N</DtrEnabled>
-        <Baudrate>9600</Baudrate>
+        <Port></Port>
+        <DtrEnabled></DtrEnabled>
+        <Baudrate></Baudrate>
       </COM>
-      <HTTP></HTTP>
+      <HTTP>
+        <URL>http://www.zamg.ac.at/ogd/</URL>
+      </HTTP>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO.Ports;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -60,6 +61,9 @@ namespace Arduino_Temperature_Retrofit
                         dobj.DataReceived += Dobj_DataReceived;
                         dobj.Open();
                     }
+                } else if (dobj.DataInterfaceType == XMLProtocol.HTTP)
+                {
+                    dobj.URL = xmlSensor.URL;
                 }
                 dataObjs.Add(dobj.Name, dobj);
             }
@@ -69,13 +73,18 @@ namespace Arduino_Temperature_Retrofit
         {
             try
             {
+
                 Task<string> result = HTML.DownloadPage(url);
+
                 foreach (string l in result.Result.Split('\n'))
                 {
                     if (l.Contains("START") && l.EndsWith("EOF"))
                     {
                         DataReceived(l, dobj.Name);
                         break;
+                    } else if (l.Contains("Salzburg"))
+                    {
+                        MessageBox.Show(l);
                     }
                 }
             }
@@ -447,6 +456,14 @@ namespace Arduino_Temperature_Retrofit
 
             UpdateStatus(dobj);
 
+            if (dobj.DataInterfaceType == XMLProtocol.HTTP)
+            {
+                string showURL = dobj.URL;
+                if (dobj.URL.Length > 25)
+                    showURL = dobj.URL.Substring(0, 25) + "...";
+                lblSensorLastUpdated.Text = "HTTP URL: " + showURL;
+                return;
+            }
             if (dobj.Active && !dobj.IsOpen)
             {
                 lblSensorLastUpdated.ForeColor = Color.DarkRed;

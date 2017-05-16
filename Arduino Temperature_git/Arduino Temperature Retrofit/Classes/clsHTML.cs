@@ -25,7 +25,7 @@ namespace Arduino_Temperature_Retrofit
         {
             using (var client = new HttpClient())
             {
-                using (var r = await client.GetAsync(new Uri(url)))
+                using (var r = await client.GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
                 {
                     string result = await r.Content.ReadAsStringAsync();
                     return result;

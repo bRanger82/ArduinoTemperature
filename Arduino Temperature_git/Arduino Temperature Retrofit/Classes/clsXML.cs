@@ -211,6 +211,7 @@ namespace Arduino_Temperature_Retrofit
             tmpSensor.maxLogFileSize = maxLogFileSize;
 
             tmpSensor.Protocol = getProtocol(getInnerText(child, "Protocol"));
+
             if (tmpSensor.Protocol == XMLProtocol.COM)
             {
                 tmpSensor.DtrEnabled = checkBool(getInnerText(child, "COM/DtrEnabled"));
