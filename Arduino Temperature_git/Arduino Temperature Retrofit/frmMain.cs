@@ -160,38 +160,60 @@ namespace Arduino_Temperature_Retrofit
 
         private string getToolTip(DataObject dobj)
         {
-            return "Name: \t" + dobj.Name + "\n" +
-                   "Aktiv: \t" + ((dobj.Active) ? "Ja" : "Nein") + "\n" +
-                   "Port: \t" + dobj.PortName + "\n" +
-                   "Log aktiviert: \t" + ((dobj.LoggingEnabled) ? "Ja" : "Nein") + "\n" +
-                   "HTML aktiviert: \t" + ((dobj.HTMLEnabled) ? "Ja" : "Nein") + "\n" +
-                   "Baud-Rate: \t" + dobj.BaudRate + "\n";
+            if (dobj.DataInterfaceType == XMLProtocol.COM)
+            {
+                return "Name: \t" + dobj.Name + "\n" +
+                       "Aktiv: \t" + ((dobj.Active) ? "Ja" : "Nein") + "\n" +
+                       "Protokoll:\t" + Enum.GetName(typeof(XMLProtocol), dobj.DataInterfaceType) + "\n" + 
+                       "Port: \t" + dobj.PortName + "\n" +
+                       "Baud-Rate: \t" + dobj.BaudRate + "\n" + 
+                       "Log aktiviert: \t" + ((dobj.LoggingEnabled) ? "Ja" : "Nein") + "\n" +
+                       "HTML aktiviert: \t" + ((dobj.HTMLEnabled) ? "Ja" : "Nein") + "\n";
+            } else if (dobj.DataInterfaceType == XMLProtocol.HTTP)
+            {
+                return "Name: \t" + dobj.Name + "\n" +
+                       "Aktiv: \t" + ((dobj.Active) ? "Ja" : "Nein") + "\n" +
+                       "Protokoll:\t" + Enum.GetName(typeof(XMLProtocol), dobj.DataInterfaceType) + "\n" +
+                       "URL: \t" + dobj.URL+ "\n" +
+                       "Log aktiviert: \t" + ((dobj.LoggingEnabled) ? "Ja" : "Nein") + "\n" +
+                       "HTML aktiviert: \t" + ((dobj.HTMLEnabled) ? "Ja" : "Nein") + "\n";
+            } else
+            {
+                return "ERROR: Nicht definiert!";
+            }
+            
         }
 
         private void UpdateStatus(DataObject dobj)
         {
             this.picConnStatus.BackColor = System.Windows.Forms.Control.DefaultBackColor; 
             Color col = System.Windows.Forms.Control.DefaultBackColor;
-
-            if (dobj.Active)
+            if (dobj.DataInterfaceType == XMLProtocol.COM)
             {
-                if (dobj.IsOpen)
+                if (dobj.Active)
                 {
-                    col = System.Drawing.Color.Green;
-                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: Verbunden\n" + getToolTip(dobj));
+                    if (dobj.IsOpen)
+                    {
+                        col = System.Drawing.Color.Green;
+                        this.toolTip1.SetToolTip(picConnStatus, "STATUS: Verbunden\n" + getToolTip(dobj));
+                    }
+                    else
+                    {
+                        col = System.Drawing.Color.Red;
+                        this.toolTip1.SetToolTip(picConnStatus, "STATUS: KEINE VERBINDUNG\n" + getToolTip(dobj));
+                    }
                 }
                 else
                 {
-                    col = System.Drawing.Color.Red;
-                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: KEINE VERBINDUNG\n" + getToolTip(dobj));
+                    col = System.Drawing.Color.LightBlue;
+                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: Nicht Aktiv\n" + getToolTip(dobj));
                 }
-            }
-            else
+            } else if (dobj.DataInterfaceType == XMLProtocol.HTTP)
             {
-                col = System.Drawing.Color.LightBlue;
-                this.toolTip1.SetToolTip(picConnStatus, "STATUS: Nicht Aktiv\n" + getToolTip(dobj));
+                col = System.Drawing.Color.DarkBlue;
+                this.toolTip1.SetToolTip(picConnStatus, "STATUS: HTTP wird verwendet\n" + getToolTip(dobj));
             }
-
+            
             SolidBrush myBrush = new SolidBrush(col);
             
             Graphics g = picConnStatus.CreateGraphics();
