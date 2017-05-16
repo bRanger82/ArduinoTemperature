@@ -9,7 +9,8 @@ using System.Threading.Tasks;
 using System.Management.Automation.Runspaces;
 using System.Management.Automation;
 using System.Web;
-
+using System.Net;
+using System.Net.Http;
 
 namespace Arduino_Temperature_Retrofit
 {
@@ -23,18 +24,29 @@ namespace Arduino_Temperature_Retrofit
 
         static int Main(string[] args)
         {
-
+            /*
             Volkszaehler.EvtPushDataAnswer += Volkszaehler_EvtPushDataAnswer;
             Volkszaehler.GUID = guid;
             Volkszaehler.URL = url;
             for (int u =0;u<=10;u++)
             {
-                if (!Volkszaehler.runTest())
+                Random rnd = new Random();
+                double val = rnd.NextDouble() * 30;
+                Console.WriteLine("Fuege Wert hinzu: {0}", val);
+                if (!Volkszaehler.runTest(val))
                     Console.WriteLine("Fehler beim Aufruf");
                 
                 Console.ReadKey();
             }
-
+            */
+            Task<string> ret = DownloadPage("asf");
+            int p = 1;
+            foreach(string l in ret.Result.Split('\n'))
+            {
+                if (l.Contains("Salzburg"))
+                    Console.WriteLine("Line : {0} - " + l, p++);
+            }
+            Console.ReadKey();
             runXMLText();
             Console.ReadKey();
             
@@ -72,6 +84,18 @@ namespace Arduino_Temperature_Retrofit
             Console.WriteLine();
             Console.ReadKey();
             return 0;
+        }
+
+        static async Task<string> DownloadPage(string url)
+        {
+            using (var client = new HttpClient())
+            {
+                using (var r = await client.GetAsync(new Uri("http://www.zamg.ac.at/ogd/")))
+                {
+                    string result = await r.Content.ReadAsStringAsync();
+                    return result;
+                }
+            }
         }
 
         private static void Volkszaehler_EvtPushDataAnswer(object sender, pushDataAnswer e)

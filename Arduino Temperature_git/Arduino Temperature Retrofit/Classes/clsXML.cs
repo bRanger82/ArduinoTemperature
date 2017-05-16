@@ -6,6 +6,13 @@ using System.Xml;
 
 namespace Arduino_Temperature_Retrofit
 {
+    public enum XMLProtocol
+    {
+        COM,
+        HTTP,
+        NOT_DEFINED
+    }
+
     public class XMLSensorObject
     {
         public bool Active { get; set; }
@@ -18,6 +25,8 @@ namespace Arduino_Temperature_Retrofit
         public bool HTMLEnabled { get; set; }
         public int Baudrate { get; set; }
         public bool DtrEnabled { get; set; }
+        public XMLProtocol Protocol { get; set; }
+        public string URL { get; set; }
     }
 
     public static class XML
@@ -140,6 +149,99 @@ namespace Arduino_Temperature_Retrofit
 
         }
 
+        private static XMLProtocol getProtocol(string value)
+        {
+            switch (value.ToLower())
+            {
+                case "http": return XMLProtocol.HTTP;
+                case "com": return XMLProtocol.COM;
+                default: return XMLProtocol.NOT_DEFINED;
+            }
+        }
+
+        public static XMLSensorObject xmlReadChildItem(XmlNode child)
+        {
+            XMLSensorObject tmpSensor = new XMLSensorObject();
+            ArrayList items = new ArrayList();
+            items.Clear();
+
+            tmpSensor.Name = getInnerText(child, "Bezeichnung");
+            //Name = Unique Identifier, not allowed to exist more than one time
+            if (items.IndexOf(tmpSensor.Name) >= 0)
+                throw new Exception("Fehler XML: Die Bezeichnung muss für jeden Sensor eindeutig sein.\nDer Name '" + tmpSensor.Name + "' existiert bereits!");
+            else
+                items.Add(tmpSensor.Name);
+
+            tmpSensor.Active = checkBool(getInnerText(child, "Aktiv"));
+
+            tmpSensor.LogEnabled = checkBool(getInnerText(child, "LogEnabled"));
+
+            tmpSensor.HTMLEnabled = checkBool(getInnerText(child, "WriteHTML"));
+
+
+
+            tmpSensor.numLogEntries = 50; //default
+            int numEntries;
+            if (int.TryParse(getInnerText(child, "NumLogItems"), out numEntries))
+            {
+                if (numEntries >= 1 && numEntries <= 500000)
+                    tmpSensor.numLogEntries = numEntries;
+                else
+                    throw new Exception("XML Fehler: Die Anzahl der Num Einträge muss zwischen 1 und 500000 liegen!");
+            }
+            else
+            {
+                throw new Exception("XML Fehler: Die Anzahl der Num Einträge kann nicht verarbeitet werden!");
+            }
+
+
+
+            long maxLogFileSize = 4194304;
+            if (long.TryParse(getInnerText(child, "maxLogFileSize"), out maxLogFileSize))
+            {
+                if (maxLogFileSize >= 1048576 && maxLogFileSize <= 1073741824)
+                    tmpSensor.maxLogFileSize = maxLogFileSize;
+                else
+                    throw new Exception("XML Fehler: Die maximale Größe des Logfiles muss zwischen 1.048.576 und 1.073.741.824 liegen!");
+            }
+            else
+            {
+                throw new Exception("XML Fehler: Die maximale Größe des Logfiles kann nicht verarbeitet werden!");
+            }
+            tmpSensor.maxLogFileSize = maxLogFileSize;
+
+            tmpSensor.Protocol = getProtocol(getInnerText(child, "Protocol"));
+            if (tmpSensor.Protocol == XMLProtocol.COM)
+            {
+                tmpSensor.DtrEnabled = checkBool(getInnerText(child, "COM/DtrEnabled"));
+                tmpSensor.Port = getInnerText(child, "COM/Port");
+                int Baudrate;
+                if (int.TryParse(getInnerText(child, "COM/Baudrate"), out Baudrate))
+                {
+                    if (Baudrate >= 8)
+                        tmpSensor.Baudrate = Baudrate;
+                    else
+                        throw new Exception("XML Fehler: Baudrate hat einen Wert kleiner 8");
+                }
+                else
+                {
+                    tmpSensor.Baudrate = 115200;
+                }
+            }
+            else if (tmpSensor.Protocol == XMLProtocol.HTTP)
+            {
+                tmpSensor.URL = getInnerText(child, "HTTP/URL");
+            }
+            else
+            {
+                throw new Exception("XML Fehler: Das Protokoll muss entweder 'HTTP' oder 'COM' sein (Sensor '" + tmpSensor.Name + "').");
+            }
+
+            tmpSensor.LogFilePath = getInnerText(child, "LogFile");
+
+            return tmpSensor;
+        }
+
         public static List<XMLSensorObject> getSensorItemsFromXML()
         {
             List<XMLSensorObject> lst = new List<XMLSensorObject>();
@@ -153,74 +255,24 @@ namespace Arduino_Temperature_Retrofit
                 
                 foreach (XmlNode child in xmln.ChildNodes)
                 {
-                    XMLSensorObject tmpSensor = new XMLSensorObject();
-
-                    tmpSensor.Name = getInnerText(child, "Bezeichnung");
-                    //Name = Unique Identifier, not allowed to exist more than one time
-                    if (items.IndexOf(tmpSensor.Name) >= 0)
-                        throw new Exception("Fehler XML: Die Bezeichnung muss für jeden Sensor eindeutig sein.\nDer Name '" + tmpSensor.Name + "' existiert bereits!");
-                    else
-                        items.Add(tmpSensor.Name);
-
-                    tmpSensor.Active = checkBool(getInnerText(child, "Aktiv"));
-
-                    tmpSensor.LogEnabled = checkBool(getInnerText(child, "LogEnabled"));
-
-                    tmpSensor.HTMLEnabled = checkBool(getInnerText(child, "WriteHTML"));
-
-                    tmpSensor.DtrEnabled = checkBool(getInnerText(child, "DtrEnabled"));
-
-                    tmpSensor.numLogEntries = DataObject.HistoryMinDefaultEntries; //default
-                    int numEntries;
-                    if (int.TryParse(getInnerText(child, "NumLogItems"), out numEntries))
-                    {
-                        if (numEntries >= DataObject.HistoryMinDefaultEntries && numEntries <= DataObject.HistoryMaxDefaultEntries)
-                            tmpSensor.numLogEntries = numEntries;
-                        else
-                            throw new Exception("XML Fehler: Die Anzahl der Num Einträge muss zwischen " + DataObject.HistoryMinDefaultEntries.ToString() + " und " + DataObject.HistoryMaxDefaultEntries.ToString() + " liegen!");
-                    } else
-                    {
-                        throw new Exception("XML Fehler: Die Anzahl der Num Einträge kann nicht verarbeitet werden!");
-                    }
-
-                    int Baudrate;
-                    if (int.TryParse(getInnerText(child, "Baudrate"), out Baudrate))
-                    {
-                        if (Baudrate >= 8)
-                            tmpSensor.Baudrate = Baudrate;
-                        else
-                            throw new Exception("XML Fehler: Baudrate hat einen Wert kleiner 8");
-                    } else
-                    {
-                        tmpSensor.Baudrate = Common.COMSettings.DefaultBaudRate;
-                    }
-
-                    long maxLogFileSize = 4194304;
-                    if (long.TryParse(getInnerText(child, "maxLogFileSize"), out maxLogFileSize))
-                    {
-                        if (maxLogFileSize >= 1048576 && maxLogFileSize <= 1073741824)
-                            tmpSensor.maxLogFileSize = maxLogFileSize;
-                        else
-                            throw new Exception("XML Fehler: Die maximale Größe des Logfiles muss zwischen 1.048.576 und 1.073.741.824 liegen!");
-                    }
-                    else
-                    {
-                        throw new Exception("XML Fehler: Die maximale Größe des Logfiles kann nicht verarbeitet werden!");
-                    }
-                    tmpSensor.maxLogFileSize = maxLogFileSize;
-
+                    XMLSensorObject tmpSensor = xmlReadChildItem(child);
                     
-                    tmpSensor.Port = getInnerText(child, "Port");
-                    tmpSensor.LogFilePath = getInnerText(child, "LogFile");
-
                     lst.Add(tmpSensor);
 
                     Console.WriteLine("******************************************************************");
                     Console.WriteLine("tmpSensor.Name          == {0}", tmpSensor.Name);
                     Console.WriteLine("tmpSensor.Active        == {0}", (tmpSensor.Active) ? "Y" : "N");
-                    Console.WriteLine("tmpSensor.Port          == {0}", tmpSensor.Port);
-                    Console.WriteLine("tmpSensor.Baudrate      == {0}", tmpSensor.Baudrate.ToString());
-                    Console.WriteLine("tmpSensor.DtrEnabled    == {0}", (tmpSensor.DtrEnabled) ? "Y" : "N");
+                    Console.WriteLine("tmpSensor.Protocol      == {0}", Enum.GetName(typeof(XMLProtocol), tmpSensor.Protocol));
+                    if (tmpSensor.Protocol == XMLProtocol.HTTP)
+                    {
+                        Console.WriteLine("tmpSensor.URL           == {0}", tmpSensor.URL);
+                    }
+                    else if (tmpSensor.Protocol == XMLProtocol.COM)
+                    {
+                        Console.WriteLine("tmpSensor.Port          == {0}", tmpSensor.Port);
+                        Console.WriteLine("tmpSensor.Baudrate      == {0}", tmpSensor.Baudrate.ToString());
+                        Console.WriteLine("tmpSensor.DtrEnabled    == {0}", (tmpSensor.DtrEnabled) ? "Y" : "N");
+                    }
                     Console.WriteLine("tmpSensor.LogEnabled    == {0}", (tmpSensor.LogEnabled) ? "Y" : "N");
                     Console.WriteLine("tmpSensor.LogFilePath   == {0}", tmpSensor.LogFilePath);
                     Console.WriteLine("tmpSensor.HTMLEnabled   == {0}", (tmpSensor.HTMLEnabled) ? "Y" : "N");

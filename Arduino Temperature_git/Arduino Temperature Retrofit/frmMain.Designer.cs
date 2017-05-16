@@ -109,14 +109,15 @@
             this.blauStatusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.getActualDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testInvalidesKommandoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zusatzToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.detailierteInformationenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.lblNumLogEntries = new System.Windows.Forms.Label();
             this.lstViewDetail = new System.Windows.Forms.ListView();
             this.lblHistoryDataLV = new System.Windows.Forms.Label();
-            this.getActualDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.testInvalidesKommandoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.getHTTPDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpBoxSensor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).BeginInit();
@@ -897,7 +898,8 @@
             this.helpToolStripMenuItem,
             this.getVersionToolStripMenuItem,
             this.getActualDataToolStripMenuItem,
-            this.testInvalidesKommandoToolStripMenuItem});
+            this.testInvalidesKommandoToolStripMenuItem,
+            this.getHTTPDataToolStripMenuItem});
             this.kommandosToolStripMenuItem.Name = "kommandosToolStripMenuItem";
             this.kommandosToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
             this.kommandosToolStripMenuItem.Text = "Kommandos";
@@ -929,6 +931,20 @@
             this.getVersionToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.getVersionToolStripMenuItem.Text = "Get Version";
             this.getVersionToolStripMenuItem.Click += new System.EventHandler(this.getVersionToolStripMenuItem_Click);
+            // 
+            // getActualDataToolStripMenuItem
+            // 
+            this.getActualDataToolStripMenuItem.Name = "getActualDataToolStripMenuItem";
+            this.getActualDataToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.getActualDataToolStripMenuItem.Text = "Get latest data";
+            this.getActualDataToolStripMenuItem.Click += new System.EventHandler(this.getActualDataToolStripMenuItem_Click);
+            // 
+            // testInvalidesKommandoToolStripMenuItem
+            // 
+            this.testInvalidesKommandoToolStripMenuItem.Name = "testInvalidesKommandoToolStripMenuItem";
+            this.testInvalidesKommandoToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.testInvalidesKommandoToolStripMenuItem.Text = "Test invalides cmd";
+            this.testInvalidesKommandoToolStripMenuItem.Click += new System.EventHandler(this.testInvalidesKommandoToolStripMenuItem_Click);
             // 
             // zusatzToolStripMenuItem
             // 
@@ -974,19 +990,12 @@
             this.lblHistoryDataLV.TabIndex = 40;
             this.lblHistoryDataLV.Text = "Historische Daten:";
             // 
-            // getActualDataToolStripMenuItem
+            // getHTTPDataToolStripMenuItem
             // 
-            this.getActualDataToolStripMenuItem.Name = "getActualDataToolStripMenuItem";
-            this.getActualDataToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.getActualDataToolStripMenuItem.Text = "Get latest data";
-            this.getActualDataToolStripMenuItem.Click += new System.EventHandler(this.getActualDataToolStripMenuItem_Click);
-            // 
-            // testInvalidesKommandoToolStripMenuItem
-            // 
-            this.testInvalidesKommandoToolStripMenuItem.Name = "testInvalidesKommandoToolStripMenuItem";
-            this.testInvalidesKommandoToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.testInvalidesKommandoToolStripMenuItem.Text = "Test invalides cmd";
-            this.testInvalidesKommandoToolStripMenuItem.Click += new System.EventHandler(this.testInvalidesKommandoToolStripMenuItem_Click);
+            this.getHTTPDataToolStripMenuItem.Name = "getHTTPDataToolStripMenuItem";
+            this.getHTTPDataToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.getHTTPDataToolStripMenuItem.Text = "Get HTTP Data";
+            this.getHTTPDataToolStripMenuItem.Click += new System.EventHandler(this.getHTTPDataToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -1128,6 +1137,7 @@
         private System.Windows.Forms.ToolStripMenuItem getVersionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getActualDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testInvalidesKommandoToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem getHTTPDataToolStripMenuItem;
     }
 }
 

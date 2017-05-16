@@ -5,9 +5,12 @@
     <Sensor>
       <Aktiv>Y</Aktiv>
       <Bezeichnung>Tisch</Bezeichnung>
-      <Port>COM3</Port>
-      <DtrEnabled>N</DtrEnabled>
-      <Baudrate>9600</Baudrate>
+      <Protocol>COM</Protocol>
+      <COM>
+        <Port>COM3</Port>
+        <DtrEnabled>N</DtrEnabled>
+        <Baudrate>9600</Baudrate>
+      </COM>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
@@ -17,9 +20,29 @@
     <Sensor>
       <Aktiv>N</Aktiv>
       <Bezeichnung>Boden</Bezeichnung>
-      <Port>COM9</Port>
-      <DtrEnabled>N</DtrEnabled>
-      <Baudrate>9600</Baudrate>
+      <Protocol>COM</Protocol>
+      <COM>
+        <Port>COM9</Port>
+        <DtrEnabled>N</DtrEnabled>
+        <Baudrate>9600</Baudrate>
+      </COM>
+      <HTTP></HTTP>
+      <LogEnabled>N</LogEnabled>
+      <WriteHTML>N</WriteHTML>
+      <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>
+      <NumLogItems>680</NumLogItems>
+      <maxLogFileSize>4194304</maxLogFileSize>
+    </Sensor>
+    <Sensor>
+      <Aktiv>N</Aktiv>
+      <Bezeichnung>Boden</Bezeichnung>
+      <Protocol>HTTP</Protocol>
+      <COM>
+        <Port>COM9</Port>
+        <DtrEnabled>N</DtrEnabled>
+        <Baudrate>9600</Baudrate>
+      </COM>
+      <HTTP></HTTP>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>

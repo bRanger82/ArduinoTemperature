@@ -5,9 +5,12 @@
     <Sensor>
       <Aktiv>Y</Aktiv>
       <Bezeichnung>Tisch</Bezeichnung>
-      <Port>COM8</Port>
-      <DtrEnabled>N</DtrEnabled>
-      <Baudrate>112000</Baudrate>
+      <Protocol>COM</Protocol>
+      <COM>
+        <Port>COM3</Port>
+        <DtrEnabled>N</DtrEnabled>
+        <Baudrate>9600</Baudrate>
+      </COM>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
@@ -15,11 +18,33 @@
       <maxLogFileSize>4194304</maxLogFileSize>
     </Sensor>
     <Sensor>
-      <Aktiv>Y</Aktiv>
-      <Bezeichnung>Tisch</Bezeichnung>
-      <Port>COM9</Port>
-      <DtrEnabled>N</DtrEnabled>
-      <Baudrate>9600</Baudrate>
+      <Aktiv>N</Aktiv>
+      <Bezeichnung>Boden</Bezeichnung>
+      <Protocol>COM</Protocol>
+      <COM>
+        <Port>COM9</Port>
+        <DtrEnabled>N</DtrEnabled>
+        <Baudrate>9600</Baudrate>
+      </COM>
+      <HTTP></HTTP>
+      <LogEnabled>N</LogEnabled>
+      <WriteHTML>N</WriteHTML>
+      <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>
+      <NumLogItems>680</NumLogItems>
+      <maxLogFileSize>4194304</maxLogFileSize>
+    </Sensor>
+    <Sensor>
+      <Aktiv>N</Aktiv>
+      <Bezeichnung>Boden</Bezeichnung>
+      <Protocol>HTTP</Protocol>
+      <COM>
+        <Port>COM9</Port>
+        <DtrEnabled>N</DtrEnabled>
+        <Baudrate>9600</Baudrate>
+      </COM>
+      <HTTP>
+        <URL>http://10.16.41.238/temp.html</URL>
+      </HTTP>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>
@@ -28,13 +53,12 @@
     </Sensor>
   </Sensoren>
   <HTML>
-    <FileHTML>C:\Exchange\temperatur.html</FileHTML>
+    <FileHTML>B:\Exchange\temperatur.html</FileHTML>
     <HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
     <Enabled>N</Enabled>
-    <UpdateFrequency>60</UpdateFrequency>
+    <UpdateFrequency>15</UpdateFrequency>
   </HTML>
   <ProgrammEinstellungen>
-    <maxTimeDifferenceReadData>60</maxTimeDifferenceReadData>
     <Topmost>Y</Topmost>
   </ProgrammEinstellungen>
 </root>

@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -44,23 +40,50 @@ namespace Arduino_Temperature_Retrofit
                 
                 dobj.Name = xmlSensor.Name;
                 dobj.Active = xmlSensor.Active;
-                dobj.PortName = xmlSensor.Port;
+                
                 dobj.MaxHistoryItemsSet = xmlSensor.numLogEntries;
                 dobj.LoggingEnabled = xmlSensor.LogEnabled;
                 dobj.LogPath = xmlSensor.LogFilePath;
                 dobj.maxLogFileSize = xmlSensor.maxLogFileSize;
                 dobj.HTMLEnabled = xmlSensor.HTMLEnabled;
-                dobj.BaudRate = xmlSensor.Baudrate;
-                dobj.DataBits = Common.COMSettings.DefaultDataBits;
-                dobj.DtrEnable = xmlSensor.DtrEnabled;
-                dobj.StopBits = Common.COMSettings.DefaultStopBits;
-                if (dobj.Active)
+                dobj.DataInterfaceType = xmlSensor.Protocol; // Determinate if HTTP or COM is used
+
+                if (dobj.DataInterfaceType == XMLProtocol.COM) //if COM hook up a listener
                 {
-                    dobj.DataReceived += Dobj_DataReceived;
-                    dobj.Open();
+                    dobj.PortName = xmlSensor.Port;
+                    dobj.BaudRate = xmlSensor.Baudrate;
+                    dobj.DataBits = Common.COMSettings.DefaultDataBits;
+                    dobj.DtrEnable = xmlSensor.DtrEnabled;
+                    dobj.StopBits = Common.COMSettings.DefaultStopBits;
+                    if (dobj.Active)
+                    {
+                        dobj.DataReceived += Dobj_DataReceived;
+                        dobj.Open();
+                    }
                 }
                 dataObjs.Add(dobj.Name, dobj);
             }
+        }
+
+        private void getHTTPData(string url, DataObject dobj)
+        {
+            try
+            {
+                Task<string> result = HTML.DownloadPage(url);
+                foreach (string l in result.Result.Split('\n'))
+                {
+                    if (l.Contains("START") && l.EndsWith("EOF"))
+                    {
+                        DataReceived(l, dobj.Name);
+                        break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Exception: getHTTPData: " + ex.Message);
+            }
+
         }
 
         private void Dobj_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -891,6 +914,18 @@ namespace Arduino_Temperature_Retrofit
         private void testInvalidesKommandoToolStripMenuItem_Click(object sender, EventArgs e)
         {
             writeCommandToArduino(getAcutalDataObject(), "InvalidBlaBla");
+        }
+
+        private void getHTTPDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DataObject dObj = getAcutalDataObject();
+            if (dObj.DataInterfaceType == XMLProtocol.HTTP)
+            {
+                getHTTPData(dObj.URL, dObj);
+            } else
+            {
+                MessageBox.Show("Kein URL Sensor!");
+            }
         }
     }
 }

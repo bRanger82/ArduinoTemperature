@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -262,6 +263,8 @@ namespace Arduino_Temperature_Retrofit
         public DataObjectProtocol Protocol { get; set; }
         public string AdditionalInformation { get; set; }
         public DateTime LastUpdated { get; set; }
+        public XMLProtocol DataInterfaceType { get; set; }
+        public string URL { get; set; }
 
         private int _connectionRetries = 0;
         public int ConnectionRetries { get { return _connectionRetries; } }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -17,9 +18,20 @@ namespace Arduino_Temperature_Retrofit
         public int UpdateFrequency { get; set; } = 60; //seconds
         public DateTime LastRun { get; set; } = DateTime.Now.AddYears(-1);
     }
-
-    static public class HTML
+    
+    public static class HTML
     {
+        public static async Task<string> DownloadPage(string url)
+        {
+            using (var client = new HttpClient())
+            {
+                using (var r = await client.GetAsync(new Uri(url)))
+                {
+                    string result = await r.Content.ReadAsStringAsync();
+                    return result;
+                }
+            }
+        }
 
         public static void writeHTMLFile(string filename, Dictionary<string, DataObject> lDobj, string HeadText)
         {

@@ -29,12 +29,12 @@ namespace Arduino_Temperature_Retrofit
 
         public static event EventHandler<pushDataAnswer> EvtPushDataAnswer;
 
-        public static bool runTest()
+        public static bool runTest(double value)
         {
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                { "operation", "add" },
-               { "value", "12.5" }
+               { "value", Convert.ToString(value) }
             };
 
             if (null == GUID)
