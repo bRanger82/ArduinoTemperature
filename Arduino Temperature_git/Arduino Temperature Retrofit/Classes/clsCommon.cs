@@ -24,9 +24,11 @@ namespace Arduino_Temperature_Retrofit
     static public class Common
     {
 
+        static public string DateTimeFormat = "dd.MM.yyyy HH:mm:ss";
+
         static public string getCurrentDateTimeFormatted()
         {
-            return DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss");
+            return DateTime.Now.ToString(DateTimeFormat);
         }
 
         static public string getCurrentDateTimeFormattedNoSec(DateTime dtValue)

@@ -51,6 +51,24 @@
       <NumLogItems>680</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>
     </Sensor>
+	<Sensor>
+      <Aktiv>Y</Aktiv>
+      <Bezeichnung>LTBIMI</Bezeichnung>
+      <Protocol>HTTP</Protocol>
+      <COM>
+        <Port></Port>
+        <DtrEnabled></DtrEnabled>
+        <Baudrate></Baudrate>
+      </COM>
+      <HTTP>
+        <URL>http://172.16.111.36/temp.html</URL>
+      </HTTP>
+      <LogEnabled>N</LogEnabled>
+      <WriteHTML>N</WriteHTML>
+      <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>
+      <NumLogItems>680</NumLogItems>
+      <maxLogFileSize>4194304</maxLogFileSize>
+    </Sensor>
   </Sensoren>
   <HTML>
     <FileHTML>B:\Exchange\temperatur.html</FileHTML>

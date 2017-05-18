@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO.Ports;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
@@ -76,11 +77,14 @@ namespace Arduino_Temperature_Retrofit
 
                 Task<string> result = HTML.DownloadPage(url);
 
-                foreach (string l in result.Result.Split('\n'))
+                foreach (string ret in result.Result.Split('\n'))
                 {
-                    if (l.Contains("START") && l.EndsWith("EOF"))
+                    string l = Regex.Replace(ret, @"\r\n?|\n", "");
+
+                    if (l.StartsWith("START|") && l.EndsWith("|EOF"))
                     {
-                        DataReceived(l, dobj.Name);
+                        Console.WriteLine("Received line: " + l);
+                        DataReceived (l, dobj.Name);
                         break;
                     } else if (l.Contains("Salzburg"))
                     {
@@ -171,21 +175,21 @@ namespace Arduino_Temperature_Retrofit
         {
             if (dobj.DataInterfaceType == XMLProtocol.COM)
             {
-                return "Name: \t" + dobj.Name + "\n" +
+                return "Name:  \t" + dobj.Name + "\n" +
                        "Aktiv: \t" + ((dobj.Active) ? "Ja" : "Nein") + "\n" +
-                       "Protokoll:\t" + Enum.GetName(typeof(XMLProtocol), dobj.DataInterfaceType) + "\n" + 
-                       "Port: \t" + dobj.PortName + "\n" +
-                       "Baud-Rate: \t" + dobj.BaudRate + "\n" + 
-                       "Log aktiviert: \t" + ((dobj.LoggingEnabled) ? "Ja" : "Nein") + "\n" +
-                       "HTML aktiviert: \t" + ((dobj.HTMLEnabled) ? "Ja" : "Nein") + "\n";
+                       "Prot.: \t" + Enum.GetName(typeof(XMLProtocol), dobj.DataInterfaceType) + "\n" + 
+                       "Port:  \t" + dobj.PortName + "\n" +
+                       "Baudr.:\t" + dobj.BaudRate + "\n" + 
+                       "Log:   \t" + ((dobj.LoggingEnabled) ? "Ja" : "Nein") + "\n" +
+                       "HTML:  \t" + ((dobj.HTMLEnabled) ? "Ja" : "Nein") + "\n";
             } else if (dobj.DataInterfaceType == XMLProtocol.HTTP)
             {
-                return "Name: \t" + dobj.Name + "\n" +
+                return "Name:  \t" + dobj.Name + "\n" +
                        "Aktiv: \t" + ((dobj.Active) ? "Ja" : "Nein") + "\n" +
-                       "Protokoll:\t" + Enum.GetName(typeof(XMLProtocol), dobj.DataInterfaceType) + "\n" +
-                       "URL: \t" + dobj.URL+ "\n" +
-                       "Log aktiviert: \t" + ((dobj.LoggingEnabled) ? "Ja" : "Nein") + "\n" +
-                       "HTML aktiviert: \t" + ((dobj.HTMLEnabled) ? "Ja" : "Nein") + "\n";
+                       "Prot.: \t" + Enum.GetName(typeof(XMLProtocol), dobj.DataInterfaceType) + "\n" +
+                       "URL:   \t" + dobj.URL+ "\n" +
+                       "Log:   \t" + ((dobj.LoggingEnabled) ? "Ja" : "Nein") + "\n" +
+                       "HTML:  \t" + ((dobj.HTMLEnabled) ? "Ja" : "Nein") + "\n";
             } else
             {
                 return "ERROR: Nicht definiert!";
@@ -319,7 +323,7 @@ namespace Arduino_Temperature_Retrofit
                 setLabelInformation(lblSensorHumidityValue, lblSensorHumidityValueMin, lblSensorHumidityValueMax, lblSensorHumidityValueMinTime, lblSensorHumidityValueMaxTime, dobj, DataObjectCategory.Luftfeuchtigkeit, picTrendHumidity);
                 setLabelInformation(lblSensorPressureValue, lblSensorPressureMin, lblSensorPressureMax, lblSensorPressureMinTime, lblSensorPressureMaxTime, dobj, DataObjectCategory.Luftdruck, picTrendAirPressure);
                 setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobj, DataObjectCategory.HeatIndex, picTrendHeatIndex);
-                lblSensorLastUpdated.Text = "Zuletzt aktualisiert: " + Common.getCurrentDateTimeFormatted();
+                lblSensorLastUpdated.Text = "Zuletzt aktualisiert: " + dobj.getLastUpdatedFormatted();
             }
         }
 
@@ -449,21 +453,22 @@ namespace Arduino_Temperature_Retrofit
                 return;
 
             DataObject dobj = getAcutalDataObject();
+
+            if (dobj.DataInterfaceType == XMLProtocol.HTTP)
+            {
+                // Bei HTTP kann die Verbindung nicht permanent ueberprueft werden
+                return;
+            }
+
             int maxConnectionRetries = 10;
 
             if (dobj == null)
                 return;
 
+            
             UpdateStatus(dobj);
 
-            if (dobj.DataInterfaceType == XMLProtocol.HTTP)
-            {
-                string showURL = dobj.URL;
-                if (dobj.URL.Length > 25)
-                    showURL = dobj.URL.Substring(0, 25) + "...";
-                lblSensorLastUpdated.Text = "HTTP URL: " + showURL;
-                return;
-            }
+            
             if (dobj.Active && !dobj.IsOpen)
             {
                 lblSensorLastUpdated.ForeColor = Color.DarkRed;

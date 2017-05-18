@@ -266,7 +266,13 @@ namespace Arduino_Temperature_Retrofit
         public XMLProtocol DataInterfaceType { get; set; }
         public string URL { get; set; }
 
+        public string getLastUpdatedFormatted()
+        {
+            return this.LastUpdated.ToString(Common.DateTimeFormat);
+        }
+
         private int _connectionRetries = 0;
+
         public int ConnectionRetries { get { return _connectionRetries; } }
 
         public void increaseConnectionRetry()
