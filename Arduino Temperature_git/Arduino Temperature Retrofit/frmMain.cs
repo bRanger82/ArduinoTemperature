@@ -199,8 +199,14 @@ namespace Arduino_Temperature_Retrofit
 
         private void UpdateStatus(DataObject dobj)
         {
-            this.picConnStatus.BackColor = System.Windows.Forms.Control.DefaultBackColor; 
-            Color col = System.Windows.Forms.Control.DefaultBackColor;
+            this.picConnStatus.BackColor = System.Windows.Forms.Control.DefaultBackColor;
+
+            if (null == dobj)
+            {
+                return;
+            }
+
+            Color col = System.Drawing.Color.Yellow;
             if (dobj.DataInterfaceType == XMLProtocol.COM)
             {
                 if (dobj.Active)
@@ -720,6 +726,11 @@ namespace Arduino_Temperature_Retrofit
         {
             chartValues.Series.Clear();
 
+            if (null == dbo || null == dObjExt)
+            {
+                return;
+            }
+
             if (!dObjExt.DataAvailable || dObjExt.getHistoryItemCount(dbo) == 0)
             {
                 lblNumLogEntries.Text = "Datensätze: <N/A>";
@@ -782,6 +793,11 @@ namespace Arduino_Temperature_Retrofit
 
         private void updateChart(DataObject dobj)
         {
+            if (null == dobj)
+            {
+                return;
+            }
+
             DataObjectCategory dobjCat = getActualDataObjectCategory();
 
             if (dobjCat != null)
