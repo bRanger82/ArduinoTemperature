@@ -63,6 +63,26 @@ namespace Arduino_Temperature_Retrofit
             return values.GetRange(start, count);
         }
 
+        static public double CalculateStdDev(List<double> historyEntries, int numHistoryEntriesAsBasis = 50)
+        {
+            if (historyEntries.Count < 5) //mindestens 5 Werte sind notwendig
+                return (double)0;
+
+            List<double> values = getSubset(historyEntries, numHistoryEntriesAsBasis);
+
+            double ret = 0;
+            if (values.Count() > 0)
+            {
+                //Compute the Average      
+                double avg = values.Average();
+                //Perform the Sum of (value-avg)_2_2      
+                double sum = values.Sum(d => Math.Pow(d - avg, 2));
+                //Put it all together      
+                ret = Math.Sqrt((sum) / (values.Count() - 1));
+            }
+            return ret;
+        }
+
         /// <summary>
         /// Berechnet den naechsten wahrscheinlichen Wert einer Reihe
         /// </summary>

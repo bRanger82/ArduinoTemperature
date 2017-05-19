@@ -316,14 +316,18 @@ namespace Arduino_Temperature_Retrofit
 
         private void showData(DataObject dobj)
         {
+            setLabelInformation(lblSensorTempValue, lblSensorTempMin, lblSensorTempMax, lblSensorTempMinTime, lblSensorTempMaxTime, dobj, DataObjectCategory.Temperatur, picTrendTemp);
+            setLabelInformation(lblSensorLuxValue, lblSensorLuxMin, lblSensorLuxMax, lblSensorLuxMinTime, lblSensorLuxMaxTime, dobj, DataObjectCategory.Lichtwert, picTrendLUX);
+            setLabelInformation(lblSensorHumidityValue, lblSensorHumidityValueMin, lblSensorHumidityValueMax, lblSensorHumidityValueMinTime, lblSensorHumidityValueMaxTime, dobj, DataObjectCategory.Luftfeuchtigkeit, picTrendHumidity);
+            setLabelInformation(lblSensorPressureValue, lblSensorPressureMin, lblSensorPressureMax, lblSensorPressureMinTime, lblSensorPressureMaxTime, dobj, DataObjectCategory.Luftdruck, picTrendAirPressure);
+            setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobj, DataObjectCategory.HeatIndex, picTrendHeatIndex);
+
             if (dobj.DataAvailable)
             {
-                setLabelInformation(lblSensorTempValue, lblSensorTempMin, lblSensorTempMax, lblSensorTempMinTime, lblSensorTempMaxTime, dobj, DataObjectCategory.Temperatur, picTrendTemp);
-                setLabelInformation(lblSensorLuxValue, lblSensorLuxMin, lblSensorLuxMax, lblSensorLuxMinTime, lblSensorLuxMaxTime, dobj, DataObjectCategory.Lichtwert, picTrendLUX);
-                setLabelInformation(lblSensorHumidityValue, lblSensorHumidityValueMin, lblSensorHumidityValueMax, lblSensorHumidityValueMinTime, lblSensorHumidityValueMaxTime, dobj, DataObjectCategory.Luftfeuchtigkeit, picTrendHumidity);
-                setLabelInformation(lblSensorPressureValue, lblSensorPressureMin, lblSensorPressureMax, lblSensorPressureMinTime, lblSensorPressureMaxTime, dobj, DataObjectCategory.Luftdruck, picTrendAirPressure);
-                setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobj, DataObjectCategory.HeatIndex, picTrendHeatIndex);
                 lblSensorLastUpdated.Text = "Zuletzt aktualisiert: " + dobj.getLastUpdatedFormatted();
+            } else
+            {
+                lblSensorLastUpdated.Text = "Warte auf Daten ... ";
             }
         }
 
@@ -345,7 +349,7 @@ namespace Arduino_Temperature_Retrofit
 
         private void setLabelInformation(Label lblValue, Label lblMinValue, Label lblMaxValue, Label lblMinTime, Label lblMaxTime, DataObject dObjExt, DataObjectCategory dobjcat, PictureBox picTrend)
         {
-            if (dObjExt.ItemExists(dobjcat) && DataObjectCategory.HasCapability(dObjExt.Items[dobjcat.Value].DataObjCategory, dObjExt.Protocol))
+            if (dObjExt.DataAvailable && dObjExt.ItemExists(dobjcat) && DataObjectCategory.HasCapability(dObjExt.Items[dobjcat.Value].DataObjCategory, dObjExt.Protocol))
             {
                 string unit = DataObjectCategory.getSensorValueUnit(dobjcat);
 
@@ -716,7 +720,10 @@ namespace Arduino_Temperature_Retrofit
         {
             chartValues.Series.Clear();
 
-            if (DataObjectCategory.HasCapability(dbo, dObjExt.Protocol) && dObjExt.DataAvailable)
+            if (!dObjExt.DataAvailable || dObjExt.getHistoryItemCount(dbo) == 0)
+            {
+                lblNumLogEntries.Text = "Datensätze: <N/A>";
+            } else if (DataObjectCategory.HasCapability(dbo, dObjExt.Protocol) && dObjExt.DataAvailable)
             {
                 double min = dObjExt.getHistoryItemMinValue(dbo);
                 double max = dObjExt.getHistoryItemMaxValue(dbo);
@@ -779,11 +786,12 @@ namespace Arduino_Temperature_Retrofit
 
             if (dobjCat != null)
             {
-                if (dobj.getHistoryItemCount(dobjCat) > 0)
-                {
-                    Color lineColor = getChartColor(dobjCat);
-                    updateChart(dobjCat, dobj, lineColor);
-                }
+                Color lineColor = getChartColor(dobjCat);
+                updateChart(dobjCat, dobj, lineColor);
+            }
+            else
+            {
+                lblNumLogEntries.Text = "Datensätze: <N/A>";
             }
         }
 
