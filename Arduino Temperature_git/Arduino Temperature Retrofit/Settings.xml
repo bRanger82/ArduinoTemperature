@@ -11,6 +11,7 @@
         <DtrEnabled>N</DtrEnabled>
         <Baudrate>9600</Baudrate>
       </COM>
+      <HTTP></HTTP>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
