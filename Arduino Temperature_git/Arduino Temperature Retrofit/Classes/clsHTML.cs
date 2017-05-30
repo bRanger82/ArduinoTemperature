@@ -76,9 +76,12 @@ namespace Arduino_Temperature_Retrofit
             foreach (KeyValuePair<string, DataObject> kvp in lDobj)
             {
                 if (((DataObject)kvp.Value).DataAvailable)
+                {
                     sb.Append(createHTMLTableString((DataObject)kvp.Value));
+                    sb.Append(((DataObject)kvp.Value).getLastUpdatedFormatted());
+                }
             }
-            sb.AppendLine("Zuletzt aktualisiert: " + Common.getCurrentDateTimeFormatted());
+            
             sb.AppendLine("</html>");
 
             // if no data is available to write in html set missing data text
@@ -154,7 +157,7 @@ namespace Arduino_Temperature_Retrofit
 
             sb.AppendLine("</table>");
             sb.AppendLine(HttpUtility.HtmlEncode("Zuletzt aktualisiert: "
-                          + Common.getCurrentDateTimeFormatted())
+                          + dobj.getLastUpdatedFormatted())
                           + "</br>");
             return sb.ToString();
         }
