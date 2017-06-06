@@ -58,6 +58,7 @@
     <Compile Include="Classes\clsHTML.cs" />
     <Compile Include="Classes\clsLOG.cs" />
     <Compile Include="Classes\clsProgramSettings.cs" />
+    <Compile Include="Classes\clsSQL.cs" />
     <Compile Include="Classes\clsXML.cs" />
     <Compile Include="Classes\clsCommon.cs" />
     <Compile Include="Classes\clsDataObject.cs" />

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.IO.Ports;
 using System.Net.Http;
@@ -13,17 +15,31 @@ namespace Arduino_Temperature_Retrofit
     public partial class frmMain : Form
     {
 
-        Dictionary<string, DataObject> dataObjs = new Dictionary<string, DataObject>();
-        HTMLSettings htmlSettings = new HTMLSettings();
+        private Dictionary<string, DataObject> dataObjs = new Dictionary<string, DataObject>();
+        private XMLSQLObject xmlSQL = new XMLSQLObject();
+        private HTMLSettings htmlSettings = new HTMLSettings();
 
-        Timer tmrCheckConnStatus = new Timer();
-        Timer tmrFileWriter = new Timer(); 
+        private Timer tmrCheckConnStatus = new Timer();
+        private Timer tmrFileWriter = new Timer();
+        private Timer tmrSensorHTML = new Timer();
+        private DateTime lastSQLTimeStamp = DateTime.Now;
+
+        private int internalID = 0;
 
         public frmMain()
         {
             InitializeComponent();
         }
         
+        private void loadSQLSettingsFromXML()
+        {
+            xmlSQL.Active = XML.SQLActive;
+            xmlSQL.DBPassword = XML.SQLPassword;
+            xmlSQL.Frequency = XML.SQLFrequency();
+            xmlSQL.Scheme = XML.SQLScheme;
+            xmlSQL.Server = XML.SQLServer;
+        }
+
         public void loadHtmlSettings()
         {
             htmlSettings.Enabled = XML.HtmlEnabled;
@@ -48,8 +64,8 @@ namespace Arduino_Temperature_Retrofit
                 dobj.LogPath = xmlSensor.LogFilePath;
                 dobj.maxLogFileSize = xmlSensor.maxLogFileSize;
                 dobj.HTMLEnabled = xmlSensor.HTMLEnabled;
-                dobj.DataInterfaceType = xmlSensor.Protocol; // Determinate if HTTP or COM is used
-
+                dobj.DataInterfaceType = xmlSensor.DataInterfaceType; // Determinate if HTTP or COM is used
+                dobj.writeToDatabase = xmlSensor.writeToDatabase;
                 if (dobj.DataInterfaceType == XMLProtocol.COM) //if COM hook up a listener
                 {
                     dobj.PortName = xmlSensor.Port;
@@ -66,6 +82,7 @@ namespace Arduino_Temperature_Retrofit
                 {
                     dobj.URL = xmlSensor.URL;
                 }
+                dobj.uniqueID = internalID++;
                 dataObjs.Add(dobj.Name, dobj);
             }
         }
@@ -86,15 +103,15 @@ namespace Arduino_Temperature_Retrofit
                         Console.WriteLine("Received line: " + l);
                         DataReceived (l, dobj.Name);
                         break;
-                    } else if (l.Contains("Salzburg"))
-                    {
-                        MessageBox.Show(l);
                     }
                 }
+
+                dobj.HTTPException = null;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Exception: getHTTPData: " + ex.Message);
+                dobj.HTTPException = ex;
+                Console.WriteLine("Exception: getHTTPData: " + ex.Message);
             }
 
         }
@@ -206,31 +223,38 @@ namespace Arduino_Temperature_Retrofit
                 return;
             }
 
-            Color col = System.Drawing.Color.Yellow;
+            Color col = Color.Yellow;
             if (dobj.DataInterfaceType == XMLProtocol.COM)
             {
                 if (dobj.Active)
                 {
                     if (dobj.IsOpen)
                     {
-                        col = System.Drawing.Color.Green;
+                        col = Color.Green;
                         this.toolTip1.SetToolTip(picConnStatus, "STATUS: Verbunden\n" + getToolTip(dobj));
                     }
                     else
                     {
-                        col = System.Drawing.Color.Red;
+                        col = Color.Red;
                         this.toolTip1.SetToolTip(picConnStatus, "STATUS: KEINE VERBINDUNG\n" + getToolTip(dobj));
                     }
                 }
                 else
                 {
-                    col = System.Drawing.Color.LightBlue;
+                    col = Color.LightBlue;
                     this.toolTip1.SetToolTip(picConnStatus, "STATUS: Nicht Aktiv\n" + getToolTip(dobj));
                 }
             } else if (dobj.DataInterfaceType == XMLProtocol.HTTP)
             {
-                col = System.Drawing.Color.DarkBlue;
-                this.toolTip1.SetToolTip(picConnStatus, "STATUS: HTTP wird verwendet\n" + getToolTip(dobj));
+                if (null == dobj.HTTPException)
+                {
+                    col = Color.DarkBlue;
+                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: HTTP Abfrage OK\n" + getToolTip(dobj));
+                } else
+                {
+                    col = Color.Red;
+                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: HTTP Abfrage Fehler!\n" + getToolTip(dobj) + "\nFehler: " + dobj.HTTPException.Message);
+                }
             }
             
             SolidBrush myBrush = new SolidBrush(col);
@@ -439,6 +463,11 @@ namespace Arduino_Temperature_Retrofit
                 Console.WriteLine("writeHTML");
                 writeHTML();
             }
+            if (DateTime.Now.Subtract(lastSQLTimeStamp).TotalMinutes > 5)
+            {
+                lastSQLTimeStamp = DateTime.Now;
+                insertDB();
+            }
             Console.WriteLine("TmrFileWriter_Tick");
         }
 
@@ -530,16 +559,33 @@ namespace Arduino_Temperature_Retrofit
             picTrendLUX.Image = picTrendSame.Image;
             
         }
+
+        private void initHTMLgetTimer()
+        {
+            tmrSensorHTML.Enabled = true;
+            tmrSensorHTML.Interval = 30000;
+            tmrSensorHTML.Tick -= TmrSensorHTML_Tick;
+            tmrSensorHTML.Tick += TmrSensorHTML_Tick;
+            tmrSensorHTML.Start();
+        }
+
+        private void TmrSensorHTML_Tick(object sender, EventArgs e)
+        {
+            updateHTTP();
+        }
+
         private void frmMain_Load(object sender, EventArgs e)
         {
             try
             {
                 LoadDataObjects();
+                loadSQLSettingsFromXML();
                 loadHtmlSettings();
                 UpdateSensorCbo();
                 initToolTip(toolTip1);
                 initFormSettings();
                 setDefaultTrend();
+                initHTMLgetTimer();
                 connectionCheck(true);
                 setTimerFileWriter(true);
                 if (cboChartSelection.Items.Count > 0 && cboChartSelection.SelectedIndex > -1)
@@ -654,7 +700,7 @@ namespace Arduino_Temperature_Retrofit
             if (chartValues.Series.IndexOf(name) < 0)
             {
                 chartValues.Series.Add(name);
-                chartValues.Series[name].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+                chartValues.Series[name].ChartType = SeriesChartType.Spline;
             }
             
             //chartValues.Titles[0].Text = "Testtitle";
@@ -701,11 +747,16 @@ namespace Arduino_Temperature_Retrofit
                 chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Hours;
                 chartValues.ChartAreas[0].AxisX.IntervalOffset = 1;
             }
-            else
+            else if (diff >= 28800 && diff < 72000)
             {
                 chartValues.ChartAreas[0].AxisX.Interval = 4;
                 chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Hours;
                 chartValues.ChartAreas[0].AxisX.IntervalOffset = 4;
+            } else
+            {
+                chartValues.ChartAreas[0].AxisX.Interval = 8;
+                chartValues.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Hours;
+                chartValues.ChartAreas[0].AxisX.IntervalOffset = 8;
             }
 
             chartValues.ChartAreas[0].AxisY.Minimum = minY;
@@ -715,29 +766,29 @@ namespace Arduino_Temperature_Retrofit
             chartValues.ChartAreas[0].AxisX.Maximum = maxDate.AddMinutes(1).ToOADate();
             chartValues.Series[0].Points.DataBindXY(dt.ToArray(), values.ToArray());
             
-            chartValues.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDotDot;
-            chartValues.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.DashDotDot;
+            chartValues.ChartAreas[0].AxisX.MajorGrid.LineDashStyle = ChartDashStyle.DashDotDot;
+            chartValues.ChartAreas[0].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.DashDotDot;
 
             chartValues.Series[name].Color = color;
 
         }
 
-        private void updateChart(DataObjectCategory dbo, DataObject dObjExt, Color lineColor)
+        private void updateChart(DataObjectCategory dbo, DataObject dObj, Color lineColor)
         {
             chartValues.Series.Clear();
 
-            if (null == dbo || null == dObjExt)
+            if (null == dbo || null == dObj)
             {
                 return;
             }
 
-            if (!dObjExt.DataAvailable || dObjExt.getHistoryItemCount(dbo) == 0)
+            if (!dObj.DataAvailable || dObj.getHistoryItemCount(dbo) == 0)
             {
                 lblNumLogEntries.Text = "Datensätze: <N/A>";
-            } else if (DataObjectCategory.HasCapability(dbo, dObjExt.Protocol) && dObjExt.DataAvailable)
+            } else if (DataObjectCategory.HasCapability(dbo, dObj.Protocol) && dObj.DataAvailable)
             {
-                double min = dObjExt.getHistoryItemMinValue(dbo);
-                double max = dObjExt.getHistoryItemMaxValue(dbo);
+                double min = dObj.getHistoryItemMinValue(dbo);
+                double max = dObj.getHistoryItemMaxValue(dbo);
 
                 if ((max - min) < 4)
                 {
@@ -759,10 +810,10 @@ namespace Arduino_Temperature_Retrofit
                 List<double> dt = new List<double>();
                 List<double> values = new List<double>();
 
-                DateTime minDate = dObjExt.getLogItems(dbo)[0].Timepoint;
-                DateTime maxDate = dObjExt.getLogItems(dbo)[dObjExt.getLogItems(dbo).Count - 1].Timepoint;
+                DateTime minDate = dObj.getLogItems(dbo)[0].Timepoint;
+                DateTime maxDate = dObj.getLogItems(dbo)[dObj.getLogItems(dbo).Count - 1].Timepoint;
 
-                foreach (logItem li in dObjExt.getLogItems(dbo))
+                foreach (logItem li in dObj.getLogItems(dbo))
                 {
                     dt.Add(li.Timepoint.ToOADate());
                     values.Add(li.Value);
@@ -770,7 +821,7 @@ namespace Arduino_Temperature_Retrofit
                 
                 addChartSerie(values, dt, dbo.Value.ToString(), lineColor, minDate, maxDate, min, max);
                 
-                lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString() + " (max: " + dObjExt.MaxHistoryItemsSet + ")";
+                lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString() + " (max: " + dObj.MaxHistoryItemsSet + ")";
 
                 if (detailierteInformationenToolStripMenuItem.Checked)
                 {
@@ -878,6 +929,11 @@ namespace Arduino_Temperature_Retrofit
         private void updateListView()
         {
             DataObject dobj = getAcutalDataObject();
+            if (null == dobj || !dobj.Active )
+            {
+                return;
+            }
+
             lstViewDetail.Clear();
             lstViewDetail.View = View.Details;
             lstViewDetail.MultiSelect = true;
@@ -984,16 +1040,109 @@ namespace Arduino_Temperature_Retrofit
             writeCommandToArduino(getAcutalDataObject(), "InvalidBlaBla");
         }
 
-        private void getHTTPDataToolStripMenuItem_Click(object sender, EventArgs e)
+        private void updateHTTP()
         {
             DataObject dObj = getAcutalDataObject();
+            if (null == dObj)
+            {
+                return;
+            }
+
             if (dObj.DataInterfaceType == XMLProtocol.HTTP)
             {
                 getHTTPData(dObj.URL, dObj);
-            } else
-            {
-                MessageBox.Show("Kein URL Sensor!");
+                UpdateStatus(dObj);
             }
+        }
+
+        private void getHTTPDataToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            updateHTTP();
+        }
+
+        private void frmMain_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            
+        }
+
+        private void frmMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (Keys.F5 == e.KeyCode)
+            {
+                updateHTTP();
+            }
+        }
+
+        private void insertDB()
+        {
+            if (!xmlSQL.Active)
+            {
+                return;
+            }
+
+            string ConnectionString =
+                    "Data Source=10.16.60.250;" +
+                    "Initial Catalog=Sensor;" +
+                    "User id=sa;" +
+                    "Password=Enterprise1;";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+
+                foreach (KeyValuePair<string, DataObject> kvp in dataObjs)
+                {
+                    DataObject dObj = (DataObject)kvp.Value;
+                    if (null == dObj || !dObj.DataAvailable || !dObj.Active || !dObj.writeToDatabase)
+                    {
+                        continue;
+                    }
+                    SqlCommand command = new SqlCommand();
+                    command.Connection = connection;
+                    command.CommandType = CommandType.Text;
+                    command.CommandText = "insert into Datalog (SensorID, SensorName, Temperature, HeatIndex, Humidity, Pressure, LUX, LogTime) VALUES (@id, @name, @temp, @head, @hum, @press, @lux, getdate())";
+                    //@id, @name, @temp, @head, @hum, @press, @lux, getdate())";
+                    command.Parameters.AddWithValue("@id", dObj.uniqueID);
+                    command.Parameters.AddWithValue("@name", dObj.Name);
+
+                    if (DataObjectCategory.HasTemperature(dObj.Protocol))
+                        command.Parameters.AddWithValue("@temp", dObj.getItem(DataObjectCategory.Temperatur));
+                    else
+                        command.Parameters.AddWithValue("@temp", "");
+
+                    if (DataObjectCategory.HasHeatIndex(dObj.Protocol))
+                        command.Parameters.AddWithValue("@head", dObj.getItem(DataObjectCategory.HeatIndex));
+                    else
+                        command.Parameters.AddWithValue("@head", "");
+
+                    if (DataObjectCategory.HasHumidity(dObj.Protocol))
+                        command.Parameters.AddWithValue("@hum", dObj.getItem(DataObjectCategory.Luftfeuchtigkeit));
+                    else
+                        command.Parameters.AddWithValue("@hum", "");
+
+                    if (DataObjectCategory.HasAirPressure(dObj.Protocol))
+                        command.Parameters.AddWithValue("@press", dObj.getItem(DataObjectCategory.Luftdruck));
+                    else
+                        command.Parameters.AddWithValue("@press", "");
+
+                    if (DataObjectCategory.HasLUX(dObj.Protocol))
+                        command.Parameters.AddWithValue("@lux", dObj.getItem(DataObjectCategory.Lichtwert));
+                    else
+                        command.Parameters.AddWithValue("@lux", "");
+
+                    int recordsAffected = command.ExecuteNonQuery();
+
+                }
+                if (!(connection.State == ConnectionState.Closed))
+                {
+                    connection.Close();
+                }
+
+            }
+        }
+        private void sQLTestToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            insertDB();
         }
     }
 }

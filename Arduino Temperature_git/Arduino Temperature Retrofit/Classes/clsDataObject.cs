@@ -265,6 +265,9 @@ namespace Arduino_Temperature_Retrofit
         public DateTime LastUpdated { get; set; }
         public XMLProtocol DataInterfaceType { get; set; }
         public string URL { get; set; }
+        public bool writeToDatabase { get; set; }
+        public int uniqueID { get; set; }
+        public Exception HTTPException { get; set; }
 
         public string getLastUpdatedFormatted()
         {
@@ -431,12 +434,13 @@ namespace Arduino_Temperature_Retrofit
 
         public void addItemToHistory(LogObject logObj)
         {
-            // >= because an item is added after the while so if max = e.g. 450, the 450th item is removed and then a new item (450) is added
+            // >= because if max is e.g. 200, the 200th element will be removed and a new value will be added
+            // otherwise there are 200 entries and one entry is added afterwards -> 201 entries which does not meet the maximum of 200
             while (getHistoryItemCount(logObj.Category) >= _maxHistoryItemsCount)
             {
                 _HistoryData.RemoveAt(0);
             }
-            _HistoryData.Add(logObj);
+            _HistoryData.Add(logObj); // one entry is added
         }
 
         private bool _IsDataUpToDate = true;

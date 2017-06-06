@@ -25,8 +25,19 @@ namespace Arduino_Temperature_Retrofit
         public bool HTMLEnabled { get; set; }
         public int Baudrate { get; set; }
         public bool DtrEnabled { get; set; }
-        public XMLProtocol Protocol { get; set; }
+        public XMLProtocol DataInterfaceType { get; set; }
         public string URL { get; set; }
+        public bool writeToDatabase { get; set; }
+    }
+
+    public class XMLSQLObject
+    {
+        public bool Active { get; set; }
+        public string Server { get; set; }
+        public string DBUser { get; set; }
+        public string DBPassword { get; set; }
+        public int Frequency { get; set; }
+        public string Scheme { get; set; }
     }
 
     public static class XML
@@ -41,6 +52,26 @@ namespace Arduino_Temperature_Retrofit
                 return eNode.InnerText;
             else
                 return string.Empty;
+        }
+
+        public static string SQLServer { get { return getValue("/root/SQL/Server"); } set { setValue("/root/SQL/Server", value); } }
+        public static bool SQLActive { get { return checkBool("/root/SQL/Active"); } set { setValueBool("/root/SQL/Active", value); } }
+        public static string SQLUser { get { return getValue("/root/SQL/DBUser"); } set { setValue("/root/SQL/DBUser", value); } }
+        public static string SQLPassword { get { return getValue("/root/SQL/DBPass"); } set { setValue("/root/SQL/DBPass", value); } }
+        public static string SQLScheme { get { return getValue("/root/SQL/Scheme"); } set { setValue("/root/SQL/Scheme", value); } }
+
+        public static int SQLFrequency()
+        {
+            string xmlValue = getValue("/root/SQL/Frequency");
+            int frequency;
+            if (int.TryParse(xmlValue, out frequency) && frequency >= 1) //minimum every 60 seconds / 1 Minute
+            {
+                return frequency;
+            }
+            else
+            {
+                return (int)5;
+            }
         }
 
         public static string Title { get { return getValue("/root/titel"); } set { setValue("/root/titel", value); } }
@@ -113,6 +144,11 @@ namespace Arduino_Temperature_Retrofit
 
         private static bool checkBool(string value)
         {
+            if (string.IsNullOrEmpty(value))
+            {
+                return false;
+            }
+
             return (value.ToUpper() == "Y");
         }
 
@@ -178,7 +214,7 @@ namespace Arduino_Temperature_Retrofit
 
             tmpSensor.HTMLEnabled = checkBool(getInnerText(child, "WriteHTML"));
 
-
+            tmpSensor.writeToDatabase = checkBool(getInnerText(child, "WriteToDatabase"));
 
             tmpSensor.numLogEntries = 50; //default
             int numEntries;
@@ -210,9 +246,9 @@ namespace Arduino_Temperature_Retrofit
             }
             tmpSensor.maxLogFileSize = maxLogFileSize;
 
-            tmpSensor.Protocol = getProtocol(getInnerText(child, "Protocol"));
+            tmpSensor.DataInterfaceType = getProtocol(getInnerText(child, "Protocol"));
 
-            if (tmpSensor.Protocol == XMLProtocol.COM)
+            if (tmpSensor.DataInterfaceType == XMLProtocol.COM)
             {
                 tmpSensor.DtrEnabled = checkBool(getInnerText(child, "COM/DtrEnabled"));
                 tmpSensor.Port = getInnerText(child, "COM/Port");
@@ -229,7 +265,7 @@ namespace Arduino_Temperature_Retrofit
                     tmpSensor.Baudrate = 115200;
                 }
             }
-            else if (tmpSensor.Protocol == XMLProtocol.HTTP)
+            else if (tmpSensor.DataInterfaceType == XMLProtocol.HTTP)
             {
                 tmpSensor.URL = getInnerText(child, "HTTP/URL");
             }
@@ -263,17 +299,17 @@ namespace Arduino_Temperature_Retrofit
                     Console.WriteLine("******************************************************************");
                     Console.WriteLine("tmpSensor.Name          == {0}", tmpSensor.Name);
                     Console.WriteLine("tmpSensor.Active        == {0}", (tmpSensor.Active) ? "Y" : "N");
-                    Console.WriteLine("tmpSensor.Protocol      == {0}", Enum.GetName(typeof(XMLProtocol), tmpSensor.Protocol));
-                    if (tmpSensor.Protocol == XMLProtocol.HTTP)
+                    Console.WriteLine("tmpSensor.Protocol      == {0}", Enum.GetName(typeof(XMLProtocol), tmpSensor.DataInterfaceType));
+                    if (tmpSensor.DataInterfaceType == XMLProtocol.HTTP)
                     {
                         Console.WriteLine("tmpSensor.URL           == {0}", tmpSensor.URL);
-                    }
-                    else if (tmpSensor.Protocol == XMLProtocol.COM)
+                    } else if (tmpSensor.DataInterfaceType == XMLProtocol.COM)
                     {
                         Console.WriteLine("tmpSensor.Port          == {0}", tmpSensor.Port);
                         Console.WriteLine("tmpSensor.Baudrate      == {0}", tmpSensor.Baudrate.ToString());
                         Console.WriteLine("tmpSensor.DtrEnabled    == {0}", (tmpSensor.DtrEnabled) ? "Y" : "N");
                     }
+                    Console.WriteLine("tmpSensor.writeToDB     == {0}", (tmpSensor.writeToDatabase) ? "Y" : "N");
                     Console.WriteLine("tmpSensor.LogEnabled    == {0}", (tmpSensor.LogEnabled) ? "Y" : "N");
                     Console.WriteLine("tmpSensor.LogFilePath   == {0}", tmpSensor.LogFilePath);
                     Console.WriteLine("tmpSensor.HTMLEnabled   == {0}", (tmpSensor.HTMLEnabled) ? "Y" : "N");

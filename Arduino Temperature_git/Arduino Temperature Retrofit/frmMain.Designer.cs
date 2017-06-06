@@ -111,13 +111,14 @@
             this.getVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getActualDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testInvalidesKommandoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.getHTTPDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zusatzToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.detailierteInformationenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.lblNumLogEntries = new System.Windows.Forms.Label();
             this.lstViewDetail = new System.Windows.Forms.ListView();
             this.lblHistoryDataLV = new System.Windows.Forms.Label();
-            this.getHTTPDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sQLTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpBoxSensor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).BeginInit();
@@ -899,7 +900,8 @@
             this.getVersionToolStripMenuItem,
             this.getActualDataToolStripMenuItem,
             this.testInvalidesKommandoToolStripMenuItem,
-            this.getHTTPDataToolStripMenuItem});
+            this.getHTTPDataToolStripMenuItem,
+            this.sQLTestToolStripMenuItem});
             this.kommandosToolStripMenuItem.Name = "kommandosToolStripMenuItem";
             this.kommandosToolStripMenuItem.Size = new System.Drawing.Size(87, 20);
             this.kommandosToolStripMenuItem.Text = "Kommandos";
@@ -946,6 +948,13 @@
             this.testInvalidesKommandoToolStripMenuItem.Text = "Test invalides cmd";
             this.testInvalidesKommandoToolStripMenuItem.Click += new System.EventHandler(this.testInvalidesKommandoToolStripMenuItem_Click);
             // 
+            // getHTTPDataToolStripMenuItem
+            // 
+            this.getHTTPDataToolStripMenuItem.Name = "getHTTPDataToolStripMenuItem";
+            this.getHTTPDataToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.getHTTPDataToolStripMenuItem.Text = "Get HTTP Data";
+            this.getHTTPDataToolStripMenuItem.Click += new System.EventHandler(this.getHTTPDataToolStripMenuItem_Click);
+            // 
             // zusatzToolStripMenuItem
             // 
             this.zusatzToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -990,12 +999,12 @@
             this.lblHistoryDataLV.TabIndex = 40;
             this.lblHistoryDataLV.Text = "Historische Daten:";
             // 
-            // getHTTPDataToolStripMenuItem
+            // sQLTestToolStripMenuItem
             // 
-            this.getHTTPDataToolStripMenuItem.Name = "getHTTPDataToolStripMenuItem";
-            this.getHTTPDataToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.getHTTPDataToolStripMenuItem.Text = "Get HTTP Data";
-            this.getHTTPDataToolStripMenuItem.Click += new System.EventHandler(this.getHTTPDataToolStripMenuItem_Click);
+            this.sQLTestToolStripMenuItem.Name = "sQLTestToolStripMenuItem";
+            this.sQLTestToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.sQLTestToolStripMenuItem.Text = "SQL Test";
+            this.sQLTestToolStripMenuItem.Click += new System.EventHandler(this.sQLTestToolStripMenuItem_Click);
             // 
             // frmMain
             // 
@@ -1012,11 +1021,14 @@
             this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.KeyPreview = true;
             this.MaximizeBox = false;
             this.Name = "frmMain";
             this.Text = "Arduino Temperature";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             this.Load += new System.EventHandler(this.frmMain_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyDown);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmMain_KeyPress);
             this.grpBoxSensor.ResumeLayout(false);
             this.grpBoxSensor.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).EndInit();
@@ -1138,6 +1150,7 @@
         private System.Windows.Forms.ToolStripMenuItem getActualDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem testInvalidesKommandoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem getHTTPDataToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem sQLTestToolStripMenuItem;
     }
 }
 
