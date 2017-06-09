@@ -19,42 +19,6 @@
       <NumLogItems>850</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>
     </Sensor>
-    <Sensor>
-      <Aktiv>N</Aktiv>
-      <Bezeichnung>Boden</Bezeichnung>
-      <Protocol>COM</Protocol>
-      <COM>
-        <Port>COM9</Port>
-        <DtrEnabled>N</DtrEnabled>
-        <Baudrate>9600</Baudrate>
-      </COM>
-      <HTTP></HTTP>
-      <WriteToDatabase>Y</WriteToDatabase>
-      <LogEnabled>N</LogEnabled>
-      <WriteHTML>N</WriteHTML>
-      <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>
-      <NumLogItems>680</NumLogItems>
-      <maxLogFileSize>4194304</maxLogFileSize>
-    </Sensor>
-    <Sensor>
-      <Aktiv>Y</Aktiv>
-      <Bezeichnung>OGD</Bezeichnung>
-      <Protocol>HTTP</Protocol>
-      <COM>
-        <Port></Port>
-        <DtrEnabled></DtrEnabled>
-        <Baudrate></Baudrate>
-      </COM>
-      <HTTP>
-        <URL>http://www.zamg.ac.at/ogd/</URL>
-      </HTTP>
-      <WriteToDatabase>Y</WriteToDatabase>
-      <LogEnabled>N</LogEnabled>
-      <WriteHTML>N</WriteHTML>
-      <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>
-      <NumLogItems>680</NumLogItems>
-      <maxLogFileSize>4194304</maxLogFileSize>
-    </Sensor>
 	<Sensor>
       <Aktiv>Y</Aktiv>
       <Bezeichnung>Serverraum</Bezeichnung>

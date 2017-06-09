@@ -22,7 +22,7 @@ namespace Arduino_Temperature_Retrofit
         private Timer tmrCheckConnStatus = new Timer();
         private Timer tmrFileWriter = new Timer();
         private Timer tmrSensorHTML = new Timer();
-        private DateTime lastSQLTimeStamp = DateTime.Now;
+        private DateTime lastSQLTimeStamp = DateTime.Now.AddMinutes(-30);
 
         private int internalID = 0;
 
@@ -38,6 +38,9 @@ namespace Arduino_Temperature_Retrofit
             xmlSQL.Frequency = XML.SQLFrequency();
             xmlSQL.Scheme = XML.SQLScheme;
             xmlSQL.Server = XML.SQLServer;
+            Console.WriteLine("xmlSQL.Active = " + ((xmlSQL.Active) ? "Y" : "N"));
+            Console.WriteLine("xmlSQL.DBPassword = " + xmlSQL.DBPassword);
+
         }
 
         public void loadHtmlSettings()
@@ -111,7 +114,6 @@ namespace Arduino_Temperature_Retrofit
             catch (Exception ex)
             {
                 dobj.HTTPException = ex;
-                Console.WriteLine("Exception: getHTTPData: " + ex.Message);
             }
 
         }
@@ -496,6 +498,10 @@ namespace Arduino_Temperature_Retrofit
             if (dobj.DataInterfaceType == XMLProtocol.HTTP)
             {
                 // Bei HTTP kann die Verbindung nicht permanent ueberprueft werden
+                if (dobj.HTTPException != null)
+                {
+                    lblSensorLastUpdated.Text = "Fehler: HTTP Abfrage fehlgeschlagen";
+                }
                 return;
             }
 
@@ -1097,6 +1103,11 @@ namespace Arduino_Temperature_Retrofit
                     {
                         continue;
                     }
+                    if (dObj.DataInterfaceType == XMLProtocol.HTTP && dObj.HTTPException != null)
+                    {
+                        continue;
+                    }
+
                     SqlCommand command = new SqlCommand();
                     command.Connection = connection;
                     command.CommandType = CommandType.Text;

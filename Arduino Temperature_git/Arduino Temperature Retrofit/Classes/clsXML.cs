@@ -55,7 +55,7 @@ namespace Arduino_Temperature_Retrofit
         }
 
         public static string SQLServer { get { return getValue("/root/SQL/Server"); } set { setValue("/root/SQL/Server", value); } }
-        public static bool SQLActive { get { return checkBool("/root/SQL/Active"); } set { setValueBool("/root/SQL/Active", value); } }
+        public static bool SQLActive { get { return checkBool(getValue("/root/SQL/Active")); } set { setValueBool("/root/SQL/Active", value); } }
         public static string SQLUser { get { return getValue("/root/SQL/DBUser"); } set { setValue("/root/SQL/DBUser", value); } }
         public static string SQLPassword { get { return getValue("/root/SQL/DBPass"); } set { setValue("/root/SQL/DBPass", value); } }
         public static string SQLScheme { get { return getValue("/root/SQL/Scheme"); } set { setValue("/root/SQL/Scheme", value); } }
