@@ -219,32 +219,32 @@ namespace Arduino_Temperature_Retrofit
         private void UpdateStatus(DataObject dobj)
         {
             this.picConnStatus.BackColor = System.Windows.Forms.Control.DefaultBackColor;
+            Color col = Color.Yellow; //default
 
             if (null == dobj)
             {
                 return;
             }
 
-            Color col = Color.Yellow;
+            
+            if (!dobj.Active)
+            {
+                this.toolTip1.SetToolTip(picConnStatus, "STATUS: Nicht aktiver Sensor!\n" + getToolTip(dobj));
+                return;
+            }
+            
+
             if (dobj.DataInterfaceType == XMLProtocol.COM)
             {
-                if (dobj.Active)
+                if (dobj.IsOpen)
                 {
-                    if (dobj.IsOpen)
-                    {
-                        col = Color.Green;
-                        this.toolTip1.SetToolTip(picConnStatus, "STATUS: Verbunden\n" + getToolTip(dobj));
-                    }
-                    else
-                    {
-                        col = Color.Red;
-                        this.toolTip1.SetToolTip(picConnStatus, "STATUS: KEINE VERBINDUNG\n" + getToolTip(dobj));
-                    }
+                    col = Color.Green;
+                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: Verbunden\n" + getToolTip(dobj));
                 }
                 else
                 {
-                    col = Color.LightBlue;
-                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: Nicht Aktiv\n" + getToolTip(dobj));
+                    col = Color.Red;
+                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: KEINE VERBINDUNG\n" + getToolTip(dobj));
                 }
             } else if (dobj.DataInterfaceType == XMLProtocol.HTTP)
             {
@@ -604,14 +604,11 @@ namespace Arduino_Temperature_Retrofit
                     System.Threading.Thread.Sleep(250);
                     writeCommandToArduino(getAcutalDataObject(), "DATA");
                 }
+                this.detailierteInformationenToolStripMenuItem.Enabled = (cboChartSelection.Items.Count > 0);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Ein Fehler ist aufgetreten:\n" + ex.Message, "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            } finally
-            {
-                this.detailierteInformationenToolStripMenuItem.Enabled = (cboChartSelection.Items.Count > 0);
-
             }
         }
 
