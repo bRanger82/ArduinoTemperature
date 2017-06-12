@@ -112,13 +112,13 @@
             this.getActualDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.testInvalidesKommandoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.getHTTPDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.sQLTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zusatzToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.detailierteInformationenToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.lblNumLogEntries = new System.Windows.Forms.Label();
             this.lstViewDetail = new System.Windows.Forms.ListView();
             this.lblHistoryDataLV = new System.Windows.Forms.Label();
-            this.sQLTestToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.grpBoxSensor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picConnStatus)).BeginInit();
@@ -848,6 +848,7 @@
             this.chartValues.Size = new System.Drawing.Size(609, 173);
             this.chartValues.TabIndex = 36;
             this.chartValues.Text = "chart1";
+            this.chartValues.Click += new System.EventHandler(this.chartValues_Click);
             this.chartValues.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chartValues_MouseMove);
             // 
             // menuStrip1
@@ -955,6 +956,13 @@
             this.getHTTPDataToolStripMenuItem.Text = "Get HTTP Data";
             this.getHTTPDataToolStripMenuItem.Click += new System.EventHandler(this.getHTTPDataToolStripMenuItem_Click);
             // 
+            // sQLTestToolStripMenuItem
+            // 
+            this.sQLTestToolStripMenuItem.Name = "sQLTestToolStripMenuItem";
+            this.sQLTestToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
+            this.sQLTestToolStripMenuItem.Text = "SQL Test";
+            this.sQLTestToolStripMenuItem.Click += new System.EventHandler(this.sQLTestToolStripMenuItem_Click);
+            // 
             // zusatzToolStripMenuItem
             // 
             this.zusatzToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -998,13 +1006,6 @@
             this.lblHistoryDataLV.Size = new System.Drawing.Size(256, 31);
             this.lblHistoryDataLV.TabIndex = 40;
             this.lblHistoryDataLV.Text = "Historische Daten:";
-            // 
-            // sQLTestToolStripMenuItem
-            // 
-            this.sQLTestToolStripMenuItem.Name = "sQLTestToolStripMenuItem";
-            this.sQLTestToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
-            this.sQLTestToolStripMenuItem.Text = "SQL Test";
-            this.sQLTestToolStripMenuItem.Click += new System.EventHandler(this.sQLTestToolStripMenuItem_Click);
             // 
             // frmMain
             // 

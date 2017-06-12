@@ -269,6 +269,10 @@ namespace Arduino_Temperature_Retrofit
 
         private void writeCommandToArduino(DataObject dobj, string command)
         {
+            if (null == dobj)
+            {
+                return;
+            }
             //Has to be implemented together with ARDUINO and the C# method parseArduinoReply
             if (dobj.IsOpen)
             {
@@ -1000,7 +1004,14 @@ namespace Arduino_Temperature_Retrofit
         {
             Point pos = e.Location;
             if (prevPosition.HasValue && pos == prevPosition.Value)
+            {
                 return;
+            }
+            DataObjectCategory dCat = getActualDataObjectCategory();
+            if (null == dCat)
+            {
+                return;
+            }
             tooltip.RemoveAll();
             prevPosition = pos;
             HitTestResult [] results = chartValues.HitTest(pos.X, pos.Y, false, ChartElementType.DataPoint);
@@ -1018,7 +1029,7 @@ namespace Arduino_Temperature_Retrofit
                         if (Math.Abs(pos.X - pointXPixel) < 5 &&
                             Math.Abs(pos.Y - pointYPixel) < 5)
                         {
-                            tooltip.Show("X=" + DateTime.FromOADate(prop.XValue).ToString("dd.MM.yyyy hh:mm:ss") + ", Y=" + prop.YValues[0], this.chartValues,
+                            tooltip.Show("Zeitpunkt: " + DateTime.FromOADate(prop.XValue).ToString("dd.MM.yyyy hh:mm:ss") + "\nWert: " + prop.YValues[0] + DataObjectCategory.getSensorValueUnit(dCat), this.chartValues,
                                             pos.X, pos.Y - 15);
                         }
                     }
@@ -1092,7 +1103,8 @@ namespace Arduino_Temperature_Retrofit
                     "User id=sa;" +
                     "Password=Enterprise1;";
 
-            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            SqlConnection connection = new SqlConnection(ConnectionString);
+            try
             {
                 connection.Open();
 
@@ -1142,18 +1154,25 @@ namespace Arduino_Temperature_Retrofit
                         command.Parameters.AddWithValue("@lux", "");
 
                     int recordsAffected = command.ExecuteNonQuery();
-
                 }
+            }
+            finally
+            {
                 if (!(connection.State == ConnectionState.Closed))
                 {
                     connection.Close();
                 }
-
             }
         }
+
         private void sQLTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
             insertDB();
+        }
+
+        private void chartValues_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
