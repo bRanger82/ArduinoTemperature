@@ -31,9 +31,7 @@ namespace wgetImage
                     File.Delete(filename);
                 }
 
-                bool bOK = DownloadRemoteImageFile(url, filename);
-
-                if (!bOK)
+                if (!DownloadRemoteImageFile(url, filename))
                 {
                     Console.WriteLine("Error while downloading image from the internet!");
                     return;
@@ -44,13 +42,29 @@ namespace wgetImage
                 // Get the color of a pixel within myBitmap.
                 Color pixelColor = myBitmap.GetPixel(227, 126); //Hallein
                 //Color pixelColor = myBitmap.GetPixel(215, 168); //Beispiel fuer Gelb (Gebiet hatte zu diesem Zeitpunkt einen Warnung - Gelb)
-                if (pixelColor.R == 0 && pixelColor.G == 255 && pixelColor.B == 0)
+                if (pixelColor.R == 0 && pixelColor.G == 255 && pixelColor.B == 0) // Gruen
                 {
                     Console.WriteLine("Weather OK - " + pixelColor.ToString());
                 }
+                else if (pixelColor.R == 255 && pixelColor.G == 0 && pixelColor.B == 255) // Lila
+                {
+                    Console.WriteLine("!!! *** Heftiges Unwetter *** !!! - " + pixelColor.ToString());
+                }
+                else if (pixelColor.R == 255 && pixelColor.G == 0 && pixelColor.B == 0) // Rot
+                {
+                    Console.WriteLine("!!! *** Markantes Unwetter *** !!! - " + pixelColor.ToString());
+                }
+                else if (pixelColor.R == 255 && pixelColor.G == 180 && pixelColor.B == 0) // Orange
+                {
+                    Console.WriteLine("!!! *** Unwetter *** !!! - " + pixelColor.ToString());
+                }
+                else if (pixelColor.R == 255 && pixelColor.G == 255 && pixelColor.B == 0) // Gelb
+                {
+                    Console.WriteLine("!!! *** Unwetter-Vorwarnung *** !!! - " + pixelColor.ToString());
+                }
                 else
                 {
-                    Console.WriteLine("!!! *** WEATHER WARNING *** !!! - " + pixelColor.ToString());
+                    Console.WriteLine("!!! *** Wert nicht definiert! *** !!! - " + pixelColor.ToString());
                 }
 
                 myBitmap.Dispose();
