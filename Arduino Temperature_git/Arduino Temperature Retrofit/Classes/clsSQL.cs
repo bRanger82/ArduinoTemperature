@@ -12,7 +12,7 @@ namespace Arduino_Temperature_Retrofit.Classes
     static class clsSQL
     {
         //will be returned in case of any (generic) error
-        public const int SQL_EXIT_FAILURE = -1;
+        public const int SQL_EXIT_FAILURE = -1; 
 
         #region Declaration for accessing the database
         public static string user { get; set; }
