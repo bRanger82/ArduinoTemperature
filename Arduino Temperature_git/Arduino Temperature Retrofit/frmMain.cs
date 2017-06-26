@@ -14,8 +14,11 @@ namespace Arduino_Temperature_Retrofit
 {
     public partial class frmMain : Form
     {
-
+        /* List of _all_ dataObjs available in the .xml Settings file
+         * This means the program reads out all Sensors and just checking/showning the Active = Y ones
+         */
         private Dictionary<string, DataObject> dataObjs = new Dictionary<string, DataObject>();
+
         private XMLSQLObject xmlSQL = new XMLSQLObject();
         private HTMLSettings htmlSettings = new HTMLSettings();
 
