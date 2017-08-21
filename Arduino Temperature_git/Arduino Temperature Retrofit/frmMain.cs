@@ -26,8 +26,11 @@ namespace Arduino_Temperature_Retrofit
         private Timer tmrFileWriter = new Timer();
         private Timer tmrSensorHTML = new Timer();
         private DateTime lastSQLTimeStamp = DateTime.Now.AddMinutes(-30);
+        private clsSQL SQL = new clsSQL();
 
         private int internalID = 0;
+
+        private const int dbConnTimeout = 5;
 
         public frmMain()
         {
@@ -41,9 +44,19 @@ namespace Arduino_Temperature_Retrofit
             xmlSQL.Frequency = XML.SQLFrequency();
             xmlSQL.Scheme = XML.SQLScheme;
             xmlSQL.Server = XML.SQLServer;
-            Console.WriteLine("xmlSQL.Active = " + ((xmlSQL.Active) ? "Y" : "N"));
-            Console.WriteLine("xmlSQL.DBPassword = " + xmlSQL.DBPassword);
-
+            xmlSQL.DBUser = XML.SQLUser;
+            Console.WriteLine("xmlSQL.Active     == " + ((xmlSQL.Active) ? "Y" : "N"));
+            Console.WriteLine("xmlSQL.DBUser     == " + xmlSQL.DBUser);
+            Console.WriteLine("xmlSQL.DBPassword == " + xmlSQL.DBPassword);
+            Console.WriteLine("xmlSQL.Server     == " + xmlSQL.Server);
+            Console.WriteLine("xmlSQL.Scheme     == " + xmlSQL.Scheme);
+            Console.WriteLine("xmlSQL.Frequency  == " + xmlSQL.Frequency);
+            SQL.server = xmlSQL.Server;
+            SQL.scheme = xmlSQL.Scheme;
+            SQL.user = xmlSQL.DBUser;
+            SQL.password = xmlSQL.DBPassword;
+            
+            SQL.createSQLConnection(dbConnTimeout);
         }
 
         public void loadHtmlSettings()
@@ -87,16 +100,29 @@ namespace Arduino_Temperature_Retrofit
                 } else if (dobj.DataInterfaceType == XMLProtocol.HTTP)
                 {
                     dobj.URL = xmlSensor.URL;
+                    
                 }
                 dobj.uniqueID = internalID++;
                 dataObjs.Add(dobj.Name, dobj);
             }
         }
 
+        /// <summary>
+        /// Contains a list of all open http requests
+        /// </summary>
+        List<string> openRequests = new List<string>();
+
         private void getHTTPData(string url, DataObject dobj)
         {
             try
             {
+                // if request is already running for the sensor, do not start another request
+                if (openRequests.Count > 0 && openRequests.Contains(dobj.Name))
+                {
+                    return; // process for this sensor already running
+                }
+
+                openRequests.Add(dobj.Name);
 
                 Task<string> result = HTML.DownloadPage(url);
 
@@ -117,6 +143,9 @@ namespace Arduino_Temperature_Retrofit
             catch (Exception ex)
             {
                 dobj.HTTPException = ex;
+            } finally
+            {
+                openRequests.Remove(dobj.Name);
             }
 
         }
@@ -466,16 +495,22 @@ namespace Arduino_Temperature_Retrofit
 
         private void TmrFileWriter_Tick(object sender, EventArgs e)
         {
-            //html
-            if (DateTime.Now.Subtract(htmlSettings.LastRun).TotalSeconds > htmlSettings.UpdateFrequency)
+            try
             {
-                Console.WriteLine("writeHTML");
-                writeHTML();
+                if (DateTime.Now.Subtract(htmlSettings.LastRun).TotalSeconds > htmlSettings.UpdateFrequency)
+                {
+                    Console.WriteLine("writeHTML");
+                    writeHTML();
+                }
+                if (DateTime.Now.Subtract(lastSQLTimeStamp).TotalMinutes > 5)
+                {
+                    lastSQLTimeStamp = DateTime.Now;
+                    insertDB();
+                }
             }
-            if (DateTime.Now.Subtract(lastSQLTimeStamp).TotalMinutes > 5)
+            catch (Exception ex) 
             {
-                lastSQLTimeStamp = DateTime.Now;
-                insertDB();
+                Console.WriteLine("Exception TmrFileWriter_Tick: " + ex.Message);
             }
             Console.WriteLine("TmrFileWriter_Tick");
         }
@@ -1090,6 +1125,7 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
+
         private void insertDB()
         {
             if (!xmlSQL.Active)
@@ -1097,17 +1133,8 @@ namespace Arduino_Temperature_Retrofit
                 return;
             }
 
-            string ConnectionString =
-                    "Data Source=10.16.60.250;" +
-                    "Initial Catalog=Sensor;" +
-                    "User id=sa;" +
-                    "Password=Enterprise1;";
-
-            SqlConnection connection = new SqlConnection(ConnectionString);
             try
             {
-                connection.Open();
-
                 foreach (KeyValuePair<string, DataObject> kvp in dataObjs)
                 {
                     DataObject dObj = (DataObject)kvp.Value;
@@ -1120,54 +1147,30 @@ namespace Arduino_Temperature_Retrofit
                         continue;
                     }
 
-                    SqlCommand command = new SqlCommand();
-                    command.Connection = connection;
-                    command.CommandType = CommandType.Text;
-                    command.CommandText = "insert into Datalog (SensorID, SensorName, Temperature, HeatIndex, Humidity, Pressure, LUX, LogTime) VALUES (@id, @name, @temp, @head, @hum, @press, @lux, getdate())";
-                    //@id, @name, @temp, @head, @hum, @press, @lux, getdate())";
-                    command.Parameters.AddWithValue("@id", dObj.uniqueID);
-                    command.Parameters.AddWithValue("@name", dObj.Name);
-
-                    if (DataObjectCategory.HasTemperature(dObj.Protocol))
-                        command.Parameters.AddWithValue("@temp", dObj.getItem(DataObjectCategory.Temperatur));
-                    else
-                        command.Parameters.AddWithValue("@temp", "");
-
-                    if (DataObjectCategory.HasHeatIndex(dObj.Protocol))
-                        command.Parameters.AddWithValue("@head", dObj.getItem(DataObjectCategory.HeatIndex));
-                    else
-                        command.Parameters.AddWithValue("@head", "");
-
-                    if (DataObjectCategory.HasHumidity(dObj.Protocol))
-                        command.Parameters.AddWithValue("@hum", dObj.getItem(DataObjectCategory.Luftfeuchtigkeit));
-                    else
-                        command.Parameters.AddWithValue("@hum", "");
-
-                    if (DataObjectCategory.HasAirPressure(dObj.Protocol))
-                        command.Parameters.AddWithValue("@press", dObj.getItem(DataObjectCategory.Luftdruck));
-                    else
-                        command.Parameters.AddWithValue("@press", "");
-
-                    if (DataObjectCategory.HasLUX(dObj.Protocol))
-                        command.Parameters.AddWithValue("@lux", dObj.getItem(DataObjectCategory.Lichtwert));
-                    else
-                        command.Parameters.AddWithValue("@lux", "");
-
-                    int recordsAffected = command.ExecuteNonQuery();
+                    SQL.InsertRow(dObj);
+                    if (SQL.Status == eSQLStatus.Error)
+                    {
+                        return;
+                    }
+                    
                 }
-            }
-            finally
+            } catch (Exception ex)
             {
-                if (!(connection.State == ConnectionState.Closed))
-                {
-                    connection.Close();
-                }
+                Console.WriteLine("Exception in private void insertDB()");
+                Console.WriteLine(ex.Message);
             }
         }
 
         private void sQLTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            insertDB();
+            try
+            {
+                insertDB();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         private void chartValues_Click(object sender, EventArgs e)

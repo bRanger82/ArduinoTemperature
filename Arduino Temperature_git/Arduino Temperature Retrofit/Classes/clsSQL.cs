@@ -2,28 +2,83 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace Arduino_Temperature_Retrofit.Classes
+namespace Arduino_Temperature_Retrofit
 {
-    static class clsSQL
+    public enum eSQLStatus
     {
+        Running, 
+        Idle, 
+        Stopped, 
+        NoSQLConnectionCreated,
+        Error
+    }
+
+    class SQLStatusEventArgs : EventArgs
+    {
+        public eSQLStatus oldStatus { get; set; }
+        public eSQLStatus newStatus { get; set; }
+        public SQLStatusEventArgs(eSQLStatus oldState, eSQLStatus newState)
+        {
+            this.oldStatus = oldState;
+            this.newStatus = newState;
+        }
+    }
+
+    class clsSQL
+    {
+        
         //will be returned in case of any (generic) error
         public const int SQL_EXIT_FAILURE = -1; 
 
         #region Declaration for accessing the database
-        public static string user { get; set; }
-        public static string password { get; set; }
-        public static string server { get; set; }
-        public static string scheme { get; set; }
-        private static SqlConnection _connection;
+        public string user { get; set; }
+        public string password { get; set; }
+        public string server { get; set; }
+        public string scheme { get; set; }
+        public eSQLStatus Status { get; private set; }
+        private SqlConnection _connection = null;
+        private int _connectionTimeout = 30; // default
         #endregion
 
+
+        public event EventHandler StatusChanged;
+
+        private void StatusChange(eSQLStatus eStatus)
+        {
+            var handler = StatusChanged;
+            if (handler != null)
+            {
+                handler(this, new SQLStatusEventArgs(Status, eStatus));
+            }
+            this.Status = eStatus;
+        }
+
+        public clsSQL()
+        {
+            Status = eSQLStatus.NoSQLConnectionCreated;
+            StatusChange(eSQLStatus.NoSQLConnectionCreated);
+        }
+
         #region Create Database Connection
-        public static SqlConnection createSQLConnection(string p_user, string p_password, string p_server, string p_scheme)
+        public SqlConnection createSQLConnection(string p_user, string p_password, string p_server, string p_scheme, int p_connectionTimeout)
+        {
+            user = p_user;
+            password = p_password;
+            server = p_server;
+            scheme = p_scheme;
+            _connectionTimeout = p_connectionTimeout;
+            return createSQLConnection();
+        }
+
+        public SqlConnection createSQLConnection(int p_connectionTimeout)
+        {
+            _connectionTimeout = p_connectionTimeout;
+            return createSQLConnection();
+        }
+
+        public SqlConnection createSQLConnection(string p_user, string p_password, string p_server, string p_scheme)
         {
             user = p_user;
             password = p_password;
@@ -33,35 +88,56 @@ namespace Arduino_Temperature_Retrofit.Classes
             return createSQLConnection();
         }
 
-        public static SqlConnection createSQLConnection()
+        public SqlConnection createSQLConnection()
         {
-            string ConnectionString =
-                    "Data Source=" + server + "; " +
-                    "Initial Catalog=" + scheme + ";" +
-                    "User id=" + user + ";" +
-                    "Password=" + password + ";";
-
-            bool isValid = Regex.IsMatch(ConnectionString, @"^([^=;]+=[^=;]*)(;[^=;]+=[^=;]*)*;?$");
-
-            if (!isValid)
+            try
             {
-                throw new ArgumentException("Connection String is not valid!");
+                string ConnectionString =
+                        "Data Source=" + server + "; " +
+                        "Initial Catalog=" + scheme + ";" +
+                        "User id=" + user + ";" +
+                        "Password=" + password + ";" +
+                        "Connection Timeout=" + _connectionTimeout.ToString() + ";";
+
+                bool isValid = Regex.IsMatch(ConnectionString, @"^([^=;]+=[^=;]*)(;[^=;]+=[^=;]*)*;?$");
+
+                if (!isValid)
+                {
+                    return null;
+                }
+
+                _connection = new SqlConnection(ConnectionString);
+
+                StatusChange(eSQLStatus.Idle);
+                return _connection;
             }
-
-            _connection = new SqlConnection(ConnectionString);
-
-            return _connection;
+            catch (Exception)
+            {
+                StatusChange(eSQLStatus.Error);
+                return null;
+            }
         }
 
-        public static SqlConnection getSqlConnection { get { return _connection; } }
+        public SqlConnection getSqlConnection { get { return _connection; } }
         #endregion
 
         #region Database operations: Insert Row
-        public static int InsertRow(DataObject dObj)
+        public int InsertRow(DataObject dObj)
         {
+            StatusChange(eSQLStatus.Running);
+
             if (null == _connection)
             {
-                return SQL_EXIT_FAILURE;
+                if (null == createSQLConnection())
+                {
+                    Status = eSQLStatus.Error;
+                    return SQL_EXIT_FAILURE;
+                }
+            }
+
+            if (_connection.State != ConnectionState.Open)
+            {
+                _connection.Open();
             }
 
             if (_connection.State == ConnectionState.Open)
@@ -102,15 +178,17 @@ namespace Arduino_Temperature_Retrofit.Classes
 
                 int rowsAffacted = command.ExecuteNonQuery();
 
+                StatusChange(eSQLStatus.Idle);
                 return rowsAffacted;
             }
             else
             {
+                StatusChange(eSQLStatus.Error);
                 return SQL_EXIT_FAILURE;
             }
         }
 
-        public static void insertDBAll(Dictionary<string, DataObject> dataObjs)
+        public void insertDBAll(Dictionary<string, DataObject> dataObjs)
         {
             
                 foreach (KeyValuePair<string, DataObject> kvp in dataObjs)
@@ -127,6 +205,11 @@ namespace Arduino_Temperature_Retrofit.Classes
                     }
 
                     InsertRow(dObj);
+
+                    if (Status == eSQLStatus.Error)
+                    {
+                        return;
+                    }
                 }
         }
         #endregion 

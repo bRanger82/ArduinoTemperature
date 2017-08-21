@@ -14,7 +14,7 @@
       <HTTP></HTTP>
       <WriteToDatabase>Y</WriteToDatabase>
       <LogEnabled>N</LogEnabled>
-      <WriteHTML>N</WriteHTML>
+      <WriteHTML>Y</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
       <NumLogItems>850</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>
@@ -29,27 +29,27 @@
         <Baudrate></Baudrate>
       </COM>
       <HTTP>
-        <URL>http://10.16.111.143/</URL>
+        <URL>http://10.16.111.118/</URL>
       </HTTP>
       <WriteToDatabase>Y</WriteToDatabase>
       <LogEnabled>N</LogEnabled>
-      <WriteHTML>N</WriteHTML>
+      <WriteHTML>Y</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>
       <NumLogItems>680</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>
     </Sensor>
   </Sensoren>
   <HTML>
-    <FileHTML>B:\Exchange\temperatur.html</FileHTML>
+    <FileHTML>C:\inetpub\wwwroot\temperatur.html</FileHTML>
     <HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
     <Enabled>N</Enabled>
     <UpdateFrequency>15</UpdateFrequency>
   </HTML>
   <SQL>
-    <Active>Y</Active>
-    <Server>10.16.60.250</Server>
+    <Active>N</Active>
+    <Server>10.16.41.59</Server>
     <DBUser>sa</DBUser>
-    <DBPass>Enterprise1</DBPass>
+    <DBPass>Test1234!</DBPass>
     <Frequency>5</Frequency>
     <Scheme>Sensor</Scheme>
   </SQL>

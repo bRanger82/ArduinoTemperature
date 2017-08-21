@@ -11,53 +11,48 @@
         <DtrEnabled>N</DtrEnabled>
         <Baudrate>9600</Baudrate>
       </COM>
+      <HTTP></HTTP>
+      <WriteToDatabase>Y</WriteToDatabase>
       <LogEnabled>N</LogEnabled>
-      <WriteHTML>N</WriteHTML>
+      <WriteHTML>Y</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
       <NumLogItems>850</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>
     </Sensor>
-    <Sensor>
-      <Aktiv>N</Aktiv>
-      <Bezeichnung>Boden</Bezeichnung>
-      <Protocol>COM</Protocol>
-      <COM>
-        <Port>COM9</Port>
-        <DtrEnabled>N</DtrEnabled>
-        <Baudrate>9600</Baudrate>
-      </COM>
-      <HTTP></HTTP>
-      <LogEnabled>N</LogEnabled>
-      <WriteHTML>N</WriteHTML>
-      <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>
-      <NumLogItems>680</NumLogItems>
-      <maxLogFileSize>4194304</maxLogFileSize>
-    </Sensor>
-    <Sensor>
-      <Aktiv>N</Aktiv>
-      <Bezeichnung>Boden</Bezeichnung>
+	<Sensor>
+      <Aktiv>Y</Aktiv>
+      <Bezeichnung>Serverraum</Bezeichnung>
       <Protocol>HTTP</Protocol>
       <COM>
-        <Port>COM9</Port>
-        <DtrEnabled>N</DtrEnabled>
-        <Baudrate>9600</Baudrate>
+        <Port></Port>
+        <DtrEnabled></DtrEnabled>
+        <Baudrate></Baudrate>
       </COM>
       <HTTP>
-        <URL>http://10.16.41.238/temp.html</URL>
+        <URL>http://10.16.111.118/</URL>
       </HTTP>
+      <WriteToDatabase>Y</WriteToDatabase>
       <LogEnabled>N</LogEnabled>
-      <WriteHTML>N</WriteHTML>
+      <WriteHTML>Y</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>
       <NumLogItems>680</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>
     </Sensor>
   </Sensoren>
   <HTML>
-    <FileHTML>B:\Exchange\temperatur.html</FileHTML>
-    <HTMLHEAD>Wetterstation BIMIs Platz</HTMLHEAD>
-    <Enabled>N</Enabled>
-    <UpdateFrequency>15</UpdateFrequency>
+    <FileHTML>C:\inetpub\wwwroot\temperatur.html</FileHTML>
+    <HTMLHEAD>Wetterstation</HTMLHEAD>
+    <Enabled>Y</Enabled>
+    <UpdateFrequency>120</UpdateFrequency>
   </HTML>
+  <SQL>
+    <Active>Y</Active>
+    <Server>10.16.41.59</Server>
+    <DBUser>sa</DBUser>
+    <DBPass>Test1234!</DBPass>
+    <Frequency>5</Frequency>
+    <Scheme>Sensor</Scheme>
+  </SQL>
   <ProgrammEinstellungen>
     <Topmost>Y</Topmost>
   </ProgrammEinstellungen>
