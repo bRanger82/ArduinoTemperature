@@ -97,27 +97,59 @@ namespace Arduino_Temperature_Retrofit
             //nur die letzten Einträge sollen geprüft werden (ein Datensatz, der u.U. mehrere Stunden zurück liegt hat keine Aussagekraft mehr)
             List<double> values = getSubset(historyEntries, numHistoryEntriesAsBasis);
 
-            double sumMultXY = 0;
-            double sumX = 0;
-            double sumY = 0;
-            double resBOne = 0;
-            double resBTwo = 0;
-
+            List<Point> lstData = new List<Point>();
 
             for (int i =0; i < values.Count; i++)
             {
-                sumMultXY += i * values[i];
-                sumX += i;
-                sumY += values[i];
-                resBOne += i * i;
+                Point p = new Point();
+                p.m_x = i;
+                p.m_y = values[i];
+                lstData.Add(p);
             }
 
-            resBOne *= values.Count;
-            resBTwo = sumX * sumX;
-            double oben = (values.Count * sumMultXY) - (sumX * sumY);
-            double unten = resBOne - resBTwo;
+            double slope;
+            CalcValues(lstData, out slope);
 
-            return (oben / unten);
+            return slope;
         }
+
+        private struct Point
+        {
+            public double m_y;
+            public double m_x;
+        }
+
+        private static void CalcValues(List<Point> data, out double slope) //, out double intercept, out double rSquared)
+        {
+            double xSum = 0;
+            double ySum = 0;
+            double xySum = 0;
+            double xSqSum = 0;
+            double ySqSum = 0;
+
+            foreach (var point in data)
+            {
+                var x = point.m_x;
+                var y = point.m_y;
+
+                xSum += x;
+                ySum += y;
+                xySum += (x * y);
+                xSqSum += (x * x);
+                ySqSum += (y * y);
+            }
+
+            slope = ((data.Count * xySum) - (xSum * ySum)) / ((data.Count * xSqSum) - (xSum * xSum));
+            /*
+            intercept = ((xSqSum * ySum) - (xSum * xySum)) /
+                              ((data.Count * xSqSum) - (xSum * xSum));
+
+            var a = ((data.Count * xySum) - (xSum * ySum));
+            var b = (((data.Count * xSqSum) - (xSum * xSum)) *
+                         ((data.Count * ySqSum) - (ySum * ySum)));
+            rSquared = (a * a) / b;
+            */
+        }
+
     }
 }

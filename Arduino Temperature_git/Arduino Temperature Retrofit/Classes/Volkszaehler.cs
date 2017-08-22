@@ -29,12 +29,12 @@ namespace Arduino_Temperature_Retrofit.Classes
 
         public static event EventHandler<pushDataAnswer> EvtPushDataAnswer;
 
-        public static void runTest()
+        public static void runTest(double value)
         {
             Dictionary<string, string> values = new Dictionary<string, string>
             {
                { "operation", "add" },
-               { "value", "12.5" }
+               { "value", value.ToString() }
             };
 
             pushData(values);

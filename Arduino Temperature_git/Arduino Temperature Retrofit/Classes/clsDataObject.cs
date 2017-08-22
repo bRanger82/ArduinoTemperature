@@ -17,9 +17,7 @@ namespace Arduino_Temperature_Retrofit
         Luftdruck = 3,
         Lichtwert = 4
     }
-
-
-
+    
     public class DataObjectDetails
     {
         private DetailsTimePoint _TemperatureDetail = new DetailsTimePoint();
@@ -118,7 +116,6 @@ namespace Arduino_Temperature_Retrofit
 
         public static bool HasCapability(DataObjectCategory dobjCat, DataObjectProtocol dop)
         {
-
             if (dobjCat.Value == DataObjectCategory.Luftdruck.Value)
             {
                 return HasAirPressure(dop);

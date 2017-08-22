@@ -8,6 +8,9 @@ using System.Threading.Tasks;
 
 namespace Arduino_Temperature_Retrofit
 {
+    /// <summary>
+    /// Contains functionality to log data into a file
+    /// </summary>
     static public class LOG
     {
         public enum LogDataReturnValue

@@ -19,8 +19,8 @@ namespace Arduino_Temperature_Retrofit
          */
         private Dictionary<string, DataObject> dataObjs = new Dictionary<string, DataObject>();
 
-        private XMLSQLObject xmlSQL = new XMLSQLObject();
-        private HTMLSettings htmlSettings = new HTMLSettings();
+        public XMLSQLObject xmlSQL = new XMLSQLObject();
+        public HTMLSettings htmlSettings = new HTMLSettings();
 
         private Timer tmrCheckConnStatus = new Timer();
         private Timer tmrFileWriter = new Timer();

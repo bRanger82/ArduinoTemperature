@@ -124,6 +124,7 @@ namespace Arduino_Temperature_Retrofit
         #region Database operations: Insert Row
         public int InsertRow(DataObject dObj)
         {
+
             StatusChange(eSQLStatus.Running);
 
             if (null == _connection)
@@ -190,27 +191,26 @@ namespace Arduino_Temperature_Retrofit
 
         public void insertDBAll(Dictionary<string, DataObject> dataObjs)
         {
-            
-                foreach (KeyValuePair<string, DataObject> kvp in dataObjs)
-                {
-                    DataObject dObj = (DataObject)kvp.Value;
+            foreach (KeyValuePair<string, DataObject> kvp in dataObjs)
+            {
+                DataObject dObj = (DataObject)kvp.Value;
                     
-                    if (null == dObj || !dObj.DataAvailable || !dObj.Active || !dObj.writeToDatabase)
-                    {
-                        continue;
-                    }
-                    if (dObj.DataInterfaceType == XMLProtocol.HTTP && dObj.HTTPException != null)
-                    {
-                        continue;
-                    }
-
-                    InsertRow(dObj);
-
-                    if (Status == eSQLStatus.Error)
-                    {
-                        return;
-                    }
+                if (null == dObj || !dObj.DataAvailable || !dObj.Active || !dObj.writeToDatabase)
+                {
+                    continue;
                 }
+                if (dObj.DataInterfaceType == XMLProtocol.HTTP && dObj.HTTPException != null)
+                {
+                    continue;
+                }
+
+                InsertRow(dObj);
+
+                if (Status == eSQLStatus.Error)
+                {
+                    return;
+                }
+            }
         }
         #endregion 
 
