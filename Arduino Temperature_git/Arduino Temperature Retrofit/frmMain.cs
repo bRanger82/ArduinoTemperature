@@ -1108,6 +1108,8 @@ namespace Arduino_Temperature_Retrofit
         {
             lock (lockGuard)
             {
+                DataObject actDataObj = getAcutalDataObject();
+
                 // the code was changed as before the values were only updated if the actual dataobject is active
                 // the values of the not displayed sensors stayed the same, which caused wrong values inserted into the log database
                 foreach (KeyValuePair<string, DataObject> kvp in dataObjs)
@@ -1121,7 +1123,11 @@ namespace Arduino_Temperature_Retrofit
                     if (dObj.DataInterfaceType == XMLProtocol.HTTP && dObj.Active)
                     {
                         getHTTPData(dObj.URL, dObj);
-                        UpdateStatus(dObj);
+
+                        if (actDataObj.Name == dObj.Name)
+                        {
+                            UpdateStatus(dObj);
+                        }
                     }
                 }
             }
