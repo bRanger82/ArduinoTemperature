@@ -108,7 +108,7 @@ namespace Arduino_Temperature_Retrofit
             }
 
             double slope;
-            CalcValues(lstData, out slope);
+            CalcTrendValues(lstData, out slope);
 
             return slope;
         }
@@ -119,7 +119,7 @@ namespace Arduino_Temperature_Retrofit
             public double m_x;
         }
 
-        private static void CalcValues(List<Point> data, out double slope) //, out double intercept, out double rSquared)
+        private static void CalcTrendValues(List<Point> data, out double slope) //, out double intercept, out double rSquared)
         {
             double xSum = 0;
             double ySum = 0;
@@ -138,17 +138,18 @@ namespace Arduino_Temperature_Retrofit
                 xSqSum += (x * x);
                 ySqSum += (y * y);
             }
-
+            
             slope = ((data.Count * xySum) - (xSum * ySum)) / ((data.Count * xSqSum) - (xSum * xSum));
-            /*
-            intercept = ((xSqSum * ySum) - (xSum * xySum)) /
+            
+            double intercept = ((xSqSum * ySum) - (xSum * xySum)) /
                               ((data.Count * xSqSum) - (xSum * xSum));
 
             var a = ((data.Count * xySum) - (xSum * ySum));
             var b = (((data.Count * xSqSum) - (xSum * xSum)) *
                          ((data.Count * ySqSum) - (ySum * ySum)));
-            rSquared = (a * a) / b;
-            */
+            double rSquared = (a * a) / b;
+
+            Console.WriteLine("Slope: {0}, intercept: {1}, rSquared: {2} for last x: {3} and y: {4}", slope, intercept, rSquared, data[data.Count - 1].m_x, data[data.Count - 1].m_y);
         }
 
     }

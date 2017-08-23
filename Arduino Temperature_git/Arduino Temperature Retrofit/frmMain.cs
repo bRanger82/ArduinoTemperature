@@ -41,7 +41,7 @@ namespace Arduino_Temperature_Retrofit
         {
             xmlSQL.Active = XML.SQLActive;
             xmlSQL.DBPassword = XML.SQLPassword;
-            xmlSQL.Frequency = XML.SQLFrequency();
+            xmlSQL.UpdateFrequency = XML.SQLFrequency();
             xmlSQL.Scheme = XML.SQLScheme;
             xmlSQL.Server = XML.SQLServer;
             xmlSQL.DBUser = XML.SQLUser;
@@ -50,7 +50,7 @@ namespace Arduino_Temperature_Retrofit
             Console.WriteLine("xmlSQL.DBPassword == " + xmlSQL.DBPassword);
             Console.WriteLine("xmlSQL.Server     == " + xmlSQL.Server);
             Console.WriteLine("xmlSQL.Scheme     == " + xmlSQL.Scheme);
-            Console.WriteLine("xmlSQL.Frequency  == " + xmlSQL.Frequency);
+            Console.WriteLine("xmlSQL.Frequency  == " + xmlSQL.UpdateFrequency);
             SQL.server = xmlSQL.Server;
             SQL.scheme = xmlSQL.Scheme;
             SQL.user = xmlSQL.DBUser;
@@ -261,7 +261,7 @@ namespace Arduino_Temperature_Retrofit
             
             if (!dobj.Active)
             {
-                this.toolTip1.SetToolTip(picConnStatus, "STATUS: Nicht aktiver Sensor!\n" + getToolTip(dobj));
+                this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: Nicht aktiver Sensor!\n" + getToolTip(dobj));
                 return;
             }
             
@@ -271,23 +271,23 @@ namespace Arduino_Temperature_Retrofit
                 if (dobj.IsOpen)
                 {
                     col = Color.Green;
-                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: Verbunden\n" + getToolTip(dobj));
+                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: Verbunden\n" + getToolTip(dobj));
                 }
                 else
                 {
                     col = Color.Red;
-                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: KEINE VERBINDUNG\n" + getToolTip(dobj));
+                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: KEINE VERBINDUNG\n" + getToolTip(dobj));
                 }
             } else if (dobj.DataInterfaceType == XMLProtocol.HTTP)
             {
                 if (null == dobj.HTTPException)
                 {
                     col = Color.DarkBlue;
-                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: HTTP Abfrage OK\n" + getToolTip(dobj));
+                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: HTTP Abfrage OK\n" + getToolTip(dobj));
                 } else
                 {
                     col = Color.Red;
-                    this.toolTip1.SetToolTip(picConnStatus, "STATUS: HTTP Abfrage Fehler!\n" + getToolTip(dobj) + "\nFehler: " + dobj.HTTPException.Message);
+                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: HTTP Abfrage Fehler!\n" + getToolTip(dobj) + "\nFehler: " + dobj.HTTPException.Message);
                 }
             }
             
@@ -402,16 +402,26 @@ namespace Arduino_Temperature_Retrofit
         private Image getTrend(DataObject dobj, DataObjectCategory dobjCat, out string trendInfo)
         {
             Image img = null;
-            Trend trend = dobj.getTrend(dobjCat);
-            string lblTrend = string.Empty;
             trendInfo = string.Empty;
 
-            switch (trend)
+            try
             {
-                case Trend.CONSTANT: img = new Bitmap(Properties.Resources.Trend_Same); trendInfo = "Trend: gleichbleibend"; break;
-                case Trend.DOWN: img = new Bitmap(Properties.Resources.Trend_Down); trendInfo = "Trend: fallend";  break;
-                case Trend.UP: img = new Bitmap(Properties.Resources.Trend_UP); trendInfo = "Trend: steigend"; break;
+                Console.WriteLine("Call getTrend for: " + dobj.Name);
+                Trend trend = dobj.getTrend(dobjCat);
+
+                switch (trend)
+                {
+                    case Trend.CONSTANT: img = new Bitmap(Properties.Resources.Trend_Same); trendInfo = "Trend: gleichbleibend"; break;
+                    case Trend.DOWN: img = new Bitmap(Properties.Resources.Trend_Down); trendInfo = "Trend: fallend";  break;
+                    case Trend.UP: img = new Bitmap(Properties.Resources.Trend_UP); trendInfo = "Trend: steigend"; break;
+                    default: img = new Bitmap(Properties.Resources.Error); trendInfo = "Fehler Trendberechnung"; break;
+                }
             }
+            catch (Exception ex)
+            {
+                img = new Bitmap(Properties.Resources.Error); trendInfo = "Fehler Trendberechnung" + Environment.NewLine + ex.Message;
+            }
+
             return img;
         }
 
@@ -428,7 +438,7 @@ namespace Arduino_Temperature_Retrofit
                 lblMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MaxTimepoint);
                 string trendInfo;
                 picTrend.Image = getTrend(dObjExt, dobjcat, out trendInfo);
-                toolTip1.SetToolTip(picTrend, trendInfo);
+                frmMainToolTip.SetToolTip(picTrend, trendInfo);
                 lblValue.Parent.Enabled = true;
             }
             else
@@ -502,7 +512,7 @@ namespace Arduino_Temperature_Retrofit
                     Console.WriteLine("writeHTML");
                     writeHTML();
                 }
-                if (DateTime.Now.Subtract(lastSQLTimeStamp).TotalMinutes > 5)
+                if (DateTime.Now.Subtract(lastSQLTimeStamp).TotalMinutes > xmlSQL.UpdateFrequency)
                 {
                     lastSQLTimeStamp = DateTime.Now;
                     insertDB();
@@ -630,7 +640,7 @@ namespace Arduino_Temperature_Retrofit
                 loadSQLSettingsFromXML();
                 loadHtmlSettings();
                 UpdateSensorCbo();
-                initToolTip(toolTip1);
+                initToolTip(frmMainToolTip);
                 initFormSettings();
                 setDefaultTrend();
                 initHTMLgetTimer();
@@ -1092,29 +1102,34 @@ namespace Arduino_Temperature_Retrofit
             writeCommandToArduino(getAcutalDataObject(), "InvalidBlaBla");
         }
 
+        private static Object lockGuard = new Object();
+
         private void updateHTTP()
         {
-            DataObject dObj = getAcutalDataObject();
-            if (null == dObj)
+            lock (lockGuard)
             {
-                return;
-            }
+                // the code was changed as before the values were only updated if the actual dataobject is active
+                // the values of the not displayed sensors stayed the same, which caused wrong values inserted into the log database
+                foreach (KeyValuePair<string, DataObject> kvp in dataObjs)
+                {
+                    DataObject dObj = (DataObject)kvp.Value;
+                    if (null == dObj)
+                    {
+                        continue;
+                    }
 
-            if (dObj.DataInterfaceType == XMLProtocol.HTTP)
-            {
-                getHTTPData(dObj.URL, dObj);
-                UpdateStatus(dObj);
+                    if (dObj.DataInterfaceType == XMLProtocol.HTTP && dObj.Active)
+                    {
+                        getHTTPData(dObj.URL, dObj);
+                        UpdateStatus(dObj);
+                    }
+                }
             }
         }
 
         private void getHTTPDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             updateHTTP();
-        }
-
-        private void frmMain_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            
         }
 
         private void frmMain_KeyDown(object sender, KeyEventArgs e)
@@ -1124,7 +1139,6 @@ namespace Arduino_Temperature_Retrofit
                 updateHTTP();
             }
         }
-
 
         private void insertDB()
         {
@@ -1156,21 +1170,14 @@ namespace Arduino_Temperature_Retrofit
                 }
             } catch (Exception ex)
             {
-                Console.WriteLine("Exception in private void insertDB()");
+                Console.WriteLine("Exception in insertDB()");
                 Console.WriteLine(ex.Message);
             }
         }
 
         private void sQLTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                insertDB();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            insertDB();
         }
 
         private void chartValues_Click(object sender, EventArgs e)

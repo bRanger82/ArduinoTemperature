@@ -390,14 +390,14 @@ namespace Arduino_Temperature_Retrofit
 
             //Trend aus den letzten 'numEntriesConsider' Einträgen berechnen
             double calcTrend = Common.calculateTrend(lst);
-            double stdAbw = Common.CalculateStdDev(lst);
+            //double stdAbw = Common.CalculateStdDev(lst);
 
-            Console.WriteLine("getTrend::method calcTrend returned {0} \t stdAbw returned {1}", calcTrend, stdAbw);
+            Console.WriteLine("getTrend::method calcTrend returned {0} for {1}", calcTrend, dobjCat.Value);
 
-            if (calcTrend + stdAbw < 0)
+            if (calcTrend < 0)
             {
                 return Trend.DOWN;
-            } else if (calcTrend - stdAbw > stdAbw)
+            } else if (calcTrend > 0)
             {
                 return Trend.UP;
             } else

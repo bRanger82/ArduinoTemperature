@@ -36,7 +36,7 @@ namespace Arduino_Temperature_Retrofit
         public string Server { get; set; }
         public string DBUser { get; set; }
         public string DBPassword { get; set; }
-        public int Frequency { get; set; }
+        public int UpdateFrequency { get; set; }
         public string Scheme { get; set; }
     }
 

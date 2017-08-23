@@ -112,6 +112,7 @@
     <None Include="Resources\Trend_UP.png" />
     <None Include="Resources\Trend_Same.png" />
     <None Include="Resources\Trend_Down.png" />
+    <None Include="Resources\Error.png" />
     <Content Include="Settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
