@@ -19,5 +19,4 @@ C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Te
 C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino_Temperature_Retrofit.Properties.Resources.resources
 C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csproj.GenerateResource.Cache
 C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csprojResolveAssemblyReference.cache
-C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csprojResolveAssemblyReference.cache
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csproj.CoreCompileInputs.cache

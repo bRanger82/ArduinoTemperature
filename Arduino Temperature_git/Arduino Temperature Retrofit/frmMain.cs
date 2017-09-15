@@ -698,21 +698,46 @@ namespace Arduino_Temperature_Retrofit
             foreach (KeyValuePair<string, DataObject> kvp in dataObjs)
             {
                 DataObject dobj = (DataObject)kvp.Value;
-                if (dobj.IsOpen)
+                if (dobj == null)
                 {
-                    dobj.DataReceived -= Dobj_DataReceived;
-                    dobj.Close();
+                    continue;
+                }
+                try
+                {
+                    if (dobj.IsOpen)
+                    {
+                        dobj.DataReceived -= Dobj_DataReceived;
+                        dobj.Close();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Fehler beim Beenden des Programms: " + ex.Message);
                 }
             }
         }
 
         private void cboSensors_SelectedIndexChanged(object sender, EventArgs e)
         {
-            AddChartPossibilities();
             DataObject dojb = GetAcutalDataObject();
+            if (dojb == null)
+            {
+                return;
+            }
+
+            AddChartPossibilities();
             ShowData(dojb);
             UpdateStatus(dojb);
             this.detailierteInformationenToolStripMenuItem.Enabled = (cboChartSelection.Items.Count > 0);
+            if (dojb.DataInterfaceType == XMLProtocol.COM)
+            {
+                this.getHTTPDataToolStripMenuItem.Enabled = false;
+                this.getActualDataToolStripMenuItem.Enabled = true;
+            } else if (dojb.DataInterfaceType == XMLProtocol.HTTP)
+            {
+                this.getHTTPDataToolStripMenuItem.Enabled = true;
+                this.getActualDataToolStripMenuItem.Enabled = false;
+            }
         }
 
         private DataObject GetAcutalDataObject()
