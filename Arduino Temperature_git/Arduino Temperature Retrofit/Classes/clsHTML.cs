@@ -26,11 +26,14 @@ namespace Arduino_Temperature_Retrofit
             using (var client = new HttpClient())
             {
                 client.Timeout = TimeSpan.FromMilliseconds(2000);
+                //return await client.GetStringAsync(url);
+                
                 using (var r = await client.GetAsync(new Uri(url), HttpCompletionOption.ResponseHeadersRead).ConfigureAwait(false))
                 {
                     string result = await r.Content.ReadAsStringAsync();
                     return result;
                 }
+                
             }
         }
 

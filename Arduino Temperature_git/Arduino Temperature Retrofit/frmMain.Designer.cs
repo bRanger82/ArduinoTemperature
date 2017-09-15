@@ -1040,8 +1040,8 @@
             this.MaximizeBox = false;
             this.Name = "frmMain";
             this.Text = "Arduino Temperature";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
-            this.Load += new System.EventHandler(this.frmMain_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
+            this.Load += new System.EventHandler(this.FrmMain_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyDown);
             this.grpBoxSensor.ResumeLayout(false);
             this.grpBoxSensor.PerformLayout();

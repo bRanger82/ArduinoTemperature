@@ -53,6 +53,11 @@ namespace Arduino_Temperature_Retrofit
             public static bool DefaultDtrEnable = false;
         }
 
+        static private Dictionary<string, string> getSubsetDict(Dictionary<string, string> source, string removeItem)
+        {
+            return source.Where(s => s.Key != removeItem).ToDictionary(dict => dict.Key, dict => dict.Value);
+        }
+
         static private List<double> getSubset(List<double> values, int count)
         {
             if (values.Count <= count)

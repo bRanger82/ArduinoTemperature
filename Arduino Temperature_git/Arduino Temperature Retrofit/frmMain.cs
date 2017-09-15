@@ -37,7 +37,7 @@ namespace Arduino_Temperature_Retrofit
             InitializeComponent();
         }
         
-        private void loadSQLSettingsFromXML()
+        private void LoadSQLSettingsFromXML()
         {
             xmlSQL.Active = XML.SQLActive;
             xmlSQL.DBPassword = XML.SQLPassword;
@@ -59,7 +59,7 @@ namespace Arduino_Temperature_Retrofit
             SQL.createSQLConnection(dbConnTimeout);
         }
 
-        public void loadHtmlSettings()
+        public void LoadHtmlSettings()
         {
             htmlSettings.Enabled = XML.HtmlEnabled;
             htmlSettings.Filename = XML.HtmlFile;
@@ -73,20 +73,23 @@ namespace Arduino_Temperature_Retrofit
             List<XMLSensorObject> xmlSensors = XML.getSensorItemsFromXML();
             foreach (XMLSensorObject xmlSensor in xmlSensors)
             {
-                DataObject dobj = new DataObject();
-                
-                dobj.Name = xmlSensor.Name;
-                dobj.Active = xmlSensor.Active;
-                
-                dobj.MaxHistoryItemsSet = xmlSensor.numLogEntries;
-                dobj.LoggingEnabled = xmlSensor.LogEnabled;
-                dobj.LogPath = xmlSensor.LogFilePath;
-                dobj.maxLogFileSize = xmlSensor.maxLogFileSize;
-                dobj.HTMLEnabled = xmlSensor.HTMLEnabled;
-                dobj.DataInterfaceType = xmlSensor.DataInterfaceType; // Determinate if HTTP or COM is used
-                dobj.writeToDatabase = xmlSensor.writeToDatabase;
+                DataObject dobj = new DataObject
+                {
+                    Name = xmlSensor.Name,
+                    Active = xmlSensor.Active,
+
+                    MaxHistoryItemsSet = xmlSensor.numLogEntries,
+                    LoggingEnabled = xmlSensor.LogEnabled,
+                    LogPath = xmlSensor.LogFilePath,
+                    maxLogFileSize = xmlSensor.maxLogFileSize,
+                    HTMLEnabled = xmlSensor.HTMLEnabled,
+                    DataInterfaceType = xmlSensor.DataInterfaceType, // Determinate if HTTP or COM is used
+                    writeToDatabase = xmlSensor.writeToDatabase
+                };
                 if (dobj.DataInterfaceType == XMLProtocol.COM) //if COM hook up a listener
                 {
+                    dobj.ReadTimeout = 1000;
+                    dobj.WriteTimeout = 1000;
                     dobj.PortName = xmlSensor.Port;
                     dobj.BaudRate = xmlSensor.Baudrate;
                     dobj.DataBits = Common.COMSettings.DefaultDataBits;
@@ -112,7 +115,7 @@ namespace Arduino_Temperature_Retrofit
         /// </summary>
         List<string> openRequests = new List<string>();
 
-        private void getHTTPData(string url, DataObject dobj)
+        private void GetHTTPData(string url, DataObject dobj)
         {
             try
             {
@@ -152,9 +155,8 @@ namespace Arduino_Temperature_Retrofit
 
         private void Dobj_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            if (sender is DataObject)
+            if (sender is DataObject spTemp)
             {
-                DataObject spTemp = (DataObject)sender;
                 string received = spTemp.ReadLine();
                 this.BeginInvoke(new DataReceiveEvent(DataReceived), received, spTemp.Name);
             }
@@ -164,7 +166,18 @@ namespace Arduino_Temperature_Retrofit
         
         private void DataReceived(string information, string name)
         {
+            if (string.IsNullOrEmpty(information) || string.IsNullOrEmpty(name))
+            {
+                return;
+            }
+
             DataObject dobj = dataObjs[name];
+
+            if (dobj == null)
+            {
+                return;
+            }
+
             if (information.Contains("|"))
             {
                 try
@@ -172,16 +185,16 @@ namespace Arduino_Temperature_Retrofit
                     string[] values = information.Split('|');
                     if (values.Length == 5 && values[0].StartsWith("START") && values[4].StartsWith("EOF")) //Protocol first version
                     {
-                        processDataProtocolV1(values, ref dobj);
+                        ProcessDataProtocolV1(values, ref dobj);
                     } else if (values.Length == 7 && values[0].StartsWith("START") && values[6].StartsWith("EOF")) //Protocoll second version
                     {
-                        processDataProtocolV2(values, ref dobj);
+                        ProcessDataProtocolV2(values, ref dobj);
                     } else if (values.Length == 8 && values[0].StartsWith("START") && values[7].StartsWith("EOF")) //Protocol third version
                     {
-                        processDataProtocolV3(values, ref dobj);
-                    } else if (values[0].StartsWith("REPLY") && values[values.Length - 1].StartsWith("EOF")) // returns all commands which can be handled by the arduino
+                        ProcessDataProtocolV3(values, ref dobj);
+                    } else if (values.Length > 1 && values[0].StartsWith("REPLY") && values[values.Length - 1].StartsWith("EOF")) // returns all commands which can be handled by the arduino
                     {
-                        parseArduinoReply(dobj, values);
+                        ParseArduinoReply(dobj, values);
                         return;
                     } else
                     {
@@ -208,11 +221,11 @@ namespace Arduino_Temperature_Retrofit
             }
 
             if (dobj.DataAvailable)
-                processIncomingDataSet(ref dobj, name);
+                ProcessIncomingDataSet(ref dobj, name);
 
         }
 
-        private void parseArduinoReply(DataObject dobj, string[] items)
+        private void ParseArduinoReply(DataObject dobj, string[] items)
         {
             string message = string.Empty;
             for (int pos = 1; pos < items.Length - 1; pos++)
@@ -222,7 +235,7 @@ namespace Arduino_Temperature_Retrofit
             MessageBox.Show("Received reply:\n" + message);
         }
 
-        private string getToolTip(DataObject dobj)
+        private string GetToolTip(DataObject dobj)
         {
             if (dobj.DataInterfaceType == XMLProtocol.COM)
             {
@@ -261,7 +274,7 @@ namespace Arduino_Temperature_Retrofit
             
             if (!dobj.Active)
             {
-                this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: Nicht aktiver Sensor!\n" + getToolTip(dobj));
+                this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: Nicht aktiver Sensor!\n" + GetToolTip(dobj));
                 return;
             }
             
@@ -271,23 +284,23 @@ namespace Arduino_Temperature_Retrofit
                 if (dobj.IsOpen)
                 {
                     col = Color.Green;
-                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: Verbunden\n" + getToolTip(dobj));
+                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: Verbunden\n" + GetToolTip(dobj));
                 }
                 else
                 {
                     col = Color.Red;
-                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: KEINE VERBINDUNG\n" + getToolTip(dobj));
+                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: KEINE VERBINDUNG\n" + GetToolTip(dobj));
                 }
             } else if (dobj.DataInterfaceType == XMLProtocol.HTTP)
             {
                 if (null == dobj.HTTPException)
                 {
                     col = Color.DarkBlue;
-                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: HTTP Abfrage OK\n" + getToolTip(dobj));
+                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: HTTP Abfrage OK\n" + GetToolTip(dobj));
                 } else
                 {
                     col = Color.Red;
-                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: HTTP Abfrage Fehler!\n" + getToolTip(dobj) + "\nFehler: " + dobj.HTTPException.Message);
+                    this.frmMainToolTip.SetToolTip(picConnStatus, "STATUS: HTTP Abfrage Fehler!\n" + GetToolTip(dobj) + "\nFehler: " + dobj.HTTPException.Message);
                 }
             }
             
@@ -299,7 +312,7 @@ namespace Arduino_Temperature_Retrofit
             
         }
 
-        private void writeCommandToArduino(DataObject dobj, string command)
+        private void WriteCommandToArduino(DataObject dobj, string command)
         {
             if (null == dobj)
             {
@@ -312,7 +325,7 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        private void processIncomingDataSet(ref DataObject dobj, string name)
+        private void ProcessIncomingDataSet(ref DataObject dobj, string name)
         {
             if (dobj.Protocol != DataObjectProtocol.NONE)
             {
@@ -320,11 +333,11 @@ namespace Arduino_Temperature_Retrofit
                 {
                     if (dobj.FirstData && cboChartSelection.Items.Count == 0)
                     {
-                        addChartPossibilities();
+                        AddChartPossibilities();
                     }
 
-                    showData(dobj);
-                    updateChart(dobj);
+                    ShowData(dobj);
+                    UpdateChart(dobj);
                     lblSensorLastUpdated.ForeColor = SystemColors.ControlText;
                 }
             }
@@ -342,7 +355,7 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        private void processDataProtocolV1(string [] data, ref DataObject dobj)
+        private void ProcessDataProtocolV1(string [] data, ref DataObject dobj)
         {
             dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[1].ToString())), DataObjectCategory.Luftfeuchtigkeit);
             dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Temperatur);
@@ -354,7 +367,7 @@ namespace Arduino_Temperature_Retrofit
             dobj.FirstData = true;
         }
 
-        private void processDataProtocolV2(string[] data, ref DataObject dobj)
+        private void ProcessDataProtocolV2(string[] data, ref DataObject dobj)
         {
             dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Luftfeuchtigkeit);
             dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.Temperatur);
@@ -367,7 +380,7 @@ namespace Arduino_Temperature_Retrofit
             dobj.FirstData = true;
         }
 
-        private void processDataProtocolV3(string[] data, ref DataObject dobj)
+        private void ProcessDataProtocolV3(string[] data, ref DataObject dobj)
         {
             dobj.addDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.replaceDecPoint(data[2].ToString())), DataObjectCategory.Luftfeuchtigkeit);
             dobj.addDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.replaceDecPoint(data[3].ToString())), DataObjectCategory.Temperatur);
@@ -382,13 +395,13 @@ namespace Arduino_Temperature_Retrofit
             dobj.FirstData = true;
         }
 
-        private void showData(DataObject dobj)
+        private void ShowData(DataObject dobj)
         {
-            setLabelInformation(lblSensorTempValue, lblSensorTempMin, lblSensorTempMax, lblSensorTempMinTime, lblSensorTempMaxTime, dobj, DataObjectCategory.Temperatur, picTrendTemp);
-            setLabelInformation(lblSensorLuxValue, lblSensorLuxMin, lblSensorLuxMax, lblSensorLuxMinTime, lblSensorLuxMaxTime, dobj, DataObjectCategory.Lichtwert, picTrendLUX);
-            setLabelInformation(lblSensorHumidityValue, lblSensorHumidityValueMin, lblSensorHumidityValueMax, lblSensorHumidityValueMinTime, lblSensorHumidityValueMaxTime, dobj, DataObjectCategory.Luftfeuchtigkeit, picTrendHumidity);
-            setLabelInformation(lblSensorPressureValue, lblSensorPressureMin, lblSensorPressureMax, lblSensorPressureMinTime, lblSensorPressureMaxTime, dobj, DataObjectCategory.Luftdruck, picTrendAirPressure);
-            setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobj, DataObjectCategory.HeatIndex, picTrendHeatIndex);
+            SetLabelInformation(lblSensorTempValue, lblSensorTempMin, lblSensorTempMax, lblSensorTempMinTime, lblSensorTempMaxTime, dobj, DataObjectCategory.Temperatur, picTrendTemp);
+            SetLabelInformation(lblSensorLuxValue, lblSensorLuxMin, lblSensorLuxMax, lblSensorLuxMinTime, lblSensorLuxMaxTime, dobj, DataObjectCategory.Lichtwert, picTrendLUX);
+            SetLabelInformation(lblSensorHumidityValue, lblSensorHumidityValueMin, lblSensorHumidityValueMax, lblSensorHumidityValueMinTime, lblSensorHumidityValueMaxTime, dobj, DataObjectCategory.Luftfeuchtigkeit, picTrendHumidity);
+            SetLabelInformation(lblSensorPressureValue, lblSensorPressureMin, lblSensorPressureMax, lblSensorPressureMinTime, lblSensorPressureMaxTime, dobj, DataObjectCategory.Luftdruck, picTrendAirPressure);
+            SetLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobj, DataObjectCategory.HeatIndex, picTrendHeatIndex);
 
             if (dobj.DataAvailable)
             {
@@ -399,7 +412,7 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        private Image getTrend(DataObject dobj, DataObjectCategory dobjCat, out string trendInfo)
+        private Image GetTrend(DataObject dobj, DataObjectCategory dobjCat, out string trendInfo)
         {
             Image img = null;
             trendInfo = string.Empty;
@@ -425,7 +438,7 @@ namespace Arduino_Temperature_Retrofit
             return img;
         }
 
-        private void setLabelInformation(Label lblValue, Label lblMinValue, Label lblMaxValue, Label lblMinTime, Label lblMaxTime, DataObject dObjExt, DataObjectCategory dobjcat, PictureBox picTrend)
+        private void SetLabelInformation(Label lblValue, Label lblMinValue, Label lblMaxValue, Label lblMinTime, Label lblMaxTime, DataObject dObjExt, DataObjectCategory dobjcat, PictureBox picTrend)
         {
             if (dObjExt.DataAvailable && dObjExt.ItemExists(dobjcat) && DataObjectCategory.HasCapability(dObjExt.Items[dobjcat.Value].DataObjCategory, dObjExt.Protocol))
             {
@@ -436,8 +449,7 @@ namespace Arduino_Temperature_Retrofit
                 lblMaxValue.Text = dObjExt.Items[dobjcat.Value].MaxValue.ToString("F") + unit;
                 lblMinTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MinTimepoint);
                 lblMaxTime.Text = Common.getCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MaxTimepoint);
-                string trendInfo;
-                picTrend.Image = getTrend(dObjExt, dobjcat, out trendInfo);
+                picTrend.Image = GetTrend(dObjExt, dobjcat, out string trendInfo);
                 frmMainToolTip.SetToolTip(picTrend, trendInfo);
                 lblValue.Parent.Enabled = true;
             }
@@ -454,7 +466,7 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        private Color getChartColor(DataObjectCategory dobjCat)
+        private Color GetChartColor(DataObjectCategory dobjCat)
         {
             if (dobjCat.Value == DataObjectCategory.HeatIndex.Value)
                 return picColHeatIndex.BackColor;
@@ -470,7 +482,7 @@ namespace Arduino_Temperature_Retrofit
                 return Color.Red;
         }
 
-        private void setTimerFileWriter(bool enabled)
+        private void SetTimerFileWriter(bool enabled)
         {
             if (!enabled)
             {
@@ -486,7 +498,7 @@ namespace Arduino_Temperature_Retrofit
             tmrFileWriter.Start();
         }
 
-        private void writeHTML()
+        private void WriteHTML()
         {
             try
             {
@@ -510,12 +522,12 @@ namespace Arduino_Temperature_Retrofit
                 if (DateTime.Now.Subtract(htmlSettings.LastRun).TotalSeconds > htmlSettings.UpdateFrequency)
                 {
                     Console.WriteLine("writeHTML");
-                    writeHTML();
+                    WriteHTML();
                 }
                 if (DateTime.Now.Subtract(lastSQLTimeStamp).TotalMinutes > xmlSQL.UpdateFrequency)
                 {
                     lastSQLTimeStamp = DateTime.Now;
-                    insertDB();
+                    InsertDB();
                 }
             }
             catch (Exception ex) 
@@ -525,7 +537,7 @@ namespace Arduino_Temperature_Retrofit
             Console.WriteLine("TmrFileWriter_Tick");
         }
 
-        private void connectionCheck(bool enabled)
+        private void ConnectionCheck(bool enabled)
         {
             if (!enabled)
             {
@@ -545,7 +557,7 @@ namespace Arduino_Temperature_Retrofit
             if (cboSensors.Items.Count < 1)
                 return;
 
-            DataObject dobj = getAcutalDataObject();
+            DataObject dobj = GetAcutalDataObject();
 
             if (dobj.DataInterfaceType == XMLProtocol.HTTP)
             {
@@ -591,7 +603,7 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        private void initToolTip(ToolTip tp)
+        private void InitToolTip(ToolTip tp)
         {
             tp.UseFading = true;
             tp.UseAnimation = true;
@@ -602,13 +614,13 @@ namespace Arduino_Temperature_Retrofit
             tp.ReshowDelay = 500;
         }
 
-        private void initFormSettings()
+        private void InitFormSettings()
         {
             this.TopMost = XML.getTopMost;
             this.Text = XML.Title;
         }
 
-        private void setDefaultTrend()
+        private void SetDefaultTrend()
         {
             picTrendTemp.Image = picTrendSame.Image;
             picTrendHeatIndex.Image = picTrendSame.Image;
@@ -618,7 +630,7 @@ namespace Arduino_Temperature_Retrofit
             
         }
 
-        private void initHTMLgetTimer()
+        private void InitHTMLgetTimer()
         {
             tmrSensorHTML.Enabled = true;
             tmrSensorHTML.Interval = 30000;
@@ -629,28 +641,28 @@ namespace Arduino_Temperature_Retrofit
 
         private void TmrSensorHTML_Tick(object sender, EventArgs e)
         {
-            updateHTTP();
+            UpdateHTTP();
         }
 
-        private void frmMain_Load(object sender, EventArgs e)
+        private void FrmMain_Load(object sender, EventArgs e)
         {
             try
             {
                 LoadDataObjects();
-                loadSQLSettingsFromXML();
-                loadHtmlSettings();
+                LoadSQLSettingsFromXML();
+                LoadHtmlSettings();
                 UpdateSensorCbo();
-                initToolTip(frmMainToolTip);
-                initFormSettings();
-                setDefaultTrend();
-                initHTMLgetTimer();
-                connectionCheck(true);
-                setTimerFileWriter(true);
+                InitToolTip(frmMainToolTip);
+                InitFormSettings();
+                SetDefaultTrend();
+                InitHTMLgetTimer();
+                ConnectionCheck(true);
+                SetTimerFileWriter(true);
                 if (cboChartSelection.Items.Count > 0 && cboChartSelection.SelectedIndex > -1)
                 {
                     Console.WriteLine("Get first dataset from selected combobox entry");
                     System.Threading.Thread.Sleep(250);
-                    writeCommandToArduino(getAcutalDataObject(), "DATA");
+                    WriteCommandToArduino(GetAcutalDataObject(), "DATA");
                 }
                 this.detailierteInformationenToolStripMenuItem.Enabled = (cboChartSelection.Items.Count > 0);
             }
@@ -676,7 +688,7 @@ namespace Arduino_Temperature_Retrofit
 
         }
 
-        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
 
             tmrCheckConnStatus.Stop();
@@ -696,14 +708,14 @@ namespace Arduino_Temperature_Retrofit
 
         private void cboSensors_SelectedIndexChanged(object sender, EventArgs e)
         {
-            addChartPossibilities();
-            DataObject dojb = getAcutalDataObject();
-            showData(dojb);
+            AddChartPossibilities();
+            DataObject dojb = GetAcutalDataObject();
+            ShowData(dojb);
             UpdateStatus(dojb);
             this.detailierteInformationenToolStripMenuItem.Enabled = (cboChartSelection.Items.Count > 0);
         }
 
-        private DataObject getAcutalDataObject()
+        private DataObject GetAcutalDataObject()
         {
             if (this.cboSensors.Items.Count < 1)
                 return null;
@@ -711,11 +723,11 @@ namespace Arduino_Temperature_Retrofit
             return dataObjs[this.cboSensors.GetItemText(this.cboSensors.SelectedItem)];
         }
 
-        private void addChartPossibilities()
+        private void AddChartPossibilities()
         {
             this.cboChartSelection.SelectedIndexChanged -= cboChartSelection_SelectedIndexChanged;
 
-            List<string> capabaleItems = DataObjectCategory.getCapableItems(getAcutalDataObject().Protocol);
+            List<string> capabaleItems = DataObjectCategory.getCapableItems(GetAcutalDataObject().Protocol);
 
             cboChartSelection.Items.Clear();
 
@@ -730,14 +742,16 @@ namespace Arduino_Temperature_Retrofit
 
         }
 
-        public void changeColor(PictureBox pic)
+        public void ChangeColor(PictureBox pic)
         {
-            ColorDialog colDlg = new ColorDialog();
-            colDlg.Color = pic.BackColor;
+            ColorDialog colDlg = new ColorDialog
+            {
+                Color = pic.BackColor
+            };
             if (colDlg.ShowDialog(this) == DialogResult.OK)
             {
                 pic.BackColor = colDlg.Color;
-                updateChart(getAcutalDataObject());
+                UpdateChart(GetAcutalDataObject());
             }
             colDlg.Dispose();
         }
@@ -750,7 +764,7 @@ namespace Arduino_Temperature_Retrofit
              return ts.TotalMilliseconds;  
         }
 
-        private void addChartSerie(List<double> values, List<double> dt, string name, Color color, DateTime minDate, DateTime maxDate, double minY = double.MinValue, double maxY = double.MaxValue)
+        private void AddChartSerie(List<double> values, List<double> dt, string name, Color color, DateTime minDate, DateTime maxDate, double minY = double.MinValue, double maxY = double.MaxValue)
         {
             if (chartValues.Series.IndexOf(name) < 0)
             {
@@ -828,7 +842,7 @@ namespace Arduino_Temperature_Retrofit
 
         }
 
-        private void updateChart(DataObjectCategory dbo, DataObject dObj, Color lineColor)
+        private void UpdateChart(DataObjectCategory dbo, DataObject dObj, Color lineColor)
         {
             chartValues.Series.Clear();
 
@@ -874,7 +888,7 @@ namespace Arduino_Temperature_Retrofit
                     values.Add(li.Value);
                 }
                 
-                addChartSerie(values, dt, dbo.Value.ToString(), lineColor, minDate, maxDate, min, max);
+                AddChartSerie(values, dt, dbo.Value.ToString(), lineColor, minDate, maxDate, min, max);
                 
                 lblNumLogEntries.Text = "Datensätze: " + values.Count.ToString() + " (max: " + dObj.MaxHistoryItemsSet + ")";
 
@@ -891,25 +905,25 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        public DataObjectCategory getActualDataObjectCategory()
+        public DataObjectCategory GetActualDataObjectCategory()
         {
             string selected = this.cboChartSelection.GetItemText(this.cboChartSelection.SelectedItem);
             return DataObjectCategory.getObjectCategory(selected);
         }
 
-        private void updateChart(DataObject dobj)
+        private void UpdateChart(DataObject dobj)
         {
             if (null == dobj)
             {
                 return;
             }
 
-            DataObjectCategory dobjCat = getActualDataObjectCategory();
+            DataObjectCategory dobjCat = GetActualDataObjectCategory();
 
             if (dobjCat != null)
             {
-                Color lineColor = getChartColor(dobjCat);
-                updateChart(dobjCat, dobj, lineColor);
+                Color lineColor = GetChartColor(dobjCat);
+                UpdateChart(dobjCat, dobj, lineColor);
             }
             else
             {
@@ -919,7 +933,7 @@ namespace Arduino_Temperature_Retrofit
 
         private void cboChartSelection_SelectedIndexChanged(object sender, EventArgs e)
         {
-            updateChart(getAcutalDataObject());
+            UpdateChart(GetAcutalDataObject());
         }
 
         private void tsmEnd_Click(object sender, EventArgs e)
@@ -929,9 +943,11 @@ namespace Arduino_Temperature_Retrofit
 
         private void tsmOptions_Click(object sender, EventArgs e)
         {
-            optionProperties Options = new optionProperties();
-            Options.propTopMost = this.TopMost;
-            Options.propWriteHTML = XML.HtmlEnabled;
+            optionProperties Options = new optionProperties
+            {
+                propTopMost = this.TopMost,
+                propWriteHTML = XML.HtmlEnabled
+            };
             frmOptions fOpt = new frmOptions(Options);
 
             fOpt.Top = (this.Top + (this.Height / 2)) - (fOpt.Height / 2);
@@ -948,42 +964,42 @@ namespace Arduino_Temperature_Retrofit
 
         private void blauAnToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            writeCommandToArduino(getAcutalDataObject(), "LED");
+            WriteCommandToArduino(GetAcutalDataObject(), "LED");
         }
 
         private void blauStatusToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            writeCommandToArduino(getAcutalDataObject(), "STATUSLED");
+            WriteCommandToArduino(GetAcutalDataObject(), "STATUSLED");
         }
 
         private void picColTemp_Click(object sender, EventArgs e)
         {
-            changeColor(picColTemp);
+            ChangeColor(picColTemp);
         }
 
         private void picColHeatIndex_Click(object sender, EventArgs e)
         {
-            changeColor(picColHeatIndex);
+            ChangeColor(picColHeatIndex);
         }
 
         private void picColAirPressure_Click(object sender, EventArgs e)
         {
-            changeColor(picColAirPressure);
+            ChangeColor(picColAirPressure);
         }
 
         private void picColHumidity_Click(object sender, EventArgs e)
         {
-            changeColor(picColHumidity);
+            ChangeColor(picColHumidity);
         }
 
         private void picColLUX_Click(object sender, EventArgs e)
         {
-            changeColor(picColLUX);
+            ChangeColor(picColLUX);
         }
 
         private void updateListView()
         {
-            DataObject dobj = getAcutalDataObject();
+            DataObject dobj = GetAcutalDataObject();
             if (null == dobj || !dobj.Active )
             {
                 return;
@@ -1003,15 +1019,17 @@ namespace Arduino_Temperature_Retrofit
             if (!dobj.DataAvailable)
                 return;
 
-            DataObjectCategory cat = getActualDataObjectCategory();
+            DataObjectCategory cat = GetActualDataObjectCategory();
             lstViewDetail.BeginUpdate();
 
             try
             {
                 foreach (logItem li in dobj.getLogItems(cat))
                 {
-                    ListViewItem lvItem = new ListViewItem();
-                    lvItem.Text = li.Timepoint.ToString("dd.MM.yyyy hh:mm:ss");
+                    ListViewItem lvItem = new ListViewItem
+                    {
+                        Text = li.Timepoint.ToString("dd.MM.yyyy hh:mm:ss")
+                    };
                     lvItem.SubItems.Add(li.Value.ToString("F") + DataObjectCategory.getSensorValueUnit(li.DataObjectCat));
                     lstViewDetail.Items.Add(lvItem);
                 }
@@ -1052,7 +1070,7 @@ namespace Arduino_Temperature_Retrofit
             {
                 return;
             }
-            DataObjectCategory dCat = getActualDataObjectCategory();
+            DataObjectCategory dCat = GetActualDataObjectCategory();
             if (null == dCat)
             {
                 return;
@@ -1064,12 +1082,11 @@ namespace Arduino_Temperature_Retrofit
             {
                 if (result.ChartElementType == ChartElementType.DataPoint)
                 {
-                    var prop = result.Object as DataPoint;
-                    if (prop != null)
+                    if (result.Object is DataPoint prop)
                     {
                         var pointXPixel = result.ChartArea.AxisX.ValueToPixelPosition(prop.XValue);
                         var pointYPixel = result.ChartArea.AxisY.ValueToPixelPosition(prop.YValues[0]);
-                        
+
                         // check if the cursor is really close to the point (2 pixels around the point)
                         if (Math.Abs(pos.X - pointXPixel) < 5 &&
                             Math.Abs(pos.Y - pointYPixel) < 5)
@@ -1084,31 +1101,31 @@ namespace Arduino_Temperature_Retrofit
 
         private void helpToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            writeCommandToArduino(getAcutalDataObject(), "HELP");
+            WriteCommandToArduino(GetAcutalDataObject(), "HELP");
         }
 
         private void getVersionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            writeCommandToArduino(getAcutalDataObject(), "PROTOCOL_VERSION");
+            WriteCommandToArduino(GetAcutalDataObject(), "PROTOCOL_VERSION");
         }
 
         private void getActualDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            writeCommandToArduino(getAcutalDataObject(), "DATA");
+            WriteCommandToArduino(GetAcutalDataObject(), "DATA");
         }
 
         private void testInvalidesKommandoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            writeCommandToArduino(getAcutalDataObject(), "InvalidBlaBla");
+            WriteCommandToArduino(GetAcutalDataObject(), "InvalidBlaBla");
         }
 
         private static Object lockGuard = new Object();
 
-        private void updateHTTP()
+        private void UpdateHTTP()
         {
             lock (lockGuard)
             {
-                DataObject actDataObj = getAcutalDataObject();
+                DataObject actDataObj = GetAcutalDataObject();
 
                 // the code was changed as before the values were only updated if the actual dataobject is active
                 // the values of the not displayed sensors stayed the same, which caused wrong values inserted into the log database
@@ -1122,7 +1139,7 @@ namespace Arduino_Temperature_Retrofit
 
                     if (dObj.DataInterfaceType == XMLProtocol.HTTP && dObj.Active)
                     {
-                        getHTTPData(dObj.URL, dObj);
+                        GetHTTPData(dObj.URL, dObj);
 
                         if (actDataObj.Name == dObj.Name)
                         {
@@ -1135,18 +1152,18 @@ namespace Arduino_Temperature_Retrofit
 
         private void getHTTPDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            updateHTTP();
+            UpdateHTTP();
         }
 
         private void frmMain_KeyDown(object sender, KeyEventArgs e)
         {
             if (Keys.F5 == e.KeyCode)
             {
-                updateHTTP();
+                UpdateHTTP();
             }
         }
 
-        private void insertDB()
+        private void InsertDB()
         {
             if (!xmlSQL.Active)
             {
@@ -1183,7 +1200,7 @@ namespace Arduino_Temperature_Retrofit
 
         private void sQLTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            insertDB();
+            InsertDB();
         }
 
         private void chartValues_Click(object sender, EventArgs e)
