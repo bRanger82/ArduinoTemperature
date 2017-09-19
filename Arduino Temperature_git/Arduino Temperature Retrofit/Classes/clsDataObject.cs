@@ -286,7 +286,7 @@ namespace Arduino_Temperature_Retrofit
         private string _statusText = string.Empty;
         public string StatusText { get { return _statusText; } set { _statusText = value; } }
 
-        public static int HistoryMinDefaultEntries = 600;
+        public static int HistoryMinDefaultEntries = 30;
         public static int HistoryMaxDefaultEntries = 3000;
 
         private int _maxHistoryItemsCount = HistoryMinDefaultEntries;
@@ -297,7 +297,21 @@ namespace Arduino_Temperature_Retrofit
 
         public bool LoggingEnabled { get; set; } = false;
 
-        public int MaxHistoryItemsSet { get { return _maxHistoryItemsCount; } set { if (value < HistoryMinDefaultEntries || value > HistoryMaxDefaultEntries) return; _maxHistoryItemsCount = value; } }
+        public int MaxHistoryItemsSet
+        {
+            get
+            {
+                return _maxHistoryItemsCount;
+            }
+            set
+            {
+                if (value < HistoryMinDefaultEntries || value > HistoryMaxDefaultEntries)
+                {
+                    return;
+                }
+                _maxHistoryItemsCount = value;
+            }
+        }
 
         private List<LogObject> _HistoryData = new List<LogObject>();
 

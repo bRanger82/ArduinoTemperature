@@ -120,6 +120,8 @@
             this.lblNumLogEntries = new System.Windows.Forms.Label();
             this.lstViewDetail = new System.Windows.Forms.ListView();
             this.lblHistoryDataLV = new System.Windows.Forms.Label();
+            this.lblAxisY = new System.Windows.Forms.Label();
+            this.lblNoDataForChart = new System.Windows.Forms.Label();
             this.grpBoxSensor.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendError)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendSame)).BeginInit();
@@ -249,7 +251,7 @@
             this.cboSensors.Name = "cboSensors";
             this.cboSensors.Size = new System.Drawing.Size(285, 33);
             this.cboSensors.TabIndex = 35;
-            this.cboSensors.SelectedIndexChanged += new System.EventHandler(this.cboSensors_SelectedIndexChanged);
+            this.cboSensors.SelectedIndexChanged += new System.EventHandler(this.CboSensors_SelectedIndexChanged);
             // 
             // grpBoxHeatIndex
             // 
@@ -363,7 +365,7 @@
             this.picColHeatIndex.Size = new System.Drawing.Size(290, 5);
             this.picColHeatIndex.TabIndex = 0;
             this.picColHeatIndex.TabStop = false;
-            this.picColHeatIndex.Click += new System.EventHandler(this.picColHeatIndex_Click);
+            this.picColHeatIndex.Click += new System.EventHandler(this.PicColHeatIndex_Click);
             // 
             // lblSensorLastUpdated
             // 
@@ -497,7 +499,7 @@
             this.picColLUX.Size = new System.Drawing.Size(290, 5);
             this.picColLUX.TabIndex = 0;
             this.picColLUX.TabStop = false;
-            this.picColLUX.Click += new System.EventHandler(this.picColLUX_Click);
+            this.picColLUX.Click += new System.EventHandler(this.PicColLUX_Click);
             // 
             // grpBoxAirPressure
             // 
@@ -611,7 +613,7 @@
             this.picColAirPressure.Size = new System.Drawing.Size(290, 5);
             this.picColAirPressure.TabIndex = 0;
             this.picColAirPressure.TabStop = false;
-            this.picColAirPressure.Click += new System.EventHandler(this.picColAirPressure_Click);
+            this.picColAirPressure.Click += new System.EventHandler(this.PicColAirPressure_Click);
             // 
             // grpBoxHumidity
             // 
@@ -725,7 +727,7 @@
             this.picColHumidity.Size = new System.Drawing.Size(279, 5);
             this.picColHumidity.TabIndex = 0;
             this.picColHumidity.TabStop = false;
-            this.picColHumidity.Click += new System.EventHandler(this.picColHumidity_Click);
+            this.picColHumidity.Click += new System.EventHandler(this.PicColHumidity_Click);
             // 
             // grpBoxTemperature
             // 
@@ -839,11 +841,11 @@
             this.picColTemp.Size = new System.Drawing.Size(290, 10);
             this.picColTemp.TabIndex = 0;
             this.picColTemp.TabStop = false;
-            this.picColTemp.Click += new System.EventHandler(this.picColTemp_Click);
+            this.picColTemp.Click += new System.EventHandler(this.PicColTemp_Click);
             // 
             // chartValues
             // 
-            chartArea1.BorderDashStyle = System.Windows.Forms.DataVisualization.Charting.ChartDashStyle.Dot;
+            chartArea1.AxisY.IsLabelAutoFit = false;
             chartArea1.Name = "ChartArea1";
             this.chartValues.ChartAreas.Add(chartArea1);
             this.chartValues.Location = new System.Drawing.Point(10, 516);
@@ -861,9 +863,7 @@
             this.chartValues.Series.Add(series2);
             this.chartValues.Size = new System.Drawing.Size(609, 173);
             this.chartValues.TabIndex = 36;
-            this.chartValues.Text = "chart1";
-            this.chartValues.Click += new System.EventHandler(this.chartValues_Click);
-            this.chartValues.MouseMove += new System.Windows.Forms.MouseEventHandler(this.chartValues_MouseMove);
+            this.chartValues.MouseMove += new System.Windows.Forms.MouseEventHandler(this.ChartValues_MouseMove);
             // 
             // menuStrip1
             // 
@@ -892,7 +892,7 @@
             this.tsmOptions.Name = "tsmOptions";
             this.tsmOptions.Size = new System.Drawing.Size(124, 22);
             this.tsmOptions.Text = "Optionen";
-            this.tsmOptions.Click += new System.EventHandler(this.tsmOptions_Click);
+            this.tsmOptions.Click += new System.EventHandler(this.TsmOptions_Click);
             // 
             // toolStripMenuItem1
             // 
@@ -904,7 +904,7 @@
             this.tsmEnd.Name = "tsmEnd";
             this.tsmEnd.Size = new System.Drawing.Size(124, 22);
             this.tsmEnd.Text = "Beenden";
-            this.tsmEnd.Click += new System.EventHandler(this.tsmEnd_Click);
+            this.tsmEnd.Click += new System.EventHandler(this.TsmEnd_Click);
             // 
             // kommandosToolStripMenuItem
             // 
@@ -926,56 +926,56 @@
             this.blauAnToolStripMenuItem.Name = "blauAnToolStripMenuItem";
             this.blauAnToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.blauAnToolStripMenuItem.Text = "Blau ändern";
-            this.blauAnToolStripMenuItem.Click += new System.EventHandler(this.blauAnToolStripMenuItem_Click);
+            this.blauAnToolStripMenuItem.Click += new System.EventHandler(this.BlauAnToolStripMenuItem_Click);
             // 
             // blauStatusToolStripMenuItem
             // 
             this.blauStatusToolStripMenuItem.Name = "blauStatusToolStripMenuItem";
             this.blauStatusToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.blauStatusToolStripMenuItem.Text = "Blau Status";
-            this.blauStatusToolStripMenuItem.Click += new System.EventHandler(this.blauStatusToolStripMenuItem_Click);
+            this.blauStatusToolStripMenuItem.Click += new System.EventHandler(this.BlauStatusToolStripMenuItem_Click);
             // 
             // helpToolStripMenuItem
             // 
             this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
             this.helpToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.helpToolStripMenuItem.Text = "Help";
-            this.helpToolStripMenuItem.Click += new System.EventHandler(this.helpToolStripMenuItem_Click);
+            this.helpToolStripMenuItem.Click += new System.EventHandler(this.HelpToolStripMenuItem_Click);
             // 
             // getVersionToolStripMenuItem
             // 
             this.getVersionToolStripMenuItem.Name = "getVersionToolStripMenuItem";
             this.getVersionToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.getVersionToolStripMenuItem.Text = "Get Version";
-            this.getVersionToolStripMenuItem.Click += new System.EventHandler(this.getVersionToolStripMenuItem_Click);
+            this.getVersionToolStripMenuItem.Click += new System.EventHandler(this.GetVersionToolStripMenuItem_Click);
             // 
             // getActualDataToolStripMenuItem
             // 
             this.getActualDataToolStripMenuItem.Name = "getActualDataToolStripMenuItem";
             this.getActualDataToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.getActualDataToolStripMenuItem.Text = "Get COM Data";
-            this.getActualDataToolStripMenuItem.Click += new System.EventHandler(this.getActualDataToolStripMenuItem_Click);
+            this.getActualDataToolStripMenuItem.Click += new System.EventHandler(this.GetActualDataToolStripMenuItem_Click);
             // 
             // testInvalidesKommandoToolStripMenuItem
             // 
             this.testInvalidesKommandoToolStripMenuItem.Name = "testInvalidesKommandoToolStripMenuItem";
             this.testInvalidesKommandoToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.testInvalidesKommandoToolStripMenuItem.Text = "Test invalides cmd";
-            this.testInvalidesKommandoToolStripMenuItem.Click += new System.EventHandler(this.testInvalidesKommandoToolStripMenuItem_Click);
+            this.testInvalidesKommandoToolStripMenuItem.Click += new System.EventHandler(this.TestInvalidesKommandoToolStripMenuItem_Click);
             // 
             // getHTTPDataToolStripMenuItem
             // 
             this.getHTTPDataToolStripMenuItem.Name = "getHTTPDataToolStripMenuItem";
             this.getHTTPDataToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.getHTTPDataToolStripMenuItem.Text = "Get HTTP Data";
-            this.getHTTPDataToolStripMenuItem.Click += new System.EventHandler(this.getHTTPDataToolStripMenuItem_Click);
+            this.getHTTPDataToolStripMenuItem.Click += new System.EventHandler(this.GetHTTPDataToolStripMenuItem_Click);
             // 
             // sQLTestToolStripMenuItem
             // 
             this.sQLTestToolStripMenuItem.Name = "sQLTestToolStripMenuItem";
             this.sQLTestToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
             this.sQLTestToolStripMenuItem.Text = "SQL Test";
-            this.sQLTestToolStripMenuItem.Click += new System.EventHandler(this.sQLTestToolStripMenuItem_Click);
+            this.sQLTestToolStripMenuItem.Click += new System.EventHandler(this.SQLTestToolStripMenuItem_Click);
             // 
             // zusatzToolStripMenuItem
             // 
@@ -990,7 +990,7 @@
             this.detailierteInformationenToolStripMenuItem.Name = "detailierteInformationenToolStripMenuItem";
             this.detailierteInformationenToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.detailierteInformationenToolStripMenuItem.Text = "Detailierte Informationen";
-            this.detailierteInformationenToolStripMenuItem.Click += new System.EventHandler(this.detailierteInformationenToolStripMenuItem_Click);
+            this.detailierteInformationenToolStripMenuItem.Click += new System.EventHandler(this.DetailierteInformationenToolStripMenuItem_Click);
             // 
             // lblNumLogEntries
             // 
@@ -1021,11 +1021,34 @@
             this.lblHistoryDataLV.TabIndex = 40;
             this.lblHistoryDataLV.Text = "Historische Daten:";
             // 
+            // lblAxisY
+            // 
+            this.lblAxisY.AutoSize = true;
+            this.lblAxisY.BackColor = System.Drawing.Color.White;
+            this.lblAxisY.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAxisY.Location = new System.Drawing.Point(13, 588);
+            this.lblAxisY.Name = "lblAxisY";
+            this.lblAxisY.Size = new System.Drawing.Size(0, 15);
+            this.lblAxisY.TabIndex = 41;
+            this.lblAxisY.Click += new System.EventHandler(this.lblAxisY_Click);
+            // 
+            // lblNoDataForChart
+            // 
+            this.lblNoDataForChart.BackColor = System.Drawing.Color.White;
+            this.lblNoDataForChart.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblNoDataForChart.Location = new System.Drawing.Point(156, 555);
+            this.lblNoDataForChart.Name = "lblNoDataForChart";
+            this.lblNoDataForChart.Size = new System.Drawing.Size(364, 72);
+            this.lblNoDataForChart.TabIndex = 42;
+            this.lblNoDataForChart.Text = "Bitte um etwas Geduld.                    Es sind noch keine Daten vorhanden.";
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(634, 701);
+            this.Controls.Add(this.lblNoDataForChart);
+            this.Controls.Add(this.lblAxisY);
             this.Controls.Add(this.lblHistoryDataLV);
             this.Controls.Add(this.lstViewDetail);
             this.Controls.Add(this.lblNumLogEntries);
@@ -1042,7 +1065,7 @@
             this.Text = "Arduino Temperature";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.Load += new System.EventHandler(this.FrmMain_Load);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMain_KeyDown);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrmMain_KeyDown);
             this.grpBoxSensor.ResumeLayout(false);
             this.grpBoxSensor.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picTrendError)).EndInit();
@@ -1167,6 +1190,8 @@
         private System.Windows.Forms.ToolStripMenuItem getHTTPDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem sQLTestToolStripMenuItem;
         private System.Windows.Forms.PictureBox picTrendError;
+        private System.Windows.Forms.Label lblAxisY;
+        private System.Windows.Forms.Label lblNoDataForChart;
     }
 }
 

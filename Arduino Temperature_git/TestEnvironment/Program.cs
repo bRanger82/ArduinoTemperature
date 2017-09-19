@@ -22,9 +22,11 @@ namespace Arduino_Temperature_Retrofit
         static WindowsPrincipal _currentPrincipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
         //static string url = "http://demo.volkszaehler.org/middleware.php/data";
         //static string guid = "3997b980-36d2-11e7-9b67-a9b45d523c05";
-
+        
         static int Main(string[] args)
         {
+            Console.WriteLine(extractIntFromString("START|VERSION:2|LEN:4|39.10|27.20|26.96|962.34|1054|EOF", "LEN", '|', ':'));
+
             /*
             Volkszaehler.EvtPushDataAnswer += Volkszaehler_EvtPushDataAnswer;
             Volkszaehler.GUID = guid;
@@ -40,7 +42,7 @@ namespace Arduino_Temperature_Retrofit
                 Console.ReadKey();
             }
             */
-            Task<string> ret = DownloadPage("asf");
+            Task <string> ret = DownloadPage("asf");
             int p = 1;
             foreach(string l in ret.Result.Split('\n'))
             {
@@ -85,6 +87,42 @@ namespace Arduino_Temperature_Retrofit
             Console.WriteLine();
             Console.ReadKey();
             return 0;
+        }
+
+        static private int extractIntFromString(string input, string searchString, char delim, char subDelim)
+        {
+
+            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(searchString))
+            {
+                return 0;
+            }
+
+            string foundItem = string.Empty;
+
+            foreach (string value in input.Split(delim))
+            {
+                if (value.StartsWith(searchString))
+                {
+                    foundItem = value;
+                    break;
+                }
+            }
+
+
+            int pos = foundItem.IndexOf(subDelim);
+            if (pos < 1)
+            {
+                return 0;
+            }
+            int returnVal;
+            if (int.TryParse(foundItem.Substring(pos + 1), out returnVal))
+            {
+                return returnVal;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         static async Task<string> DownloadPage(string url)

@@ -1,4 +1,4 @@
-#include <SFE_BMP180.h>
+﻿#include <SFE_BMP180.h>
 #include "DHT.h"
 
 #define DHTPIN 2     
@@ -175,4 +175,3 @@ void processData()
   }
 
 }
-

@@ -292,28 +292,31 @@ namespace Arduino_Temperature_Retrofit
                 
                 foreach (XmlNode child in xmln.ChildNodes)
                 {
+                    
                     XMLSensorObject tmpSensor = xmlReadChildItem(child);
                     
                     lst.Add(tmpSensor);
 
                     Console.WriteLine("******************************************************************");
-                    Console.WriteLine("tmpSensor.Name          == {0}", tmpSensor.Name);
-                    Console.WriteLine("tmpSensor.Active        == {0}", (tmpSensor.Active) ? "Y" : "N");
-                    Console.WriteLine("tmpSensor.Protocol      == {0}", Enum.GetName(typeof(XMLProtocol), tmpSensor.DataInterfaceType));
+                    Console.WriteLine("Read Sensor item ...");
+                    Console.WriteLine("Sensor.Name          == {0}", tmpSensor.Name);
+                    Console.WriteLine("Sensor.Active        == {0}", (tmpSensor.Active) ? "Y" : "N");
+                    Console.WriteLine("Sensor.Protocol      == {0}", Enum.GetName(typeof(XMLProtocol), tmpSensor.DataInterfaceType));
                     if (tmpSensor.DataInterfaceType == XMLProtocol.HTTP)
                     {
-                        Console.WriteLine("tmpSensor.URL           == {0}", tmpSensor.URL);
+                        Console.WriteLine("Sensor.URL           == {0}", tmpSensor.URL);
                     } else if (tmpSensor.DataInterfaceType == XMLProtocol.COM)
                     {
-                        Console.WriteLine("tmpSensor.Port          == {0}", tmpSensor.Port);
-                        Console.WriteLine("tmpSensor.Baudrate      == {0}", tmpSensor.Baudrate.ToString());
-                        Console.WriteLine("tmpSensor.DtrEnabled    == {0}", (tmpSensor.DtrEnabled) ? "Y" : "N");
+                        Console.WriteLine("Sensor.Port          == {0}", tmpSensor.Port);
+                        Console.WriteLine("Sensor.Baudrate      == {0}", tmpSensor.Baudrate.ToString());
+                        Console.WriteLine("Sensor.DtrEnabled    == {0}", (tmpSensor.DtrEnabled) ? "Y" : "N");
                     }
-                    Console.WriteLine("tmpSensor.writeToDB     == {0}", (tmpSensor.writeToDatabase) ? "Y" : "N");
-                    Console.WriteLine("tmpSensor.LogEnabled    == {0}", (tmpSensor.LogEnabled) ? "Y" : "N");
-                    Console.WriteLine("tmpSensor.LogFilePath   == {0}", tmpSensor.LogFilePath);
-                    Console.WriteLine("tmpSensor.HTMLEnabled   == {0}", (tmpSensor.HTMLEnabled) ? "Y" : "N");
-                    Console.WriteLine("tmpSensor.numLogEntries == {0}", tmpSensor.numLogEntries.ToString());
+                    Console.WriteLine("Sensor.writeToDB     == {0}", (tmpSensor.writeToDatabase) ? "Y" : "N");
+                    Console.WriteLine("Sensor.LogEnabled    == {0}", (tmpSensor.LogEnabled) ? "Y" : "N");
+                    Console.WriteLine("Sensor.LogFilePath   == {0}", tmpSensor.LogFilePath);
+                    Console.WriteLine("Sensor.HTMLEnabled   == {0}", (tmpSensor.HTMLEnabled) ? "Y" : "N");
+                    Console.WriteLine("Sensor.numLogEntries == {0}", tmpSensor.numLogEntries.ToString());
+                    Console.WriteLine("Sensor item was read successfully!");
                     Console.WriteLine("******************************************************************");
                 }
             }

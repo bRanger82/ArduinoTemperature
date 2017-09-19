@@ -16,11 +16,11 @@
       <LogEnabled>N</LogEnabled>
       <WriteHTML>Y</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
-      <NumLogItems>850</NumLogItems>
+      <NumLogItems>610</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>
     </Sensor>
 	<Sensor>
-      <Aktiv>Y</Aktiv>
+      <Aktiv>N</Aktiv>
       <Bezeichnung>Serverraum</Bezeichnung>
       <Protocol>HTTP</Protocol>
       <COM>
@@ -54,6 +54,6 @@
     <Scheme>Sensor</Scheme>
   </SQL>
   <ProgrammEinstellungen>
-    <Topmost>Y</Topmost>
+    <Topmost>N</Topmost>
   </ProgrammEinstellungen>
 </root>
