@@ -43,7 +43,7 @@ namespace Arduino_Temperature_Retrofit
                 File.Create(path).Close();
 
             //if max filesize is reached, delete the logfile
-            if (fi.Length > dobj.maxLogFileSize)
+            if (fi.Length > dobj.MaxLogFileSize)
                 fi.Delete();
 
             //append data-string to log

@@ -26,17 +26,17 @@ namespace Arduino_Temperature_Retrofit
 
         static public string DateTimeFormat = "dd.MM.yyyy HH:mm:ss";
 
-        static public string getCurrentDateTimeFormatted()
+        static public string GetCurrentDateTimeFormatted()
         {
             return DateTime.Now.ToString(DateTimeFormat);
         }
 
-        static public string getCurrentDateTimeFormattedNoSec(DateTime dtValue)
+        static public string GetCurrentDateTimeFormattedNoSec(DateTime dtValue)
         {
             return dtValue.ToString("dd.MM.yyyy HH:mm");
         }
 
-        static public string replaceDecPoint(string input)
+        static public string ReplaceDecPoint(string input)
         {
             string temp = input;
             string decPoint = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
@@ -53,12 +53,12 @@ namespace Arduino_Temperature_Retrofit
             public static bool DefaultDtrEnable = false;
         }
 
-        static private Dictionary<string, string> getSubsetDict(Dictionary<string, string> source, string removeItem)
+        static private Dictionary<string, string> GetSubsetDict(Dictionary<string, string> source, string removeItem)
         {
             return source.Where(s => s.Key != removeItem).ToDictionary(dict => dict.Key, dict => dict.Value);
         }
 
-        static private List<double> getSubset(List<double> values, int count)
+        static private List<double> GetSubset(List<double> values, int count)
         {
             if (values.Count <= count)
                 return values;
@@ -73,7 +73,7 @@ namespace Arduino_Temperature_Retrofit
             if (historyEntries.Count < 5) //mindestens 5 Werte sind notwendig
                 return (double)0;
 
-            List<double> values = getSubset(historyEntries, numHistoryEntriesAsBasis);
+            List<double> values = GetSubset(historyEntries, numHistoryEntriesAsBasis);
 
             double ret = 0;
             if (values.Count() > 0)
@@ -93,27 +93,28 @@ namespace Arduino_Temperature_Retrofit
         /// </summary>
         /// <param name="values">Liste von Werten</param>
         /// <returns>Aenderung des naechesten Wertes im Vergleich zum akutuellem Wert</returns>
-        static public double calculateTrend(List<double> historyEntries, int numHistoryEntriesAsBasis = 50)
+        static public double CalculateTrend(List<double> historyEntries, int numHistoryEntriesAsBasis = 50)
         {
 
             if (historyEntries.Count < 5) //mindestens 5 Werte sind notwendig
                 return (double)0;
 
             //nur die letzten Einträge sollen geprüft werden (ein Datensatz, der u.U. mehrere Stunden zurück liegt hat keine Aussagekraft mehr)
-            List<double> values = getSubset(historyEntries, numHistoryEntriesAsBasis);
+            List<double> values = GetSubset(historyEntries, numHistoryEntriesAsBasis);
 
             List<Point> lstData = new List<Point>();
 
             for (int i =0; i < values.Count; i++)
             {
-                Point p = new Point();
-                p.m_x = i;
-                p.m_y = values[i];
+                Point p = new Point
+                {
+                    m_x = i,
+                    m_y = values[i]
+                };
                 lstData.Add(p);
             }
 
-            double slope;
-            CalcTrendValues(lstData, out slope);
+            CalcTrendValues(lstData, out double slope);
 
             return slope;
         }

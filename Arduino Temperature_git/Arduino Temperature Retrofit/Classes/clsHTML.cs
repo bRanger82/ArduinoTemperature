@@ -37,7 +37,7 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        public static void writeHTMLFile(string filename, Dictionary<string, DataObject> lDobj, string HeadText)
+        public static void WriteHTMLFile(string filename, Dictionary<string, DataObject> lDobj, string HeadText)
         {
             StringBuilder sb = new StringBuilder();
             bool dataAvailable = false;
@@ -69,7 +69,7 @@ namespace Arduino_Temperature_Retrofit
             {
                 if (((DataObject)kvp.Value).DataAvailable)
                 {
-                    sb.Append(createTopOfHtml((DataObject)kvp.Value));
+                    sb.Append(CreateTopOfHtml((DataObject)kvp.Value));
                     sb.AppendLine("</br>");
                     dataAvailable = true;
                 }
@@ -81,8 +81,8 @@ namespace Arduino_Temperature_Retrofit
             {
                 if (((DataObject)kvp.Value).DataAvailable)
                 {
-                    sb.Append(createHTMLTableString((DataObject)kvp.Value));
-                    sb.Append(((DataObject)kvp.Value).getLastUpdatedFormatted());
+                    sb.Append(CreateHTMLTableString((DataObject)kvp.Value));
+                    sb.Append(((DataObject)kvp.Value).GetLastUpdatedFormatted());
                 }
             }
             
@@ -108,14 +108,14 @@ namespace Arduino_Temperature_Retrofit
             sb.Clear();
         }
 
-        private static string getHtmlData(DataObject dobj)
+        private static string GetHtmlData(DataObject dobj)
         {
             StringBuilder sb = new StringBuilder();
             sb.Clear();
 
             foreach (DataObjectCategory cat in DataObjectCategory.GetAvailableProtocols(dobj))
             {
-                double value = dobj.getItem(cat);
+                double value = dobj.GetItem(cat);
                 string name = cat.Value.ToString();
 
             }
@@ -123,16 +123,16 @@ namespace Arduino_Temperature_Retrofit
             return sb.ToString();
         }
 
-        private static string getData(DataObject dobjExt, string dobjCat)
+        private static string GetData(DataObject dobjExt, string dobjCat)
         {
-            double temp = dobjExt.getItem(dobjCat);
+            double temp = dobjExt.GetItem(dobjCat);
             if (temp == double.MinValue)
                 return "Keine Daten";
 
-            return HttpUtility.HtmlEncode(temp.ToString("F") + " " + DataObjectCategory.getSensorValueUnit(dobjCat));
+            return HttpUtility.HtmlEncode(temp.ToString("F") + " " + DataObjectCategory.GetSensorValueUnit(dobjCat));
         }
 
-        private static string createTopOfHtml(DataObject dobj)
+        private static string CreateTopOfHtml(DataObject dobj)
         {
             if (!XML.HtmlEnabled || !dobj.DataAvailable)
                 return string.Empty;
@@ -140,7 +140,7 @@ namespace Arduino_Temperature_Retrofit
             StringBuilder sb = new StringBuilder();
             sb.Clear();
 
-            List<string> capabaleItems = DataObjectCategory.getCapableItems(dobj.Protocol);
+            List<string> capabaleItems = DataObjectCategory.GetCapableItems(dobj.Protocol);
 
             sb.AppendLine("</br><h3>"
                           + HttpUtility.HtmlEncode("Sensor: " + dobj.Name)
@@ -155,18 +155,18 @@ namespace Arduino_Temperature_Retrofit
             foreach (string s in capabaleItems)
             {
                 sb.AppendLine("<tr>");
-                sb.AppendLine("<td>" + HttpUtility.HtmlEncode(s) + "</td><td>" + getData(dobj, s) + "</td>");
+                sb.AppendLine("<td>" + HttpUtility.HtmlEncode(s) + "</td><td>" + GetData(dobj, s) + "</td>");
                 sb.AppendLine("</tr>");
             }
 
             sb.AppendLine("</table>");
             sb.AppendLine(HttpUtility.HtmlEncode("Zuletzt aktualisiert: "
-                          + dobj.getLastUpdatedFormatted())
+                          + dobj.GetLastUpdatedFormatted())
                           + "</br>");
             return sb.ToString();
         }
 
-        private static string createHTMLTableString(DataObject dobj)
+        private static string CreateHTMLTableString(DataObject dobj)
         {
             if (!XML.HtmlEnabled || !dobj.DataAvailable)
                 return string.Empty;
@@ -176,7 +176,7 @@ namespace Arduino_Temperature_Retrofit
 
 
 
-            List<string> capabaleItems = DataObjectCategory.getCapableItems(dobj.Protocol);
+            List<string> capabaleItems = DataObjectCategory.GetCapableItems(dobj.Protocol);
 
             sb.AppendLine("</br><h3>" + HttpUtility.HtmlEncode(dobj.Name) + "</h3>");
             sb.AppendLine("  <table> ");
@@ -189,14 +189,14 @@ namespace Arduino_Temperature_Retrofit
             sb.AppendLine("    <th>" + HttpUtility.HtmlEncode("Zusatz-Info") + "</th>");
             sb.AppendLine("  </tr>");
 
-            foreach (string dt in dobj.getLogTimings())
+            foreach (string dt in dobj.GetLogTimings())
             {
                 sb.AppendLine("  <tr>");
                 sb.AppendLine("    <td>" + dt + "</td>");
 
                 foreach (string s in capabaleItems)
                 {
-                    sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.getLogItem(dt, s) + DataObjectCategory.getSensorValueUnit(s)) + "</td>");
+                    sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.GetLogItem(dt, s) + DataObjectCategory.GetSensorValueUnit(s)) + "</td>");
                 }
 
                 sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.AdditionalInformation) + "</td>");

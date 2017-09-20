@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace Arduino_Temperature_Retrofit
 {
-    public partial class frmOptions : Form
+    public partial class FrmOptions : Form
     {
-        public frmOptions(optionProperties opt)
+        public FrmOptions(OptionProperties opt)
         {
             InitializeComponent();
             OptionProp = opt;
@@ -21,12 +21,12 @@ namespace Arduino_Temperature_Retrofit
         private bool _cancel = false;
         public bool Cancel{ get { return _cancel; } }
 
-        public optionProperties OptionProp { get; set; }
+        public OptionProperties OptionProp { get; set; }
 
         private void btnOptionsOK_Click(object sender, EventArgs e)
         {
-            OptionProp.propWriteHTML = this.chkHTML.Checked;
-            OptionProp.propTopMost = this.chkTopMost.Checked;
+            OptionProp.PropWriteHTML = this.chkHTML.Checked;
+            OptionProp.PropTopMost = this.chkTopMost.Checked;
 
             _cancel = false;
 
@@ -41,15 +41,15 @@ namespace Arduino_Temperature_Retrofit
 
         private void frmOptions_Load(object sender, EventArgs e)
         {
-            this.chkHTML.Checked = OptionProp.propWriteHTML;
-            this.chkTopMost.Checked = OptionProp.propTopMost;
+            this.chkHTML.Checked = OptionProp.PropWriteHTML;
+            this.chkTopMost.Checked = OptionProp.PropTopMost;
         }
         
     }
 
-    public class optionProperties
+    public class OptionProperties
     {
-        public bool propTopMost { get; set; } = false;
-        public bool propWriteHTML { get; set; } = false;
+        public bool PropTopMost { get; set; } = false;
+        public bool PropWriteHTML { get; set; } = false;
     }
 }

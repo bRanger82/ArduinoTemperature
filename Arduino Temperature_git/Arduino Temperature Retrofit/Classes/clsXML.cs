@@ -19,15 +19,15 @@ namespace Arduino_Temperature_Retrofit
         public string Name { get; set; }
         public string Port { get; set; }
         public string LogFilePath { get; set; }
-        public int numLogEntries { get; set; }
-        public long maxLogFileSize { get; set; }
+        public int NumLogEntries { get; set; }
+        public long MaxLogFileSize { get; set; }
         public bool LogEnabled { get; set; }
         public bool HTMLEnabled { get; set; }
         public int Baudrate { get; set; }
         public bool DtrEnabled { get; set; }
         public XMLProtocol DataInterfaceType { get; set; }
         public string URL { get; set; }
-        public bool writeToDatabase { get; set; }
+        public bool WriteToDatabase { get; set; }
     }
 
     public class XMLSQLObject
@@ -45,7 +45,7 @@ namespace Arduino_Temperature_Retrofit
         private static XmlDocument xDoc = new XmlDocument();
         private static string XmlFileName = @"Settings.xml";
 
-        private static string getInnerText(XmlNode node, string name)
+        private static string GetInnerText(XmlNode node, string name)
         {
             XmlNode eNode = node.SelectSingleNode(name);
             if (eNode != null)
@@ -54,17 +54,16 @@ namespace Arduino_Temperature_Retrofit
                 return string.Empty;
         }
 
-        public static string SQLServer { get { return getValue("/root/SQL/Server"); } set { setValue("/root/SQL/Server", value); } }
-        public static bool SQLActive { get { return checkBool(getValue("/root/SQL/Active")); } set { setValueBool("/root/SQL/Active", value); } }
-        public static string SQLUser { get { return getValue("/root/SQL/DBUser"); } set { setValue("/root/SQL/DBUser", value); } }
-        public static string SQLPassword { get { return getValue("/root/SQL/DBPass"); } set { setValue("/root/SQL/DBPass", value); } }
-        public static string SQLScheme { get { return getValue("/root/SQL/Scheme"); } set { setValue("/root/SQL/Scheme", value); } }
+        public static string SQLServer { get { return GetValue("/root/SQL/Server"); } set { SetValue("/root/SQL/Server", value); } }
+        public static bool SQLActive { get { return CheckBool(GetValue("/root/SQL/Active")); } set { SetValueBool("/root/SQL/Active", value); } }
+        public static string SQLUser { get { return GetValue("/root/SQL/DBUser"); } set { SetValue("/root/SQL/DBUser", value); } }
+        public static string SQLPassword { get { return GetValue("/root/SQL/DBPass"); } set { SetValue("/root/SQL/DBPass", value); } }
+        public static string SQLScheme { get { return GetValue("/root/SQL/Scheme"); } set { SetValue("/root/SQL/Scheme", value); } }
 
         public static int SQLFrequency()
         {
-            string xmlValue = getValue("/root/SQL/Frequency");
-            int frequency;
-            if (int.TryParse(xmlValue, out frequency) && frequency >= 1) //minimum every 60 seconds / 1 Minute
+            string xmlValue = GetValue("/root/SQL/Frequency");
+            if (int.TryParse(xmlValue, out int frequency) && frequency >= 1) //minimum every 60 seconds / 1 Minute
             {
                 return frequency;
             }
@@ -74,22 +73,22 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        public static string Title { get { return getValue("/root/titel"); } set { setValue("/root/titel", value); } }
-        public static string HtmlFile { get { return getValue("/root/HTML/FileHTML"); } set { setValue("/root/HTML/FileHTML", value); } }
-        public static string HtmlHeadText { get { return getValue("/root/HTML/HTMLHEAD"); } set { setValue("/root/HTML/HTMLHEAD", value); } }
-        public static bool HtmlEnabled { get { return checkBool(getValue("/root/HTML/Enabled")); } set { setValueBool("/root/HTML/Enabled", value); } }
+        public static string Title { get { return GetValue("/root/titel"); } set { SetValue("/root/titel", value); } }
+        public static string HtmlFile { get { return GetValue("/root/HTML/FileHTML"); } set { SetValue("/root/HTML/FileHTML", value); } }
+        public static string HtmlHeadText { get { return GetValue("/root/HTML/HTMLHEAD"); } set { SetValue("/root/HTML/HTMLHEAD", value); } }
+        public static bool HtmlEnabled { get { return CheckBool(GetValue("/root/HTML/Enabled")); } set { SetValueBool("/root/HTML/Enabled", value); } }
 
-        private static void setValueBool(string nodePath, bool value)
+        private static void SetValueBool(string nodePath, bool value)
         {
             if (value)
-                setValue(nodePath, "Y");
+                SetValue(nodePath, "Y");
             else
-                setValue(nodePath, "N");
+                SetValue(nodePath, "N");
         }
 
-        private static void setValue(string nodePath, string Value)
+        private static void SetValue(string nodePath, string Value)
         {
-            loadXML();
+            LoadXML();
 
             xDoc.SelectSingleNode(nodePath).InnerText = Value;
             xDoc.Save(XmlFileName);
@@ -98,19 +97,18 @@ namespace Arduino_Temperature_Retrofit
 
         private const int minHTMLUpdateFrequency = 60;
 
-        public static void setHttpUpdateFrequency(int val)
+        public static void SetHttpUpdateFrequency(int val)
         {
             if (val < minHTMLUpdateFrequency)
                 throw new ArgumentOutOfRangeException("Fehler: die Update-Frequenz für HTML darf nicht unter " + minHTMLUpdateFrequency.ToString() + " liegen!");
 
-            setValue("/root/HTML/UpdateFrequency", val.ToString());
+            SetValue("/root/HTML/UpdateFrequency", val.ToString());
         }
 
         public static int HttpUpdateFrequency()
         {
-            string xmlValue = getValue("/root/HTML/UpdateFrequency");
-            int frequency;
-            if (int.TryParse(xmlValue, out frequency) && frequency > 0) //minimum every 1 seconds
+            string xmlValue = GetValue("/root/HTML/UpdateFrequency");
+            if (int.TryParse(xmlValue, out int frequency) && frequency > 0) //minimum every 1 seconds
             {
                 return frequency;
             }
@@ -120,12 +118,12 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        public static bool getTopMost { get { return checkBool(getValue("/root/ProgrammEinstellungen/Topmost")); } set { setValueBool("/root/ProgrammEinstellungen/Topmost", value); } }
+        public static bool GetTopMost { get { return CheckBool(GetValue("/root/ProgrammEinstellungen/Topmost")); } set { SetValueBool("/root/ProgrammEinstellungen/Topmost", value); } }
 
-        private static string getValue(string nodePath)
+        private static string GetValue(string nodePath)
         {
 
-            loadXML();
+            LoadXML();
 
             XmlNode t = xDoc.SelectSingleNode(nodePath);
             if (t == null)
@@ -134,7 +132,7 @@ namespace Arduino_Temperature_Retrofit
                 return t.InnerText.ToString();
         }
 
-        private static bool loadXML()
+        private static bool LoadXML()
         {
 
             xDoc.Load(XmlFileName);
@@ -142,7 +140,7 @@ namespace Arduino_Temperature_Retrofit
             return true;
         }
 
-        private static bool checkBool(string value)
+        private static bool CheckBool(string value)
         {
             if (string.IsNullOrEmpty(value))
             {
@@ -152,24 +150,24 @@ namespace Arduino_Temperature_Retrofit
             return (value.ToUpper() == "Y");
         }
 
-        public static void updateSensorValue(string SensorName, string node, bool value)
+        public static void UpdateSensorValue(string SensorName, string node, bool value)
         {
             if (value)
-                updateSensorValue(SensorName, node, "Y");
+                UpdateSensorValue(SensorName, node, "Y");
             else
-                updateSensorValue(SensorName, node, "N");
+                UpdateSensorValue(SensorName, node, "N");
         }
 
-        public static void updateSensorValue(string SensorName, string node, string value)
+        public static void UpdateSensorValue(string SensorName, string node, string value)
         {
-            loadXML();
+            LoadXML();
             XmlNode nodeXML = null;
 
             foreach (XmlNode xmln in xDoc.SelectNodes("/root/Sensoren"))
             {
                 foreach (XmlNode child in xmln.ChildNodes)
                 {
-                    if (getInnerText(child, "Bezeichnung") == SensorName)
+                    if (GetInnerText(child, "Bezeichnung") == SensorName)
                     {
                         nodeXML = child;
                         break;
@@ -185,7 +183,7 @@ namespace Arduino_Temperature_Retrofit
 
         }
 
-        private static XMLProtocol getProtocol(string value)
+        private static XMLProtocol GetProtocol(string value)
         {
             switch (value.ToLower())
             {
@@ -195,33 +193,32 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        public static XMLSensorObject xmlReadChildItem(XmlNode child)
+        public static XMLSensorObject XmlReadChildItem(XmlNode child)
         {
             XMLSensorObject tmpSensor = new XMLSensorObject();
             ArrayList items = new ArrayList();
             items.Clear();
 
-            tmpSensor.Name = getInnerText(child, "Bezeichnung");
+            tmpSensor.Name = GetInnerText(child, "Bezeichnung");
             //Name = Unique Identifier, not allowed to exist more than one time
             if (items.IndexOf(tmpSensor.Name) >= 0)
                 throw new Exception("Fehler XML: Die Bezeichnung muss für jeden Sensor eindeutig sein.\nDer Name '" + tmpSensor.Name + "' existiert bereits!");
             else
                 items.Add(tmpSensor.Name);
 
-            tmpSensor.Active = checkBool(getInnerText(child, "Aktiv"));
+            tmpSensor.Active = CheckBool(GetInnerText(child, "Aktiv"));
 
-            tmpSensor.LogEnabled = checkBool(getInnerText(child, "LogEnabled"));
+            tmpSensor.LogEnabled = CheckBool(GetInnerText(child, "LogEnabled"));
 
-            tmpSensor.HTMLEnabled = checkBool(getInnerText(child, "WriteHTML"));
+            tmpSensor.HTMLEnabled = CheckBool(GetInnerText(child, "WriteHTML"));
 
-            tmpSensor.writeToDatabase = checkBool(getInnerText(child, "WriteToDatabase"));
+            tmpSensor.WriteToDatabase = CheckBool(GetInnerText(child, "WriteToDatabase"));
 
-            tmpSensor.numLogEntries = 50; //default
-            int numEntries;
-            if (int.TryParse(getInnerText(child, "NumLogItems"), out numEntries))
+            tmpSensor.NumLogEntries = 50; //default
+            if (int.TryParse(GetInnerText(child, "NumLogItems"), out int numEntries))
             {
                 if (numEntries >= 1 && numEntries <= 500000)
-                    tmpSensor.numLogEntries = numEntries;
+                    tmpSensor.NumLogEntries = numEntries;
                 else
                     throw new Exception("XML Fehler: Die Anzahl der Num Einträge muss zwischen 1 und 500000 liegen!");
             }
@@ -232,11 +229,10 @@ namespace Arduino_Temperature_Retrofit
 
 
 
-            long maxLogFileSize = 4194304;
-            if (long.TryParse(getInnerText(child, "maxLogFileSize"), out maxLogFileSize))
+            if (long.TryParse(GetInnerText(child, "maxLogFileSize"), out long maxLogFileSize))
             {
                 if (maxLogFileSize >= 1048576 && maxLogFileSize <= 1073741824)
-                    tmpSensor.maxLogFileSize = maxLogFileSize;
+                    tmpSensor.MaxLogFileSize = maxLogFileSize;
                 else
                     throw new Exception("XML Fehler: Die maximale Größe des Logfiles muss zwischen 1.048.576 und 1.073.741.824 liegen!");
             }
@@ -244,16 +240,15 @@ namespace Arduino_Temperature_Retrofit
             {
                 throw new Exception("XML Fehler: Die maximale Größe des Logfiles kann nicht verarbeitet werden!");
             }
-            tmpSensor.maxLogFileSize = maxLogFileSize;
+            tmpSensor.MaxLogFileSize = maxLogFileSize;
 
-            tmpSensor.DataInterfaceType = getProtocol(getInnerText(child, "Protocol"));
+            tmpSensor.DataInterfaceType = GetProtocol(GetInnerText(child, "Protocol"));
 
             if (tmpSensor.DataInterfaceType == XMLProtocol.COM)
             {
-                tmpSensor.DtrEnabled = checkBool(getInnerText(child, "COM/DtrEnabled"));
-                tmpSensor.Port = getInnerText(child, "COM/Port");
-                int Baudrate;
-                if (int.TryParse(getInnerText(child, "COM/Baudrate"), out Baudrate))
+                tmpSensor.DtrEnabled = CheckBool(GetInnerText(child, "COM/DtrEnabled"));
+                tmpSensor.Port = GetInnerText(child, "COM/Port");
+                if (int.TryParse(GetInnerText(child, "COM/Baudrate"), out int Baudrate))
                 {
                     if (Baudrate >= 8)
                         tmpSensor.Baudrate = Baudrate;
@@ -267,25 +262,25 @@ namespace Arduino_Temperature_Retrofit
             }
             else if (tmpSensor.DataInterfaceType == XMLProtocol.HTTP)
             {
-                tmpSensor.URL = getInnerText(child, "HTTP/URL");
+                tmpSensor.URL = GetInnerText(child, "HTTP/URL");
             }
             else
             {
                 throw new Exception("XML Fehler: Das Protokoll muss entweder 'HTTP' oder 'COM' sein (Sensor '" + tmpSensor.Name + "').");
             }
 
-            tmpSensor.LogFilePath = getInnerText(child, "LogFile");
+            tmpSensor.LogFilePath = GetInnerText(child, "LogFile");
 
             return tmpSensor;
         }
 
-        public static List<XMLSensorObject> getSensorItemsFromXML()
+        public static List<XMLSensorObject> GetSensorItemsFromXML()
         {
             List<XMLSensorObject> lst = new List<XMLSensorObject>();
             ArrayList items = new ArrayList();
             items.Clear();
 
-            loadXML();
+            LoadXML();
 
             foreach (XmlNode xmln in xDoc.SelectNodes("/root/Sensoren"))
             {
@@ -293,7 +288,7 @@ namespace Arduino_Temperature_Retrofit
                 foreach (XmlNode child in xmln.ChildNodes)
                 {
                     
-                    XMLSensorObject tmpSensor = xmlReadChildItem(child);
+                    XMLSensorObject tmpSensor = XmlReadChildItem(child);
                     
                     lst.Add(tmpSensor);
 
@@ -311,11 +306,11 @@ namespace Arduino_Temperature_Retrofit
                         Console.WriteLine("Sensor.Baudrate      == {0}", tmpSensor.Baudrate.ToString());
                         Console.WriteLine("Sensor.DtrEnabled    == {0}", (tmpSensor.DtrEnabled) ? "Y" : "N");
                     }
-                    Console.WriteLine("Sensor.writeToDB     == {0}", (tmpSensor.writeToDatabase) ? "Y" : "N");
+                    Console.WriteLine("Sensor.writeToDB     == {0}", (tmpSensor.WriteToDatabase) ? "Y" : "N");
                     Console.WriteLine("Sensor.LogEnabled    == {0}", (tmpSensor.LogEnabled) ? "Y" : "N");
                     Console.WriteLine("Sensor.LogFilePath   == {0}", tmpSensor.LogFilePath);
                     Console.WriteLine("Sensor.HTMLEnabled   == {0}", (tmpSensor.HTMLEnabled) ? "Y" : "N");
-                    Console.WriteLine("Sensor.numLogEntries == {0}", tmpSensor.numLogEntries.ToString());
+                    Console.WriteLine("Sensor.numLogEntries == {0}", tmpSensor.NumLogEntries.ToString());
                     Console.WriteLine("Sensor item was read successfully!");
                     Console.WriteLine("******************************************************************");
                 }

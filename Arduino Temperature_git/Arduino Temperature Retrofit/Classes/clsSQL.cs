@@ -17,26 +17,48 @@ namespace Arduino_Temperature_Retrofit
 
     class SQLStatusEventArgs : EventArgs
     {
-        public eSQLStatus oldStatus { get; set; }
-        public eSQLStatus newStatus { get; set; }
+        private eSQLStatus oldStatus;
+
+        public eSQLStatus GetOldStatus()
+        {
+            return oldStatus;
+        }
+
+        public void SetOldStatus(eSQLStatus value)
+        {
+            oldStatus = value;
+        }
+
+        private eSQLStatus newStatus;
+
+        public eSQLStatus GetNewStatus()
+        {
+            return newStatus;
+        }
+
+        public void SetNewStatus(eSQLStatus value)
+        {
+            newStatus = value;
+        }
+
         public SQLStatusEventArgs(eSQLStatus oldState, eSQLStatus newState)
         {
-            this.oldStatus = oldState;
-            this.newStatus = newState;
+            this.SetOldStatus(oldState);
+            this.SetNewStatus(newState);
         }
     }
 
-    class clsSQL
+    class SQL
     {
         
         //will be returned in case of any (generic) error
         public const int SQL_EXIT_FAILURE = -1; 
 
         #region Declaration for accessing the database
-        public string user { get; set; }
-        public string password { get; set; }
-        public string server { get; set; }
-        public string scheme { get; set; }
+        public string User { get; set; }
+        public string Password { get; set; }
+        public string Server { get; set; }
+        public string Scheme { get; set; }
         public eSQLStatus Status { get; private set; }
         private SqlConnection _connection = null;
         private int _connectionTimeout = 30; // default
@@ -47,56 +69,52 @@ namespace Arduino_Temperature_Retrofit
 
         private void StatusChange(eSQLStatus eStatus)
         {
-            var handler = StatusChanged;
-            if (handler != null)
-            {
-                handler(this, new SQLStatusEventArgs(Status, eStatus));
-            }
+            StatusChanged?.Invoke(this, new SQLStatusEventArgs(Status, eStatus));
             this.Status = eStatus;
         }
 
-        public clsSQL()
+        public SQL()
         {
             Status = eSQLStatus.NoSQLConnectionCreated;
             StatusChange(eSQLStatus.NoSQLConnectionCreated);
         }
 
         #region Create Database Connection
-        public SqlConnection createSQLConnection(string p_user, string p_password, string p_server, string p_scheme, int p_connectionTimeout)
+        public SqlConnection CreateSQLConnection(string p_user, string p_password, string p_server, string p_scheme, int p_connectionTimeout)
         {
-            user = p_user;
-            password = p_password;
-            server = p_server;
-            scheme = p_scheme;
+            User = p_user;
+            Password = p_password;
+            Server = p_server;
+            Scheme = p_scheme;
             _connectionTimeout = p_connectionTimeout;
-            return createSQLConnection();
+            return CreateSQLConnection();
         }
 
-        public SqlConnection createSQLConnection(int p_connectionTimeout)
+        public SqlConnection CreateSQLConnection(int p_connectionTimeout)
         {
             _connectionTimeout = p_connectionTimeout;
-            return createSQLConnection();
+            return CreateSQLConnection();
         }
 
-        public SqlConnection createSQLConnection(string p_user, string p_password, string p_server, string p_scheme)
+        public SqlConnection CreateSQLConnection(string p_user, string p_password, string p_server, string p_scheme)
         {
-            user = p_user;
-            password = p_password;
-            server = p_server;
-            scheme = p_scheme;
+            User = p_user;
+            Password = p_password;
+            Server = p_server;
+            Scheme = p_scheme;
 
-            return createSQLConnection();
+            return CreateSQLConnection();
         }
 
-        public SqlConnection createSQLConnection()
+        public SqlConnection CreateSQLConnection()
         {
             try
             {
                 string ConnectionString =
-                        "Data Source=" + server + "; " +
-                        "Initial Catalog=" + scheme + ";" +
-                        "User id=" + user + ";" +
-                        "Password=" + password + ";" +
+                        "Data Source=" + Server + "; " +
+                        "Initial Catalog=" + Scheme + ";" +
+                        "User id=" + User + ";" +
+                        "Password=" + Password + ";" +
                         "Connection Timeout=" + _connectionTimeout.ToString() + ";";
 
                 bool isValid = Regex.IsMatch(ConnectionString, @"^([^=;]+=[^=;]*)(;[^=;]+=[^=;]*)*;?$");
@@ -118,7 +136,7 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        public SqlConnection getSqlConnection { get { return _connection; } }
+        public SqlConnection GetSqlConnection { get { return _connection; } }
         #endregion
 
         #region Database operations: Insert Row
@@ -129,7 +147,7 @@ namespace Arduino_Temperature_Retrofit
 
             if (null == _connection)
             {
-                if (null == createSQLConnection())
+                if (null == CreateSQLConnection())
                 {
                     Status = eSQLStatus.Error;
                     return SQL_EXIT_FAILURE;
@@ -143,37 +161,39 @@ namespace Arduino_Temperature_Retrofit
 
             if (_connection.State == ConnectionState.Open)
             {
-                SqlCommand command = new SqlCommand();
-                command.Connection = _connection;
-                command.CommandType = CommandType.Text;
+                SqlCommand command = new SqlCommand
+                {
+                    Connection = _connection,
+                    CommandType = CommandType.Text,
 
-                command.CommandText = "insert into Datalog (SensorID, SensorName, Temperature, HeatIndex, Humidity, Pressure, LUX, LogTime) VALUES (@id, @name, @temp, @head, @hum, @press, @lux, getdate())";
+                    CommandText = "insert into Datalog (SensorID, SensorName, Temperature, HeatIndex, Humidity, Pressure, LUX, LogTime) VALUES (@id, @name, @temp, @head, @hum, @press, @lux, getdate())"
+                };
                 //@id, @name, @temp, @head, @hum, @press, @lux, getdate())";
-                command.Parameters.AddWithValue("@id", dObj.uniqueID);
+                command.Parameters.AddWithValue("@id", dObj.UniqueID);
                 command.Parameters.AddWithValue("@name", dObj.Name);
 
                 if (DataObjectCategory.HasTemperature(dObj.Protocol))
-                    command.Parameters.AddWithValue("@temp", dObj.getItem(DataObjectCategory.Temperatur));
+                    command.Parameters.AddWithValue("@temp", dObj.GetItem(DataObjectCategory.Temperatur));
                 else
                     command.Parameters.AddWithValue("@temp", "");
 
                 if (DataObjectCategory.HasHeatIndex(dObj.Protocol))
-                    command.Parameters.AddWithValue("@head", dObj.getItem(DataObjectCategory.HeatIndex));
+                    command.Parameters.AddWithValue("@head", dObj.GetItem(DataObjectCategory.HeatIndex));
                 else
                     command.Parameters.AddWithValue("@head", "");
 
                 if (DataObjectCategory.HasHumidity(dObj.Protocol))
-                    command.Parameters.AddWithValue("@hum", dObj.getItem(DataObjectCategory.Luftfeuchtigkeit));
+                    command.Parameters.AddWithValue("@hum", dObj.GetItem(DataObjectCategory.Luftfeuchtigkeit));
                 else
                     command.Parameters.AddWithValue("@hum", "");
 
                 if (DataObjectCategory.HasAirPressure(dObj.Protocol))
-                    command.Parameters.AddWithValue("@press", dObj.getItem(DataObjectCategory.Luftdruck));
+                    command.Parameters.AddWithValue("@press", dObj.GetItem(DataObjectCategory.Luftdruck));
                 else
                     command.Parameters.AddWithValue("@press", "");
 
                 if (DataObjectCategory.HasLUX(dObj.Protocol))
-                    command.Parameters.AddWithValue("@lux", dObj.getItem(DataObjectCategory.Lichtwert));
+                    command.Parameters.AddWithValue("@lux", dObj.GetItem(DataObjectCategory.Lichtwert));
                 else
                     command.Parameters.AddWithValue("@lux", "");
 
@@ -189,13 +209,13 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        public void insertDBAll(Dictionary<string, DataObject> dataObjs)
+        public void InsertDBAll(Dictionary<string, DataObject> dataObjs)
         {
             foreach (KeyValuePair<string, DataObject> kvp in dataObjs)
             {
                 DataObject dObj = (DataObject)kvp.Value;
                     
-                if (null == dObj || !dObj.DataAvailable || !dObj.Active || !dObj.writeToDatabase)
+                if (null == dObj || !dObj.DataAvailable || !dObj.Active || !dObj.WriteToDatabase)
                 {
                     continue;
                 }

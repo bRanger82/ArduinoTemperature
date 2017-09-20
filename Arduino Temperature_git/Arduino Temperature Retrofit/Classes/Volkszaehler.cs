@@ -7,9 +7,9 @@ using System.Net.Http;
 
 namespace Arduino_Temperature_Retrofit.Classes
 {
-    public class pushDataAnswer : EventArgs
+    public class PushDataAnswer : EventArgs
     {
-        public pushDataAnswer(string answer, DateTime timepoint)
+        public PushDataAnswer(string answer, DateTime timepoint)
         {
             this.Answer = answer;
             this.Timepoint = timepoint;
@@ -27,9 +27,9 @@ namespace Arduino_Temperature_Retrofit.Classes
 
         private static readonly HttpClient client = new HttpClient();
 
-        public static event EventHandler<pushDataAnswer> EvtPushDataAnswer;
+        public static event EventHandler<PushDataAnswer> EvtPushDataAnswer;
 
-        public static void runTest(double value)
+        public static void RunTest(double value)
         {
             Dictionary<string, string> values = new Dictionary<string, string>
             {
@@ -37,10 +37,10 @@ namespace Arduino_Temperature_Retrofit.Classes
                { "value", value.ToString() }
             };
 
-            pushData(values);
+            PushData(values);
         }
 
-        private static async void pushData(Dictionary<string, string> values)
+        private static async void PushData(Dictionary<string, string> values)
         {
             if (null == GUID)
             {
@@ -64,11 +64,7 @@ namespace Arduino_Temperature_Retrofit.Classes
             HttpResponseMessage response = await client.PostAsync(postAddress, content);
 
             var responseString = await response.Content.ReadAsStringAsync();
-            var eventHandler = EvtPushDataAnswer;
-            if (null != eventHandler)
-            {
-                eventHandler(typeof(Volkszaehler), new Classes.pushDataAnswer(responseString, DateTime.Now));
-            }
+            EvtPushDataAnswer?.Invoke(typeof(Volkszaehler), new Classes.PushDataAnswer(responseString, DateTime.Now));
         }
     }
 }

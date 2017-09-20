@@ -35,36 +35,36 @@ namespace Arduino_Temperature_Retrofit
     public enum DataObjectProtocol
     {
         NONE = 0,
-        PROTOCOL_ONE = 1,  //Luftfeuchtigkeit, Heat Index, Temperatur
-        PROTOCOL_TWO = 2,  //Luftfeuchtigkeit, Heat Index, Temperatur, Luftdruck
-        PROTOCOL_THREE = 3 //Luftfeuchtigkeit, Heat Index, Temperatur, Luftdruck, Lichtstaerke
+        PROTOCOL_V1 = 1,  //Luftfeuchtigkeit, Heat Index, Temperatur
+        PROTOCOL_V2 = 2,  //Luftfeuchtigkeit, Heat Index, Temperatur, Luftdruck
+        PROTOCOL_V3 = 3   //Luftfeuchtigkeit, Heat Index, Temperatur, Luftdruck, Lichtstaerke
     }
 
     public class DataObjectCategory
     {
         public static bool HasHumidity(DataObjectProtocol dop)
         {
-            return (dop == DataObjectProtocol.PROTOCOL_ONE || dop == DataObjectProtocol.PROTOCOL_TWO || dop == DataObjectProtocol.PROTOCOL_THREE);
+            return (dop == DataObjectProtocol.PROTOCOL_V1 || dop == DataObjectProtocol.PROTOCOL_V2 || dop == DataObjectProtocol.PROTOCOL_V3);
         }
 
         public static bool HasHeatIndex(DataObjectProtocol dop)
         {
-            return (dop == DataObjectProtocol.PROTOCOL_ONE || dop == DataObjectProtocol.PROTOCOL_TWO || dop == DataObjectProtocol.PROTOCOL_THREE);
+            return (dop == DataObjectProtocol.PROTOCOL_V1 || dop == DataObjectProtocol.PROTOCOL_V2 || dop == DataObjectProtocol.PROTOCOL_V3);
         }
 
         public static bool HasTemperature(DataObjectProtocol dop)
         {
-            return (dop == DataObjectProtocol.PROTOCOL_ONE || dop == DataObjectProtocol.PROTOCOL_TWO || dop == DataObjectProtocol.PROTOCOL_THREE);
+            return (dop == DataObjectProtocol.PROTOCOL_V1 || dop == DataObjectProtocol.PROTOCOL_V2 || dop == DataObjectProtocol.PROTOCOL_V3);
         }
 
         public static bool HasAirPressure(DataObjectProtocol dop)
         {
-            return (dop == DataObjectProtocol.PROTOCOL_TWO || dop == DataObjectProtocol.PROTOCOL_THREE);
+            return (dop == DataObjectProtocol.PROTOCOL_V2 || dop == DataObjectProtocol.PROTOCOL_V3);
         }
 
         public static bool HasLUX(DataObjectProtocol dop)
         {
-            return (dop == DataObjectProtocol.PROTOCOL_THREE);
+            return (dop == DataObjectProtocol.PROTOCOL_V3);
         }
 
         public static bool HasCapability(string dobjCat, DataObjectProtocol dop)
@@ -146,7 +146,7 @@ namespace Arduino_Temperature_Retrofit
 
         public string Value { get; set; }
 
-        static public string getSensorValueUnit(string DataObjectCat, bool leadingSpace = true)
+        static public string GetSensorValueUnit(string DataObjectCat, bool leadingSpace = true)
         {
             string ret = (leadingSpace) ? " " : "";
 
@@ -164,7 +164,7 @@ namespace Arduino_Temperature_Retrofit
                 return "N/A";
         }
 
-        static public string getSensorValueUnit(DataObjectCategory typ, bool leadingSpace = true)
+        static public string GetSensorValueUnit(DataObjectCategory typ, bool leadingSpace = true)
         {
             string ret = (leadingSpace) ? " " : "";
 
@@ -185,7 +185,7 @@ namespace Arduino_Temperature_Retrofit
         
         public static List<string> Items = new List<string>(Enum.GetNames(typeof(DataObjectType)));
 
-        public static List <string> getCapableItems(DataObjectProtocol dobj)
+        public static List <string> GetCapableItems(DataObjectProtocol dobj)
         {
             List<string> ret = new List<string>();
             foreach(string s in Items)
@@ -196,12 +196,12 @@ namespace Arduino_Temperature_Retrofit
             return ret;
         }
 
-        public static DataObjectCategory getObjectCategory(DataObjectType item)
+        public static DataObjectCategory GetObjectCategory(DataObjectType item)
         {
             return new DataObjectCategory(Items[(int)item]);
         }
 
-        public static DataObjectCategory getObjectCategory(string item)
+        public static DataObjectCategory GetObjectCategory(string item)
         {
             if (!Items.Contains(item))
                 return null;
@@ -262,11 +262,11 @@ namespace Arduino_Temperature_Retrofit
         public DateTime LastUpdated { get; set; }
         public XMLProtocol DataInterfaceType { get; set; }
         public string URL { get; set; }
-        public bool writeToDatabase { get; set; }
-        public int uniqueID { get; set; }
+        public bool WriteToDatabase { get; set; }
+        public int UniqueID { get; set; }
         public Exception HTTPException { get; set; }
 
-        public string getLastUpdatedFormatted()
+        public string GetLastUpdatedFormatted()
         {
             return this.LastUpdated.ToString(Common.DateTimeFormat);
         }
@@ -275,7 +275,7 @@ namespace Arduino_Temperature_Retrofit
 
         public int ConnectionRetries { get { return _connectionRetries; } }
 
-        public void increaseConnectionRetry()
+        public void IncreaseConnectionRetry()
         {
             _connectionRetries++;
         }
@@ -291,7 +291,7 @@ namespace Arduino_Temperature_Retrofit
 
         private int _maxHistoryItemsCount = HistoryMinDefaultEntries;
 
-        public long maxLogFileSize { get; set; } = 4194304;
+        public long MaxLogFileSize { get; set; } = 4194304;
 
         public bool HTMLEnabled { get; set; } = false;
 
@@ -315,7 +315,7 @@ namespace Arduino_Temperature_Retrofit
 
         private List<LogObject> _HistoryData = new List<LogObject>();
 
-        public List<string> getLogTimings()
+        public List<string> GetLogTimings()
         {
             List<string> lstDt = new List<string>();
             foreach(LogObject logObj in _HistoryData)
@@ -326,9 +326,9 @@ namespace Arduino_Temperature_Retrofit
             return lstDt;
         }
 
-        public double getLogItem(string timepoint, string DataObjectCat)
+        public double GetLogItem(string timepoint, string DataObjectCat)
         {
-            Dictionary<DataObjectCategory, logItem> items = new Dictionary<DataObjectCategory, logItem>();
+            Dictionary<DataObjectCategory, LogItem> items = new Dictionary<DataObjectCategory, LogItem>();
             foreach (LogObject logObj in _HistoryData)
             {
                 if (logObj.Timepoint.ToString("dd.MM.yyyy HH:mm:ss") == timepoint && logObj.Category.Value == DataObjectCat)
@@ -339,9 +339,9 @@ namespace Arduino_Temperature_Retrofit
             throw new MissingFieldException(string.Format("Es wurde kein Wert zum Zeitpunkt '{0}' und zur Kategorie '{1}' gefunden.", timepoint, DataObjectCat));
         }
 
-        public double getLogItem(string timepoint, DataObjectCategory Category)
+        public double GetLogItem(string timepoint, DataObjectCategory Category)
         {
-            Dictionary<DataObjectCategory, logItem> items = new Dictionary<DataObjectCategory, logItem>();
+            Dictionary<DataObjectCategory, LogItem> items = new Dictionary<DataObjectCategory, LogItem>();
             foreach (LogObject logObj in _HistoryData)
             {
                 if (logObj.Timepoint.ToString("dd.MM.yyyy HH:mm:ss") == timepoint && logObj.Category.Value == Category.Value)
@@ -352,45 +352,45 @@ namespace Arduino_Temperature_Retrofit
             throw new MissingFieldException(string.Format("Es wurde kein Wert zum Zeitpunkt {0} und zur Kategorie {1} gefunden.", timepoint, Category.Value));
         }
 
-        public Dictionary<DataObjectCategory, logItem> getLogItems(string timepoint)
+        public Dictionary<DataObjectCategory, LogItem> GetLogItems(string timepoint)
         {
-            Dictionary<DataObjectCategory, logItem> items = new Dictionary<DataObjectCategory, logItem>();
+            Dictionary<DataObjectCategory, LogItem> items = new Dictionary<DataObjectCategory, LogItem>();
             foreach(LogObject logObj in _HistoryData)
             {
                 if (logObj.Timepoint.ToString("dd.MM.yyyy HH:mm:ss") == timepoint)
                 {
-                    items.Add(logObj.Category, new logItem(logObj.Value, logObj.Timepoint, logObj.Category));
+                    items.Add(logObj.Category, new LogItem(logObj.Value, logObj.Timepoint, logObj.Category));
                 }
             }
             return items;
         }
 
-        public List<logItem> getLogItems()
+        public List<LogItem> GetLogItems()
         {
-            List<logItem> lst = new List<logItem>();
+            List<LogItem> lst = new List<LogItem>();
             foreach (LogObject logObj in _HistoryData)
             {
-                lst.Add(new logItem(logObj.Value, logObj.Timepoint, logObj.Category));
+                lst.Add(new LogItem(logObj.Value, logObj.Timepoint, logObj.Category));
             }
             return lst;
         }
 
-        public List<logItem> getLogItems(DataObjectCategory dobj)
+        public List<LogItem> GetLogItems(DataObjectCategory dobj)
         {
-            List<logItem> lst = new List<logItem>();
+            List<LogItem> lst = new List<LogItem>();
 
             foreach (LogObject logObj in _HistoryData)
             {
                 if (logObj.Category.Value == dobj.Value)
                 {
-                    lst.Add(new logItem(logObj.Value, logObj.Timepoint, logObj.Category));
+                    lst.Add(new LogItem(logObj.Value, logObj.Timepoint, logObj.Category));
                 }
             }
             
             return lst;
         }
 
-        public Trend getTrend(DataObjectCategory dobjCat)
+        public Trend GetTrend(DataObjectCategory dobjCat)
         {
             List<double> lst = new List<double>();
 
@@ -403,7 +403,7 @@ namespace Arduino_Temperature_Retrofit
             }
 
             //Trend aus den letzten 'numEntriesConsider' Einträgen berechnen
-            double calcTrend = Common.calculateTrend(lst);
+            double calcTrend = Common.CalculateTrend(lst);
             //double stdAbw = Common.CalculateStdDev(lst);
 
             Console.WriteLine("getTrend::method calcTrend returned {0} for {1}", calcTrend, dobjCat.Value);
@@ -421,21 +421,21 @@ namespace Arduino_Temperature_Retrofit
 
         }
 
-        public double getHistoryItemMinValue(DataObjectCategory dObjcat)
+        public double GetHistoryItemMinValue(DataObjectCategory dObjcat)
         {
             if (!_Items.ContainsKey(dObjcat.Value))
                 return 0;
             return _Items[dObjcat.Value].MinValue;
         }
 
-        public double getHistoryItemMaxValue(DataObjectCategory dObjcat)
+        public double GetHistoryItemMaxValue(DataObjectCategory dObjcat)
         {
             if (!_Items.ContainsKey(dObjcat.Value))
                 return 0;
             return _Items[dObjcat.Value].MaxValue;
         }
 
-        public int getHistoryItemCount(DataObjectCategory dObjCat)
+        public int GetHistoryItemCount(DataObjectCategory dObjCat)
         {
             if (_HistoryData.Count < 1)
                 return 0;
@@ -443,11 +443,11 @@ namespace Arduino_Temperature_Retrofit
             return _HistoryData.Count(i => i.Category.Value == dObjCat.Value);
         }
 
-        public void addItemToHistory(LogObject logObj)
+        public void AddItemToHistory(LogObject logObj)
         {
             // >= because if max is e.g. 200, the 200th element will be removed and a new value will be added
             // otherwise there are 200 entries and one entry is added afterwards -> 201 entries which does not meet the maximum of 200
-            while (getHistoryItemCount(logObj.Category) >= _maxHistoryItemsCount)
+            while (GetHistoryItemCount(logObj.Category) >= _maxHistoryItemsCount)
             {
                 _HistoryData.RemoveAt(0);
             }
@@ -470,7 +470,7 @@ namespace Arduino_Temperature_Retrofit
 
         public bool EnableAddDataToHistory { get; set; } = true;
 
-        public double getItem(string dobjCat)
+        public double GetItem(string dobjCat)
         {
             if (!_Items.ContainsKey(dobjCat))
                 return double.MinValue;
@@ -478,7 +478,7 @@ namespace Arduino_Temperature_Retrofit
             return _Items[dobjCat].Value;
         }
 
-        public double getItem(DataObjectCategory dobjCat)
+        public double GetItem(DataObjectCategory dobjCat)
         {
             if (!ItemExists(dobjCat))
                 return double.MinValue;
@@ -486,19 +486,21 @@ namespace Arduino_Temperature_Retrofit
             return _Items[dobjCat.Value].Value;
         }
 
-        public void addDataItem(string name, double value, DataObjectCategory dObjCat)
+        public void AddDataItem(string name, double value, DataObjectCategory dObjCat)
         {
             DateTime timepoint = DateTime.Now;
 
             if (!_Items.ContainsKey(name))
             {
-                DetailsTimePoint dtp = new DetailsTimePoint();
-                dtp.Value = value;
-                dtp.MinValue = value;
-                dtp.MaxValue = value;
-                dtp.MinTimepoint = timepoint;
-                dtp.MaxTimepoint = timepoint;
-                dtp.DataObjCategory = dObjCat;
+                DetailsTimePoint dtp = new DetailsTimePoint
+                {
+                    Value = value,
+                    MinValue = value,
+                    MaxValue = value,
+                    MinTimepoint = timepoint,
+                    MaxTimepoint = timepoint,
+                    DataObjCategory = dObjCat
+                };
                 _Items.Add(name, dtp);
             }
             else
@@ -518,18 +520,18 @@ namespace Arduino_Temperature_Retrofit
             }
 
             if (EnableAddDataToHistory)
-                addItemToHistory(new LogObject(value, dObjCat, timepoint));
+                AddItemToHistory(new LogObject(value, dObjCat, timepoint));
 
         }
     }
 
-    public class logItem
+    public class LogItem
     {
         public double Value { get; set; }
         public DateTime Timepoint { get; set; }
         public DataObjectCategory DataObjectCat { get; set; }
 
-        public logItem(double Value, DateTime Timepoint, DataObjectCategory dobjCat)
+        public LogItem(double Value, DateTime Timepoint, DataObjectCategory dobjCat)
         {
             this.Value = Value;
             this.Timepoint = Timepoint;

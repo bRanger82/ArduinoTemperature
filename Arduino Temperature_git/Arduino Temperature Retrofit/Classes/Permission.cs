@@ -15,7 +15,7 @@ namespace Arduino_Temperature_Retrofit
         private static WindowsIdentity _currentUser = WindowsIdentity.GetCurrent();
         private static WindowsPrincipal _currentPrincipal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
 
-        private static string getExistingPartOfPath(string testDir)
+        private static string GetExistingPartOfPath(string testDir)
         {
             int lst = 0;
             int last = 0;
@@ -44,7 +44,7 @@ namespace Arduino_Temperature_Retrofit
         public static bool HasAccess(FileInfo file, FileSystemRights right)
         {
             string directoryName = file.DirectoryName;
-            string existingPath = getExistingPartOfPath(directoryName);
+            string existingPath = GetExistingPartOfPath(directoryName);
 
             if (directoryName.Substring(directoryName.Length - 1) == "\\")
                 directoryName = directoryName.Substring(directoryName.Length - 1);
