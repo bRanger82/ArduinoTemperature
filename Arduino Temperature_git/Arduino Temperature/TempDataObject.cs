@@ -41,7 +41,7 @@ namespace Arduino_Temperature
 
         public string Value { get; set; }
 
-        public enum itemList
+        public enum ItemList
         {
             Temperature = 0,
             HeatIndex = 1,
@@ -52,12 +52,12 @@ namespace Arduino_Temperature
 
         public static List<string> Items = new List<string>(new string[] { "Temperature", "HeatIndex", "Humidity", "AirPressure", "LUX" });
 
-        public static DataObjectCategory getObjectCategory(itemList item)
+        public static DataObjectCategory GetObjectCategory(ItemList item)
         {
             return new DataObjectCategory(Items[(int)item]);
         }
 
-        public static DataObjectCategory getObjectCategory(string item)
+        public static DataObjectCategory GetObjectCategory(string item)
         {
             if (!Items.Contains(item))
                 return null;
@@ -65,11 +65,11 @@ namespace Arduino_Temperature
             return new DataObjectCategory(Items[Items.IndexOf(item)]);
         }
 
-        public static DataObjectCategory Temperature { get { return new DataObjectCategory(Items[(int)itemList.Temperature]); } }
-        public static DataObjectCategory HeatIndex { get { return new DataObjectCategory(Items[(int)itemList.HeatIndex]); } }
-        public static DataObjectCategory Humidity { get { return new DataObjectCategory(Items[(int)itemList.Humidity]); } }
-        public static DataObjectCategory AirPressure { get { return new DataObjectCategory(Items[(int)itemList.AirPressure]); } }
-        public static DataObjectCategory LUX { get { return new DataObjectCategory(Items[(int)itemList.LUX]); } }
+        public static DataObjectCategory Temperature { get { return new DataObjectCategory(Items[(int)ItemList.Temperature]); } }
+        public static DataObjectCategory HeatIndex { get { return new DataObjectCategory(Items[(int)ItemList.HeatIndex]); } }
+        public static DataObjectCategory Humidity { get { return new DataObjectCategory(Items[(int)ItemList.Humidity]); } }
+        public static DataObjectCategory AirPressure { get { return new DataObjectCategory(Items[(int)ItemList.AirPressure]); } }
+        public static DataObjectCategory LUX { get { return new DataObjectCategory(Items[(int)ItemList.LUX]); } }
     }
 
     public class DataObjectExt : SerialPort
@@ -96,7 +96,7 @@ namespace Arduino_Temperature
 
         private List<LogObject> _LogData = new List<LogObject>();
 
-        public List<double> getLogItems(DataObjectCategory dObjcat)
+        public List<double> GetLogItems(DataObjectCategory dObjcat)
         {
             List<double> lst = new List<double>();
 
@@ -111,21 +111,21 @@ namespace Arduino_Temperature
             return lst;
         }
 
-        public double getLogItemMinValue(DataObjectCategory dObjcat)
+        public double GetLogItemMinValue(DataObjectCategory dObjcat)
         {
             if (!_Items.ContainsKey(dObjcat.Value))
                 return 0;
             return _Items[dObjcat.Value].MinValue;
         }
 
-        public double getLogItemMaxValue(DataObjectCategory dObjcat)
+        public double GetLogItemMaxValue(DataObjectCategory dObjcat)
         {
             if (!_Items.ContainsKey(dObjcat.Value))
                 return 0;
             return _Items[dObjcat.Value].MaxValue;
         }
 
-        public int getLogItemCount(DataObjectCategory dObjCat)
+        public int GetLogItemCount(DataObjectCategory dObjCat)
         {
             if (_LogData.Count < 1)
                 return 0;
@@ -133,9 +133,9 @@ namespace Arduino_Temperature
             return _LogData.Count(i => i.Category.Value == dObjCat.Value);
         }
 
-        public void addItemToLog(LogObject logObj)
+        public void AddItemToLog(LogObject logObj)
         {
-            while(getLogItemCount(logObj.Category) > _maxLogItemsCount)
+            while(GetLogItemCount(logObj.Category) > _maxLogItemsCount)
             {
                 _LogData.RemoveAt(0);
             }
@@ -158,7 +158,7 @@ namespace Arduino_Temperature
 
         public bool LogEnabled { get; set; } = true;
 
-        public double getItem(DataObjectCategory dobjCat)
+        public double GetItem(DataObjectCategory dobjCat)
         {
             if (!ItemExists(dobjCat))
                 return double.MinValue;
@@ -166,20 +166,22 @@ namespace Arduino_Temperature
             return _Items[dobjCat.Value].Value;
         }
 
-        public void addDataItem(string name, double value, DataObjectCategory dObjCat, Common.SensorValueType SensorType)
+        public void AddDataItem(string name, double value, DataObjectCategory dObjCat, Common.SensorValueType SensorType)
         {
             DateTime timepoint = DateTime.Now;
 
             if (!_Items.ContainsKey(name))
             {
-                DetailsTimePointExt dtp = new DetailsTimePointExt();
-                dtp.Value = value;
-                dtp.MinValue = value;
-                dtp.MaxValue = value;
-                dtp.MinTimepoint = timepoint;
-                dtp.MaxTimepoint = timepoint;
-                dtp.SensorType = SensorType;
-                dtp.DataObjCategory = dObjCat;
+                DetailsTimePointExt dtp = new DetailsTimePointExt
+                {
+                    Value = value,
+                    MinValue = value,
+                    MaxValue = value,
+                    MinTimepoint = timepoint,
+                    MaxTimepoint = timepoint,
+                    SensorType = SensorType,
+                    DataObjCategory = dObjCat
+                };
                 _Items.Add(name, dtp);
             } else
             {
@@ -199,7 +201,7 @@ namespace Arduino_Temperature
             }
 
             if (LogEnabled)
-                addItemToLog(new LogObject(value, dObjCat, timepoint));
+                AddItemToLog(new LogObject(value, dObjCat, timepoint));
 
         }
     }

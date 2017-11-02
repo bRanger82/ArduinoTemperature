@@ -7,9 +7,9 @@ using System.Net.Http;
 
 namespace Arduino_Temperature_Retrofit
 {
-    public class pushDataAnswer : EventArgs
+    public class PushDataAnswer : EventArgs
     {
-        public pushDataAnswer(string answer, DateTime timepoint)
+        public PushDataAnswer(string answer, DateTime timepoint)
         {
             this.Answer = answer;
             this.Timepoint = timepoint;
@@ -27,9 +27,9 @@ namespace Arduino_Temperature_Retrofit
 
         private static readonly HttpClient client = new HttpClient();
 
-        public static event EventHandler<pushDataAnswer> EvtPushDataAnswer;
+        public static event EventHandler<PushDataAnswer> EvtPushDataAnswer;
 
-        public static bool runTest(double value)
+        public static bool RunTest(double value)
         {
             Dictionary<string, string> values = new Dictionary<string, string>
             {
@@ -51,12 +51,12 @@ namespace Arduino_Temperature_Retrofit
             {
                 return false;
             }
-            pushData(values);
+            PushData(values);
             return true;
 
         }
 
-        private static async void pushData(Dictionary<string, string> values)
+        private static async void PushData(Dictionary<string, string> values)
         {
             
 
@@ -67,11 +67,7 @@ namespace Arduino_Temperature_Retrofit
             HttpResponseMessage response = await client.PostAsync(postAddress, content);
 
             var responseString = await response.Content.ReadAsStringAsync();
-            var eventHandler = EvtPushDataAnswer;
-            if (null != eventHandler)
-            {
-                eventHandler(typeof(Volkszaehler), new pushDataAnswer(responseString, DateTime.Now));
-            }
+            EvtPushDataAnswer?.Invoke(typeof(Volkszaehler), new PushDataAnswer(responseString, DateTime.Now));
         }
     }
 }

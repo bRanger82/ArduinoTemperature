@@ -25,7 +25,7 @@ namespace Arduino_Temperature_Retrofit
         
         static int Main(string[] args)
         {
-            Console.WriteLine(extractIntFromString("START|VERSION:2|LEN:4|39.10|27.20|26.96|962.34|1054|EOF", "LEN", '|', ':'));
+            Console.WriteLine(ExtractIntFromString("START|VERSION:2|LEN:4|39.10|27.20|26.96|962.34|1054|EOF", "LEN", '|', ':'));
 
             /*
             Volkszaehler.EvtPushDataAnswer += Volkszaehler_EvtPushDataAnswer;
@@ -50,7 +50,7 @@ namespace Arduino_Temperature_Retrofit
                     Console.WriteLine("Line : {0} - " + l, p++);
             }
             Console.ReadKey();
-            runXMLText();
+            RunXMLText();
             Console.ReadKey();
             
             List<double> lst = new List<double>();
@@ -61,7 +61,7 @@ namespace Arduino_Temperature_Retrofit
                 Console.WriteLine("Wert von t: " + t);
             Console.WriteLine("\nSubset\n");
 
-            List<double> sub = getSubset(lst, 5);
+            List<double> sub = GetSubset(lst, 5);
             foreach (double t in sub)
                 Console.WriteLine("Wert von t: " + t);
 
@@ -71,7 +71,7 @@ namespace Arduino_Temperature_Retrofit
 
             Console.WriteLine(dojb.TemperatureDetail.MinValue);
 
-            htmlconvert();
+            Htmlconvert();
             Console.ReadKey();
 
             if (HasAccess(new FileInfo(@"C:\inetpub\wwwroot\temp.html"), FileSystemRights.WriteData))
@@ -89,7 +89,7 @@ namespace Arduino_Temperature_Retrofit
             return 0;
         }
 
-        static private int extractIntFromString(string input, string searchString, char delim, char subDelim)
+        static private int ExtractIntFromString(string input, string searchString, char delim, char subDelim)
         {
 
             if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(searchString))
@@ -114,8 +114,7 @@ namespace Arduino_Temperature_Retrofit
             {
                 return 0;
             }
-            int returnVal;
-            if (int.TryParse(foundItem.Substring(pos + 1), out returnVal))
+            if (int.TryParse(foundItem.Substring(pos + 1), out int returnVal))
             {
                 return returnVal;
             }
@@ -137,17 +136,17 @@ namespace Arduino_Temperature_Retrofit
             }
         }
 
-        private static void Volkszaehler_EvtPushDataAnswer(object sender, pushDataAnswer e)
+        private static void Volkszaehler_EvtPushDataAnswer(object sender, PushDataAnswer e)
         {
             Console.WriteLine(e.Answer);
         }
 
-        public static void runXMLText()
+        public static void RunXMLText()
         {
             try
             {
                 List<XMLSensorObject> senLst = new List<XMLSensorObject>();
-                senLst = XML.getSensorItemsFromXML();
+                senLst = XML.GetSensorItemsFromXML();
 
                 Console.ReadKey();
 
@@ -189,7 +188,7 @@ namespace Arduino_Temperature_Retrofit
             }
             
         }
-        public static void htmlconvert()
+        public static void Htmlconvert()
         {
             String myString;
             Console.WriteLine("Enter a string having '&' or '\"'  in it: ");
@@ -205,7 +204,7 @@ namespace Arduino_Temperature_Retrofit
                            myWriter.ToString());
         }
 
-        static private List<double> getSubset(List<double> values, int count)
+        static private List<double> GetSubset(List<double> values, int count)
         {
             if (values.Count <= count)
                 return values;
@@ -215,7 +214,7 @@ namespace Arduino_Temperature_Retrofit
             return values.GetRange(start, count);
         }
 
-        public static bool trycreatefile(FileInfo file)
+        public static bool TryCreateFile(FileInfo file)
         {
             if (!file.Exists)
             {
@@ -231,7 +230,7 @@ namespace Arduino_Temperature_Retrofit
             return true;
         }
 
-        public static bool trycreatedir(DirectoryInfo directory)
+        public static bool TryCreateDir(DirectoryInfo directory)
         {
             if (!directory.Exists)
             {
@@ -247,7 +246,7 @@ namespace Arduino_Temperature_Retrofit
             return true;
         }
 
-        private static string getExistingPartOfPath(string testDir)
+        private static string GetExistingPartOfPath(string testDir)
         {
             int lst = 0;
             int last = 0;
@@ -268,7 +267,7 @@ namespace Arduino_Temperature_Retrofit
         public static bool HasAccess(FileInfo file, FileSystemRights right)
         {
             string directoryName = file.DirectoryName;
-            string existingPath = getExistingPartOfPath(directoryName);
+            string existingPath = GetExistingPartOfPath(directoryName);
 
             if (directoryName.Substring(directoryName.Length - 1) == "\\")
                 directoryName = directoryName.Substring(directoryName.Length - 1);

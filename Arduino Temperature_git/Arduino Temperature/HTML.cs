@@ -11,7 +11,7 @@ namespace Arduino_Temperature
 {
     static class HTML
     {
-        public static void writeHTMLFile(string PathHTML, bool tischAktiv, string tempDataTisch, List<DataObjectExt> dataTisch, bool bodenAktiv, string tempDataBoden, List<DataObjectExt> dataBoden)
+        public static void WriteHTMLFile(string PathHTML, bool tischAktiv, string tempDataTisch, List<DataObjectExt> dataTisch, bool bodenAktiv, string tempDataBoden, List<DataObjectExt> dataBoden)
         {
             using (StreamWriter sw = new StreamWriter(PathHTML))
             {
@@ -19,7 +19,7 @@ namespace Arduino_Temperature
                 if (tischAktiv)
                 {
                     ret = ret.Replace("&TEMP1", tempDataTisch);
-                    ret = ret.Replace("&TABLE_TISCH", createHTMLTableString(dataTisch, "Daten Tisch:"));
+                    ret = ret.Replace("&TABLE_TISCH", CreateHTMLTableString(dataTisch, "Daten Tisch:"));
                 }
                 else
                 {
@@ -29,7 +29,7 @@ namespace Arduino_Temperature
                 if (bodenAktiv)
                 {
                     ret = ret.Replace("&TEMP2", tempDataBoden);
-                    ret = ret.Replace("&TABLE_BODEN", createHTMLTableString(dataBoden, "Daten Boden:"));
+                    ret = ret.Replace("&TABLE_BODEN", CreateHTMLTableString(dataBoden, "Daten Boden:"));
                 }
                 else
                 {
@@ -44,9 +44,9 @@ namespace Arduino_Temperature
             }
         }
 
-        private static string getData(DataObjectExt dobjExt, DataObjectCategory dobjCat)
+        private static string GetData(DataObjectExt dobjExt, DataObjectCategory dobjCat)
         {
-            double temp = dobjExt.getItem(dobjCat);
+            double temp = dobjExt.GetItem(dobjCat);
             if (temp == double.MinValue)
                 return "Keine Daten";
 
@@ -54,7 +54,7 @@ namespace Arduino_Temperature
 
         }
 
-        private static string createHTMLTableString(List<DataObjectExt> lDojb, string title)
+        private static string CreateHTMLTableString(List<DataObjectExt> lDojb, string title)
         {
             if (lDojb.Count < 1)
                 return "";
@@ -81,10 +81,10 @@ namespace Arduino_Temperature
 
                 if (dobj.DataAvailable)
                 {
-                    sb.AppendLine("    <td>" + getData(dobj, DataObjectCategory.Temperature) + "</td>");
-                    sb.AppendLine("    <td>" + getData(dobj, DataObjectCategory.Humidity) + "</td>"); 
-                    sb.AppendLine("    <td>" + getData(dobj, DataObjectCategory.HeatIndex) + "</td>");
-                    sb.AppendLine("    <td>" + getData(dobj, DataObjectCategory.AirPressure) + "</td>"); 
+                    sb.AppendLine("    <td>" + GetData(dobj, DataObjectCategory.Temperature) + "</td>");
+                    sb.AppendLine("    <td>" + GetData(dobj, DataObjectCategory.Humidity) + "</td>"); 
+                    sb.AppendLine("    <td>" + GetData(dobj, DataObjectCategory.HeatIndex) + "</td>");
+                    sb.AppendLine("    <td>" + GetData(dobj, DataObjectCategory.AirPressure) + "</td>"); 
                     sb.AppendLine("    <td>" + HttpUtility.HtmlEncode(dobj.AdditionalInformation) + "</td>"); 
                 }
                 else

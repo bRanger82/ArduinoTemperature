@@ -12,7 +12,7 @@ namespace Arduino_Temperature
 {
     public partial class frmOptions : Form
     {
-        public frmOptions(optionProperties opt)
+        public frmOptions(OptionProperties opt)
         {
             InitializeComponent();
             OptionProp = opt;
@@ -21,14 +21,14 @@ namespace Arduino_Temperature
         private bool _cancel = false;
         public bool Cancel{ get { return _cancel; } }
 
-        public optionProperties OptionProp { get; set; }
+        public OptionProperties OptionProp { get; set; }
 
         private void btnOptionsOK_Click(object sender, EventArgs e)
         {
-            OptionProp.propWriteHTML = this.chkHTML.Checked;
-            OptionProp.propLogToFile = this.chkLogEnabled.Checked;
-            OptionProp.propTopMost = this.chkTopMost.Checked;
-            OptionProp.numEntries = this.numMaxEntries.Value;
+            OptionProp.PropWriteHTML = this.chkHTML.Checked;
+            OptionProp.PropLogToFile = this.chkLogEnabled.Checked;
+            OptionProp.PropTopMost = this.chkTopMost.Checked;
+            OptionProp.NumEntries = this.numMaxEntries.Value;
 
             _cancel = false;
 
@@ -43,10 +43,10 @@ namespace Arduino_Temperature
 
         private void frmOptions_Load(object sender, EventArgs e)
         {
-            this.chkHTML.Checked = OptionProp.propWriteHTML;
-            this.chkLogEnabled.Checked = OptionProp.propLogToFile;
-            this.chkTopMost.Checked = OptionProp.propTopMost;
-            this.numMaxEntries.Value = OptionProp.numEntries;
+            this.chkHTML.Checked = OptionProp.PropWriteHTML;
+            this.chkLogEnabled.Checked = OptionProp.PropLogToFile;
+            this.chkTopMost.Checked = OptionProp.PropTopMost;
+            this.numMaxEntries.Value = OptionProp.NumEntries;
             this.lblHTMLNumEntriesHist.Text = "Anzahl Einträge: " + this.numMaxEntries.Value.ToString();
 
         }
@@ -57,11 +57,11 @@ namespace Arduino_Temperature
         }
     }
 
-    public class optionProperties
+    public class OptionProperties
     {
-        public bool propTopMost { get; set; } = false;
-        public bool propLogToFile { get; set; } = false;
-        public bool propWriteHTML { get; set; } = false;
-        public int numEntries { get; set; } = 5;
+        public bool PropTopMost { get; set; } = false;
+        public bool PropLogToFile { get; set; } = false;
+        public bool PropWriteHTML { get; set; } = false;
+        public int NumEntries { get; set; } = 5;
     }
 }

@@ -53,16 +53,17 @@ namespace TrendCalculation
 
             for(int i = 1; i<=15;i++)
             {
-                Point p = new Point();
-                p.m_x = i;
-                p.m_y = rnd.Next(28, 35);
+                Point p = new Point
+                {
+                    m_x = i,
+                    m_y = rnd.Next(28, 35)
+                };
                 Console.WriteLine(" - added point (x) {0}, (y) {1}", p.m_x, p.m_y);
                 pointList.Add(p);
             }
-            
-            double slope, intercept, rsquared;
 
-            CalcValues(pointList, out slope, out intercept, out rsquared);
+
+            CalcValues(pointList, out double slope, out double intercept, out double rsquared);
 
             Console.WriteLine("slope={0}, intercept={1}, rsquared={2}", slope, intercept, rsquared);
 

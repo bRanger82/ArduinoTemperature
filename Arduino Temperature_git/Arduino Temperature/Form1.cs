@@ -12,7 +12,7 @@ namespace Arduino_Temperature
 {
     public partial class frmMain : Form
     {
-        private enum dataSource
+        private enum DataSource
         {
             Boden = 0, 
             Tisch = 1
@@ -44,7 +44,7 @@ namespace Arduino_Temperature
         private DataObjectDetails dobjDetail = new DataObjectDetails();
         private Dictionary<string, DataObjectExt> SensorItems = new Dictionary<string, DataObjectExt>();
         private List<string> SensorItemsNames = new List<string>();
-        private optionProperties Options = new optionProperties();
+        private OptionProperties Options = new OptionProperties();
 
         public frmMain()
         {
@@ -53,17 +53,17 @@ namespace Arduino_Temperature
 
         private void init()
         {
-            loadSetttingsFromXML();
+            LoadSetttingsFromXML();
             
-            setLabelFormat(lblTempTisch, lblTableLastUpdated);
-            setLabelFormat(lblTempBoden, lblBottomLastUpdated);
+            SetLabelFormat(lblTempTisch, lblTableLastUpdated);
+            SetLabelFormat(lblTempBoden, lblBottomLastUpdated);
 
             dataBoden.Clear();
             dataTisch.Clear();
         }
 
         
-        private void initNewFromObjects()
+        private void InitNewFromObjects()
         {
             lblSensorOne.Text = XML.TischBezeichnung;
             
@@ -73,7 +73,7 @@ namespace Arduino_Temperature
             dObjBoden.DataAvailable = false;
         }
 
-        private void checkForConnection()
+        private void CheckForConnection()
         {
             isConnected = ((tischAktiv) ? spTisch.IsOpen : true && (bodenAktiv) ? spBoden.IsOpen : true);
 
@@ -86,7 +86,7 @@ namespace Arduino_Temperature
             }
         }
 
-        private void loadSensorToComboBox()
+        private void LoadSensorToComboBox()
         {
             if (XML.TischAktiv)
                 this.cboSensors.Items.Add(XML.TischBezeichnung);
@@ -104,7 +104,7 @@ namespace Arduino_Temperature
             }
         }
 
-        private void addChartPossibilities()
+        private void AddChartPossibilities()
         {
             cboChartSelection.Items.AddRange(DataObjectCategory.Items.ToArray());
             if (cboChartSelection.Items.Count > 0)
@@ -125,12 +125,12 @@ namespace Arduino_Temperature
                 }
 
                 init();
-                initNewFromObjects();
-                checkAccessRights();
-                connectToDevices();
-                loadSensorToComboBox();
-                checkForConnection();
-                addChartPossibilities();
+                InitNewFromObjects();
+                CheckAccessRights();
+                ConnectToDevices();
+                LoadSensorToComboBox();
+                CheckForConnection();
+                AddChartPossibilities();
             }
             catch (Exception ex)
             {
@@ -143,7 +143,7 @@ namespace Arduino_Temperature
             }
         }
 
-        private void checkAccessRights()
+        private void CheckAccessRights()
         {
             /*
                 this.chkLogEnabled.Checked = false;
@@ -163,13 +163,13 @@ namespace Arduino_Temperature
             */
         }
 
-        private void connectToDevices()
+        private void ConnectToDevices()
         {
-            connectDevice(ref spTisch, ref lblTableLastUpdated, strPortTisch, tischAktiv);
-            connectDevice(ref spBoden, ref lblBottomLastUpdated, strPortBoden, bodenAktiv);
+            ConnectDevice(ref spTisch, ref lblTableLastUpdated, strPortTisch, tischAktiv);
+            ConnectDevice(ref spBoden, ref lblBottomLastUpdated, strPortBoden, bodenAktiv);
         }
 
-        private void connectDevice(ref SerialPort comPort, ref Label lblUpdate, string strPort, bool active)
+        private void ConnectDevice(ref SerialPort comPort, ref Label lblUpdate, string strPort, bool active)
         {
             if (!active)
             {
@@ -179,14 +179,14 @@ namespace Arduino_Temperature
 
             lblUpdate.Text = "Verbindungsaufbau ...";
 
-            if (tryConnect(ref comPort, strPort))
+            if (TryConnect(ref comPort, strPort))
                 lblUpdate.Text = "Warte auf Daten ...";
             else
                 lblUpdate.Text = "Verbindungsaufbau fehlgeschlagen";
 
         }
 
-        private void setLabelFormat(Control Parent, Label lblUpdate)
+        private void SetLabelFormat(Control Parent, Label lblUpdate)
         {
             System.Drawing.Point pos = this.PointToScreen(lblUpdate.Location);
             pos = Parent.PointToClient(pos);
@@ -195,16 +195,16 @@ namespace Arduino_Temperature
             lblUpdate.BackColor = System.Drawing.Color.Transparent;
         }
 
-        private void addDataset(dataSource ds, DataObjectExt dobj)
+        private void AddDataset(DataSource ds, DataObjectExt dobj)
         {
             switch(ds)
             {
-                case dataSource.Boden: genericAddDataToList(dataBoden, dobj, 50); break;
-                case dataSource.Tisch: genericAddDataToList(dataTisch, dobj, 50); break;
+                case DataSource.Boden: GenericAddDataToList(dataBoden, dobj, 50); break;
+                case DataSource.Tisch: GenericAddDataToList(dataTisch, dobj, 50); break;
             }
         }
 
-        private void genericAddDataToList(List<DataObjectExt> lst, DataObjectExt dobj, int maxLen)
+        private void GenericAddDataToList(List<DataObjectExt> lst, DataObjectExt dobj, int maxLen)
         {
             if (maxLen < 1) return;
             
@@ -217,18 +217,19 @@ namespace Arduino_Temperature
             
         }
 
-        private void addSensor(string name, string portName, bool active)
+        private void AddSensor(string name, string portName, bool active)
         {
             if (SensorItems.ContainsKey(name))
             {
                 throw new InvalidOperationException("Key '" + name + "' existiert bereits!");
             }
 
-            DataObjectExt dobjExt = new DataObjectExt();
-
-            dobjExt.Name = name;
-            dobjExt.PortName = portName;
-            dobjExt.Active = active;
+            DataObjectExt dobjExt = new DataObjectExt
+            {
+                Name = name,
+                PortName = portName,
+                Active = active
+            };
 
             SensorItems.Add(name, dobjExt);
 
@@ -236,11 +237,11 @@ namespace Arduino_Temperature
 
         }
 
-        private void loadSetttingsFromXML()
+        private void LoadSetttingsFromXML()
         {
 
-            addSensor(XML.TischBezeichnung, XML.TischPort, XML.TischAktiv);
-            addSensor(XML.BodenBezeichnung, XML.BodenPort, XML.BodenAktiv);
+            AddSensor(XML.TischBezeichnung, XML.TischPort, XML.TischAktiv);
+            AddSensor(XML.BodenBezeichnung, XML.BodenPort, XML.BodenAktiv);
 
             strPortTisch = XML.TischPort;
             dObjTisch.PortName = XML.TischPort;
@@ -263,7 +264,7 @@ namespace Arduino_Temperature
             this.Text = XML.Title;
         }
 
-        private string reconnectText(string portName)
+        private string ReconnectText(string portName)
         {
             if (!di.ContainsKey(portName))
                 return string.Empty;
@@ -276,21 +277,20 @@ namespace Arduino_Temperature
         private void Tmr_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
             if (tischAktiv)
-                if (!tryConnect(ref spTisch, strPortTisch))
-                    lblTempTisch.Text = reconnectText(strPortTisch);
+                if (!TryConnect(ref spTisch, strPortTisch))
+                    lblTempTisch.Text = ReconnectText(strPortTisch);
 
             if (bodenAktiv)
-                if (!tryConnect(ref spBoden, strPortBoden))
-                    lblTempBoden.Text = reconnectText(strPortBoden);
+                if (!TryConnect(ref spBoden, strPortBoden))
+                    lblTempBoden.Text = ReconnectText(strPortBoden);
 
-            writeToHTML();
+            WriteToHTML();
         }
 
         private void Sp_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            if (sender is SerialPort)
+            if (sender is SerialPort spTemp)
             {
-                SerialPort spTemp = (SerialPort)sender;
                 string received = spTemp.ReadLine();
                 string portName = spTemp.PortName;
                 this.BeginInvoke(new LineReceivedEvent(LineReceived), received, portName);
@@ -299,7 +299,7 @@ namespace Arduino_Temperature
 
         private delegate void LineReceivedEvent(string line, string comPort);
 
-        private string getLineFromDataExt(string line, ref DataObjectExt dobj)
+        private string GetLineFromDataExt(string line, ref DataObjectExt dobj)
         {
             dobj.DataAvailable = false;
             dobj.Protocol = DataObjectProtocol.NONE;
@@ -319,10 +319,10 @@ namespace Arduino_Temperature
 
                 if (values.Length == 7 && values[0].StartsWith("START") && values[6].StartsWith("EOF")) //Protocoll second version
                 {
-                    dobj.addDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(values[2].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
-                    dobj.addDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(values[3].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
-                    dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(values[4].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
-                    dobj.addDataItem(DataObjectCategory.AirPressure.Value, double.Parse(Common.replaceDecPoint(values[5].ToString())), DataObjectCategory.AirPressure, Common.SensorValueType.AirPressure);
+                    dobj.AddDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(values[2].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
+                    dobj.AddDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(values[3].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
+                    dobj.AddDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(values[4].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
+                    dobj.AddDataItem(DataObjectCategory.AirPressure.Value, double.Parse(Common.replaceDecPoint(values[5].ToString())), DataObjectCategory.AirPressure, Common.SensorValueType.AirPressure);
                     dobj.LastUpdated = DateTime.Now;
                     dobj.DataAvailable = true;
                     dobj.AdditionalInformation = "-";
@@ -336,9 +336,9 @@ namespace Arduino_Temperature
                 }
                 else if (values.Length == 5 && values[0].StartsWith("START") && values[4].StartsWith("EOF")) //Protocol first version
                 {
-                    dobj.addDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(values[1].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
-                    dobj.addDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(values[2].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
-                    dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(values[3].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
+                    dobj.AddDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(values[1].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
+                    dobj.AddDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(values[2].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
+                    dobj.AddDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(values[3].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
                     dobj.LastUpdated = DateTime.Now;
                     dobj.DataAvailable = true;
                     dobj.AdditionalInformation = "-";
@@ -350,11 +350,11 @@ namespace Arduino_Temperature
                 }
                 else if (values.Length == 8 && values[0].StartsWith("START") && values[7].StartsWith("EOF")) //Protocol third version
                 {
-                    dobj.addDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(values[2].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
-                    dobj.addDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(values[3].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
-                    dobj.addDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(values[4].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
-                    dobj.addDataItem(DataObjectCategory.AirPressure.Value, double.Parse(Common.replaceDecPoint(values[5].ToString())), DataObjectCategory.AirPressure, Common.SensorValueType.AirPressure);
-                    dobj.addDataItem(DataObjectCategory.LUX.Value, double.Parse(Common.replaceDecPoint(values[6].ToString())), DataObjectCategory.LUX, Common.SensorValueType.LUX);
+                    dobj.AddDataItem(DataObjectCategory.Humidity.Value, double.Parse(Common.replaceDecPoint(values[2].ToString())), DataObjectCategory.Humidity, Common.SensorValueType.Humidity);
+                    dobj.AddDataItem(DataObjectCategory.Temperature.Value, double.Parse(Common.replaceDecPoint(values[3].ToString())), DataObjectCategory.Temperature, Common.SensorValueType.Temperature);
+                    dobj.AddDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.replaceDecPoint(values[4].ToString())), DataObjectCategory.HeatIndex, Common.SensorValueType.Temperature);
+                    dobj.AddDataItem(DataObjectCategory.AirPressure.Value, double.Parse(Common.replaceDecPoint(values[5].ToString())), DataObjectCategory.AirPressure, Common.SensorValueType.AirPressure);
+                    dobj.AddDataItem(DataObjectCategory.LUX.Value, double.Parse(Common.replaceDecPoint(values[6].ToString())), DataObjectCategory.LUX, Common.SensorValueType.LUX);
 
                     dobj.LastUpdated = DateTime.Now;
                     dobj.DataAvailable = true;
@@ -389,12 +389,14 @@ namespace Arduino_Temperature
             return returnValue;
         }
 
-        private string getLineFromData(string line, out DataObject dobj)
+        private string GetLineFromData(string line, out DataObject dobj)
         {
-            dobj = new DataObject();
-            dobj.DataAvailable = false;
-            dobj.Protocol = DataObjectProtocol.NONE;
-            dobj.Timepoint = DateTime.Now;
+            dobj = new DataObject
+            {
+                DataAvailable = false,
+                Protocol = DataObjectProtocol.NONE,
+                Timepoint = DateTime.Now
+            };
 
             string returnValue = string.Empty;
 
@@ -414,8 +416,7 @@ namespace Arduino_Temperature
                 if (len.Contains(":"))
                 {
                     Console.WriteLine("Laenge: '{0}'", len.Substring(len.IndexOf(":") + 1));
-                    int graphLen;
-                    if (int.TryParse(len.Substring(len.IndexOf(":") + 1), out graphLen))
+                    if (int.TryParse(len.Substring(len.IndexOf(":") + 1), out int graphLen))
                     {
 
                     }
@@ -506,21 +507,20 @@ namespace Arduino_Temperature
             return returnValue;
         }
 
-        private void loopGrpBox(GroupBox grp)
+        private void LoopGrpBox(GroupBox grp)
         {
             foreach(Control ctr in grp.Controls)
             {
                 Console.WriteLine("GrpBox.Name :: Control.Name {0} {1}", grp.Name, ctr.Name);
                 if (ctr is GroupBox)
-                    loopGrpBox((GroupBox)ctr);
+                    LoopGrpBox((GroupBox)ctr);
             }
         }
 
-        private void test(Label lblValue, Label lblMin, Label lblMax, string value, string unit)
+        private void Test(Label lblValue, Label lblMin, Label lblMax, string value, string unit)
         {
-            double val;
             lblValue.Text = value + unit;
-            if (double.TryParse(value, out val))
+            if (double.TryParse(value, out double val))
             {
                 if (val < dobjDetail.HumidityDetail.MinValue)
                 {
@@ -540,7 +540,7 @@ namespace Arduino_Temperature
             }
         }
 
-        private void setLabelInformation(Label lblValue, Label lblMinValue, Label lblMaxValue, Label lblMinTime, Label lblMaxTime, DataObjectExt dObjExt, DataObjectCategory dobjcat)
+        private void SetLabelInformation(Label lblValue, Label lblMinValue, Label lblMaxValue, Label lblMinTime, Label lblMaxTime, DataObjectExt dObjExt, DataObjectCategory dobjcat)
         {
             
 
@@ -563,15 +563,15 @@ namespace Arduino_Temperature
             }
         }
 
-        private void showData(DataObjectExt dobjExt)
+        private void ShowData(DataObjectExt dobjExt)
         {
             if (dobjExt.DataAvailable)
             {
-                setLabelInformation(lblSensorOneTempValue, lblSensorOneTempMin, lblSensorOneTempMax, lblSensorOneTempMinTime, lblSensorOneTempMaxTime, dobjExt, DataObjectCategory.Temperature);
-                setLabelInformation(lblSensorOneLuxValue, lblSensorOneLuxMin, lblSensorOneLuxMax, lblSensorOneLuxMinTime, lblSensorOneLuxMaxTime, dobjExt, DataObjectCategory.LUX);
-                setLabelInformation(lblSensorOneHumidityValue, lblSensorOneHumidityValueMin, lblSensorOneHumidityValueMax, lblSensorOneHumidityValueMinTime, lblSensorOneHumidityValueMaxTime, dobjExt, DataObjectCategory.Humidity);
-                setLabelInformation(lblSensorOnePressureValue, lblSensorOnePressureMin, lblSensorOnePressureMax, lblSensorOnePressureMinTime, lblSensorOnePressureMaxTime, dobjExt, DataObjectCategory.AirPressure);
-                setLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobjExt, DataObjectCategory.HeatIndex);
+                SetLabelInformation(lblSensorOneTempValue, lblSensorOneTempMin, lblSensorOneTempMax, lblSensorOneTempMinTime, lblSensorOneTempMaxTime, dobjExt, DataObjectCategory.Temperature);
+                SetLabelInformation(lblSensorOneLuxValue, lblSensorOneLuxMin, lblSensorOneLuxMax, lblSensorOneLuxMinTime, lblSensorOneLuxMaxTime, dobjExt, DataObjectCategory.LUX);
+                SetLabelInformation(lblSensorOneHumidityValue, lblSensorOneHumidityValueMin, lblSensorOneHumidityValueMax, lblSensorOneHumidityValueMinTime, lblSensorOneHumidityValueMaxTime, dobjExt, DataObjectCategory.Humidity);
+                SetLabelInformation(lblSensorOnePressureValue, lblSensorOnePressureMin, lblSensorOnePressureMax, lblSensorOnePressureMinTime, lblSensorOnePressureMaxTime, dobjExt, DataObjectCategory.AirPressure);
+                SetLabelInformation(lblSensorHeatIndexValue, lblSensorHeatIndexMin, lblSensorHeatIndexMax, lblSensorHeatIndexMinTime, lblSensorHeatIndexMaxTime, dobjExt, DataObjectCategory.HeatIndex);
             }
             else
             {
@@ -601,34 +601,34 @@ namespace Arduino_Temperature
         {            
             if (comPort == strPortTisch)
             {
-                string line = getLineFromDataExt(newline, ref dObjTisch);
+                string line = GetLineFromDataExt(newline, ref dObjTisch);
                 
                 tempDataTisch = dObjTisch.Name + " (" + dObjTisch.PortName + ")\n" + line;
                 tempDataTisch = tempDataTisch.Replace("\n", ".br.");
                 tempDataTisch = HttpUtility.HtmlEncode(tempDataTisch); // "TISCH</br>" + line.Replace("\n", "</br>");
                 tempDataTisch = tempDataTisch.Replace(".br.", "</br>");
-                writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathTisch);
-                addDataset(dataSource.Tisch, dObjTisch);
-                updateChart(dObjTisch);
+                WriteToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathTisch);
+                AddDataset(DataSource.Tisch, dObjTisch);
+                UpdateChart(dObjTisch);
             } else if (comPort == strPortBoden)
             {
-                string line = getLineFromDataExt(newline, ref dObjBoden);
+                string line = GetLineFromDataExt(newline, ref dObjBoden);
                 tempDataBoden = dObjBoden.Name + " (" + dObjBoden.PortName + ")\n" + line; 
                 tempDataBoden = tempDataBoden.Replace("\n", ".br.");
                 tempDataBoden = HttpUtility.HtmlEncode(tempDataBoden); // "TISCH</br>" + line.Replace("\n", "</br>");
                 tempDataBoden = tempDataBoden.Replace(".br.", "</br>");
-                writeToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathBoden);
-                addDataset(dataSource.Boden, dObjBoden);
-                updateChart(dObjBoden);
+                WriteToLog(Common.getCurrentDateTimeFormatted() + "\t" + line.Replace(".", ","), logPathBoden);
+                AddDataset(DataSource.Boden, dObjBoden);
+                UpdateChart(dObjBoden);
             }
 
             
-            checkTimeSpan();
+            CheckTimeSpan();
         }
 
 
 
-        private bool checkReconnectionTries (ref SerialPort SerPort, string portName)
+        private bool CheckReconnectionTries (ref SerialPort SerPort, string portName)
         {
             if (!di.ContainsKey(portName))
                 di.Add(portName, maxConnRetriesInitValue); //Wenn nicht nicht existiert in Liste eintragen
@@ -653,9 +653,9 @@ namespace Arduino_Temperature
             
         }
 
-        private bool tryConnect(ref SerialPort SerPort, string portName)
+        private bool TryConnect(ref SerialPort SerPort, string portName)
         {
-            if (!checkReconnectionTries(ref SerPort, portName)) return false;
+            if (!CheckReconnectionTries(ref SerPort, portName)) return false;
             
             try
             {
@@ -712,7 +712,7 @@ namespace Arduino_Temperature
             }
         }
 
-        private void checkTimeSpan()
+        private void CheckTimeSpan()
         {
             //if one of them is not active return as a compare is not possible/reasonable
             if (!dObjTisch.Active || !dObjBoden.Active) return;
@@ -736,10 +736,10 @@ namespace Arduino_Temperature
 
         private void lblTempTisch_DoubleClick(object sender, EventArgs e)
         {
-            changeLabelFont(ref lblTempTisch);
+            ChangeLabelFont(ref lblTempTisch);
         }
 
-        private void changeLabelFont(ref Label lbl)
+        private void ChangeLabelFont(ref Label lbl)
         {
             using (FontDialog fd = new FontDialog())
             {
@@ -749,10 +749,10 @@ namespace Arduino_Temperature
             }
         }
 
-        private void writeToLog(string text, string path)
+        private void WriteToLog(string text, string path)
         {
             Console.WriteLine("writeToLog called");
-            if (!Options.propLogToFile)
+            if (!Options.PropLogToFile)
             {
                 Console.WriteLine("writeToLog - logEnabled is not checked, exit ...");
                 return;
@@ -788,15 +788,15 @@ namespace Arduino_Temperature
             }
         }
 
-        private string getHTMLBody()
+        private string GetHTMLBody()
         {
             return Properties.Resources.html_temperature_main_template; 
         }
 
 
-        private void writeToHTML()
+        private void WriteToHTML()
         {
-            if (!Options.propWriteHTML)
+            if (!Options.PropWriteHTML)
                 return;
             
             if ((string.IsNullOrEmpty(tempDataTisch) && tischAktiv) || (string.IsNullOrEmpty(tempDataBoden) && bodenAktiv))
@@ -809,11 +809,11 @@ namespace Arduino_Temperature
             {
                 //lblHTMLUpdated.Invoke((MethodInvoker)(() => lblHTMLUpdated.ForeColor = System.Drawing.Color.Black));
 
-                HTML.writeHTMLFile(PathHTML, tischAktiv, tempDataTisch, dataTisch, bodenAktiv, tempDataBoden, dataBoden);
+                HTML.WriteHTMLFile(PathHTML, tischAktiv, tempDataTisch, dataTisch, bodenAktiv, tempDataBoden, dataBoden);
             }
             catch (Exception ex)
             {
-                Options.propWriteHTML = false;
+                Options.PropWriteHTML = false;
                 Console.WriteLine(ex.Message);
                 MessageBox.Show("Beim Versuch die Daten als HTML abzuspeichern ist folgender Fehler aufgetreten:\n" + 
                                 ex.Message + 
@@ -827,11 +827,11 @@ namespace Arduino_Temperature
         
         private void lblTempBoden_DoubleClick(object sender, EventArgs e)
         {
-            changeLabelFont(ref lblTempBoden);
+            ChangeLabelFont(ref lblTempBoden);
         }
 
 
-        private void checkCabability(DataObjectExt dobjExt)
+        private void CheckCabability(DataObjectExt dobjExt)
         {
             cboChartSelection.Items.Clear();
 
@@ -892,16 +892,16 @@ namespace Arduino_Temperature
 
         }
 
-        private void checkAvailableData(DataObjectExt dobjExt)
+        private void CheckAvailableData(DataObjectExt dobjExt)
         {
             if (dobjExt.DataAvailable)
             {
                 lblSensorOne.Text = this.cboSensors.GetItemText(this.cboSensors.SelectedItem);
-                showData(dobjExt);
+                ShowData(dobjExt);
             }
         }
 
-        private void cboChange()
+        private void CboChange()
         {
             xxx();
         }
@@ -910,12 +910,12 @@ namespace Arduino_Temperature
         {
             switch (cboSensors.SelectedIndex)
             {
-                case 0: checkCabability(dObjTisch); break;
-                case 1: checkCabability(dObjBoden); break;
+                case 0: CheckCabability(dObjTisch); break;
+                case 1: CheckCabability(dObjBoden); break;
                 default: MessageBox.Show("Nicht definierter Eintrag!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error); break;
             }
             
-            cboChange();
+            CboChange();
         }
 
 
@@ -940,10 +940,10 @@ namespace Arduino_Temperature
 
             Options = fOpt.OptionProp;
 
-            this.TopMost = Options.propTopMost;
+            this.TopMost = Options.PropTopMost;
         }
 
-        private void addChartSerie(List<double> values, string name, Color color, double min = double.MinValue, double max = double.MaxValue)
+        private void AddChartSerie(List<double> values, string name, Color color, double min = double.MinValue, double max = double.MaxValue)
         {
             if (chartValues.Series.IndexOf(name) < 0)
             {
@@ -962,14 +962,14 @@ namespace Arduino_Temperature
             
         }
 
-        private void updateChart(DataObjectCategory dbo, DataObjectExt dObjExt, Color lineColor)
+        private void UpdateChart(DataObjectCategory dbo, DataObjectExt dObjExt, Color lineColor)
         {
             chartValues.Series.Clear();
 
             if (DataObjectCapabilities.HasCapability(dbo, dObjExt.Protocol))
             {
-                double min = dObjExt.getLogItemMinValue(dbo);
-                double max = dObjExt.getLogItemMaxValue(dbo);
+                double min = dObjExt.GetLogItemMinValue(dbo);
+                double max = dObjExt.GetLogItemMaxValue(dbo);
 
                 if ((max - min) < 10)
                 {
@@ -978,7 +978,7 @@ namespace Arduino_Temperature
                 }
 
                 Console.WriteLine("Min " + min.ToString() + " - Max: " + max.ToString());
-                addChartSerie(dObjExt.getLogItems(dbo), dbo.Value.ToString(), lineColor, min, max);
+                AddChartSerie(dObjExt.GetLogItems(dbo), dbo.Value.ToString(), lineColor, min, max);
             }
                 
             if (chartValues.Series.Count > 0)
@@ -988,7 +988,7 @@ namespace Arduino_Temperature
             }
         }
 
-        private Color getChartColor(DataObjectCategory dobjCat)
+        private Color GetChartColor(DataObjectCategory dobjCat)
         {
             if (dobjCat.Value == DataObjectCategory.HeatIndex.Value)
                 return picColHeatIndex.BackColor;
@@ -1008,23 +1008,23 @@ namespace Arduino_Temperature
         {
             switch (cboSensors.SelectedIndex)
             {
-                case 0: checkAvailableData(dObjTisch); break;
-                case 1: checkAvailableData(dObjBoden); break;
+                case 0: CheckAvailableData(dObjTisch); break;
+                case 1: CheckAvailableData(dObjBoden); break;
                 default: MessageBox.Show("Nicht definierter Eintrag!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error); break;
             }
         }
 
-        private void updateChart(DataObjectExt dobjExt)
+        private void UpdateChart(DataObjectExt dobjExt)
         {
             string selected = this.cboChartSelection.GetItemText(this.cboChartSelection.SelectedItem);
-            DataObjectCategory dobjCat = DataObjectCategory.getObjectCategory(selected);
+            DataObjectCategory dobjCat = DataObjectCategory.GetObjectCategory(selected);
 
             if (dobjCat != null)
             {
-                if (dobjExt.getLogItemCount(dobjCat) > 0)
+                if (dobjExt.GetLogItemCount(dobjCat) > 0)
                 {
-                    Color lineColor = getChartColor(dobjCat);
-                    updateChart(dobjCat, dobjExt, lineColor);
+                    Color lineColor = GetChartColor(dobjCat);
+                    UpdateChart(dobjCat, dobjExt, lineColor);
                 }
             }
         }
@@ -1033,8 +1033,8 @@ namespace Arduino_Temperature
         {
             switch (cboSensors.SelectedIndex)
             {
-                case 0: updateChart(dObjTisch); break;
-                case 1: updateChart(dObjBoden); break;
+                case 0: UpdateChart(dObjTisch); break;
+                case 1: UpdateChart(dObjBoden); break;
                 default: MessageBox.Show("Nicht definierter Eintrag!", "Fehler", MessageBoxButtons.OK, MessageBoxIcon.Error); break;
             }
         }
