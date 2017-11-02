@@ -876,6 +876,20 @@ namespace Arduino_Temperature_Retrofit
         {
             try
             {
+                foreach(Control c in this.Controls)
+                {
+                    if (c is GroupBox)
+                    {
+                        foreach(Control t in c.Controls)
+                        {
+                            if (t is PictureBox)
+                            {
+                                Console.WriteLine(t.ForeColor.ToString());
+                            }
+                        }
+                    }
+                }
+
                 // https://stackoverflow.com/questions/3832156/windows-form-application-freeze-randomly-when-run-overnight
                 Microsoft.Win32.SystemEvents.DisplaySettingsChanged += SystemEvents_DisplaySettingsChanged;
                 Microsoft.Win32.SystemEvents.DisplaySettingsChanging += SystemEvents_DisplaySettingsChanging;
@@ -1017,6 +1031,7 @@ namespace Arduino_Temperature_Retrofit
             };
             if (colDlg.ShowDialog(this) == DialogResult.OK)
             {
+
                 pic.BackColor = colDlg.Color;
                 UpdateChart(GetAcutalDataObject());
             }
@@ -1501,11 +1516,6 @@ namespace Arduino_Temperature_Retrofit
         private void SQLTestToolStripMenuItem_Click(object sender, EventArgs e)
         {
             InsertDB();
-        }
-
-        private void lblAxisY_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

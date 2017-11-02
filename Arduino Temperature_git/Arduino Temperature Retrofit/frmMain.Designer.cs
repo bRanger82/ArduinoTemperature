@@ -1030,7 +1030,6 @@
             this.lblAxisY.Name = "lblAxisY";
             this.lblAxisY.Size = new System.Drawing.Size(0, 15);
             this.lblAxisY.TabIndex = 41;
-            this.lblAxisY.Click += new System.EventHandler(this.lblAxisY_Click);
             // 
             // lblNoDataForChart
             // 

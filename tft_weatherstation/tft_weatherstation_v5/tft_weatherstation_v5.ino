@@ -1,11 +1,12 @@
 #include <SFE_BMP180.h>
 #include "DHT.h"
+#include "eeproms.h"
 
 #define DHTPIN 2     
 #define DHTTYPE DHT22
 #define SERIALWAIT 200
 
-int DELAY_TIME = 30000; //Delay Time between each processData() call (ms)
+long DELAY_TIME = 30000; //Delay Time between each processData() call (ms)
 
 DHT dht(DHTPIN, DHTTYPE);
 SFE_BMP180 pressure;
@@ -19,6 +20,7 @@ void initSerial(void)
 {
   Serial.begin(9600);
   Serial.flush();   
+  
 }
 
 void initSensors(void)
@@ -79,7 +81,7 @@ void processIncomingData(String data)
   } else if (data.startsWith("SETTIMING|"))
   {
     String tmp = data.substring(10);
-    int newTiming = tmp.toInt();
+    long newTiming = tmp.toInt();
 
     if (newTiming < 10000 || newTiming > 60000)
     {

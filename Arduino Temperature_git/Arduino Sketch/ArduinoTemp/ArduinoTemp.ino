@@ -1,17 +1,16 @@
-
 #include "DHT.h"
 #include "BMP180.h"
 
 #define DHTPIN 2     
 #define DHTTYPE DHT22
-#define PIN_LED 7
 
 DHT dht(DHTPIN, DHTTYPE);
 BMP180 pressure;
 
 void setup() {
-  // put your setup code here, to run once:
+  
   Serial.begin(9600); 
+  
   dht.begin();
   pressure = BMP180();
   if(pressure.EnsureConnected())
@@ -19,8 +18,6 @@ void setup() {
     pressure.SoftReset();
     pressure.Initialize();
   }
-  pinMode(PIN_LED, OUTPUT);
-  digitalWrite(PIN_LED, LOW);
 }
 
 void loop() {
@@ -47,7 +44,6 @@ void loop() {
     } 
     else
     {
-      digitalWrite(PIN_LED, HIGH);
       Serial.print("START");
       Serial.print("|"); // delim
       Serial.print("LEN:4"); //4 Werte werden uebertragen
@@ -61,8 +57,6 @@ void loop() {
       Serial.print(currentPressuremb); //Luftdruck millibar
       Serial.print("|"); // delim
       Serial.println("EOF");
-      delay(250);
-      digitalWrite(PIN_LED, LOW);
     }
     delay(10000);    
   }
