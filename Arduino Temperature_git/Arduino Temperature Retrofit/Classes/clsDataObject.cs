@@ -32,13 +32,7 @@ namespace Arduino_Temperature_Retrofit
         public DetailsTimePoint LUXDetail { get { return _LUXDetail; } set { _LUXDetail = value; } }
     }
 
-    public enum DataObjectProtocol
-    {
-        NONE = 0,
-        PROTOCOL_V1 = 1,  //Luftfeuchtigkeit, Heat Index, Temperatur
-        PROTOCOL_V2 = 2,  //Luftfeuchtigkeit, Heat Index, Temperatur, Luftdruck
-        PROTOCOL_V3 = 3   //Luftfeuchtigkeit, Heat Index, Temperatur, Luftdruck, Lichtstaerke
-    }
+    
 
     public class DataObjectCategory
     {

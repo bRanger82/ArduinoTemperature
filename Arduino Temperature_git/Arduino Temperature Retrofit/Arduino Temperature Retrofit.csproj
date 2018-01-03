@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\clsArduinoCommands.cs" />
     <Compile Include="Classes\clsHTML.cs" />
     <Compile Include="Classes\clsLOG.cs" />
     <Compile Include="Classes\clsProgramSettings.cs" />

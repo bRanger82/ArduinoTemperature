@@ -299,25 +299,31 @@ namespace Arduino_Temperature_Retrofit
             {
                 try
                 {
+                    information = Regex.Replace(information, "[@\r\t\n]", string.Empty); // remove unnecessary chars from received data 
+                    // required: values[values.Length - 1].StartsWith(ArduinoCmd.End) --> because END-Tag has "END\r" as value
+
                     string[] values = information.Split('|');
 
-                    int LengthData = ExtractIntFromString(information, "LEN", '|', ':');    // contains the number of parameters in the dataset
-                    int VersionNo = ExtractIntFromString(information, "VERSION", '|', ':'); // gets the version number from the dataset
+                    int LengthData = ExtractIntFromString(information, ArduinoCmd.Length, '|', ':');    // contains the number of parameters in the dataset
+                    int VerNo = ExtractIntFromString(information, ArduinoCmd.VersionNo, '|', ':'); // temporary, for getting the value
+                    DataObjectProtocol VersionNo = ArduinoCmd.ConvertToDOP(VerNo);  // gets the version number from the dataset
 
-                    if (values.Length == LengthData && values[0] == "START" && values[values.Length - 1].StartsWith("EOF"))
+                    
+                    if (values.Length == LengthData && values[0] == ArduinoCmd.Start && values[values.Length - 1] == ArduinoCmd.End)
                     {
 
                         switch (VersionNo)
                         {
-                            case 1:
+                            case DataObjectProtocol.PROTOCOL_V1:
                                 ProcessDataProtocolV1Ext(values, ref dobj);
                                 break;
-                            case 2:
+                            case DataObjectProtocol.PROTOCOL_V2:
                                 ProcessDataProtocolV2Ext(values, ref dobj);
                                 break;
-                            case 3:
+                            case DataObjectProtocol.PROTOCOL_V3:
                                 ProcessDataProtocolV3Ext(values, ref dobj);
                                 break;
+                            case DataObjectProtocol.NONE:
                             default:
                                 dobj.DataAvailable = false;
                                 dobj.LastUpdated = DateTime.Now;
@@ -327,16 +333,16 @@ namespace Arduino_Temperature_Retrofit
                                 break;
                         }
                      // Else-Block: Old workflow, in order to keep old code running
-                    } else if (values.Length == 5 && values[0].StartsWith("START") && values[4].StartsWith("EOF")) //Protocol first version
+                    } else if (values.Length == 5 && values[0].StartsWith(ArduinoCmd.Start) && values[4].StartsWith(ArduinoCmd.End)) //Protocol first version
                     {
                         ProcessDataProtocolV1(values, ref dobj);
-                    } else if (values.Length == 7 && values[0].StartsWith("START") && values[6].StartsWith("EOF")) //Protocoll second version
+                    } else if (values.Length == 7 && values[0].StartsWith(ArduinoCmd.Start) && values[6].StartsWith(ArduinoCmd.End)) //Protocoll second version
                     {
                         ProcessDataProtocolV2(values, ref dobj);
-                    } else if (values.Length == 8 && values[0].StartsWith("START") && values[7].StartsWith("EOF")) //Protocol third version
+                    } else if (values.Length == 8 && values[0].StartsWith(ArduinoCmd.Start) && values[7].StartsWith(ArduinoCmd.End)) //Protocol third version
                     {
                         ProcessDataProtocolV3(values, ref dobj);
-                    } else if (values.Length > 1 && values[0].StartsWith("REPLY") && values[values.Length - 1].StartsWith("EOF")) // returns all commands which can be handled by the arduino
+                    } else if (values.Length > 1 && values[0].StartsWith(ArduinoCmd.Reply) && values[values.Length - 1].StartsWith(ArduinoCmd.End)) // returns all commands which can be handled by the arduino
                     {
                         ParseArduinoReply(dobj, values);
                         return;
