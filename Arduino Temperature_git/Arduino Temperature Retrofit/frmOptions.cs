@@ -47,6 +47,9 @@ namespace Arduino_Temperature_Retrofit
         
     }
 
+    /// <summary>
+    /// Verwaltet die Einstellungen
+    /// </summary>
     public class OptionProperties
     {
         public bool PropTopMost { get; set; } = false;

@@ -42,24 +42,24 @@
             this.grpSettings.Controls.Add(this.chkTopMost);
             this.grpSettings.Location = new System.Drawing.Point(12, 12);
             this.grpSettings.Name = "grpSettings";
-            this.grpSettings.Size = new System.Drawing.Size(256, 146);
+            this.grpSettings.Size = new System.Drawing.Size(256, 72);
             this.grpSettings.TabIndex = 8;
             this.grpSettings.TabStop = false;
             // 
             // chkHTML
             // 
             this.chkHTML.AutoSize = true;
-            this.chkHTML.Location = new System.Drawing.Point(9, 62);
+            this.chkHTML.Location = new System.Drawing.Point(6, 39);
             this.chkHTML.Name = "chkHTML";
-            this.chkHTML.Size = new System.Drawing.Size(56, 17);
+            this.chkHTML.Size = new System.Drawing.Size(147, 17);
             this.chkHTML.TabIndex = 10;
-            this.chkHTML.Text = "HTML";
+            this.chkHTML.Text = "HTML erstellen aktivieren";
             this.chkHTML.UseVisualStyleBackColor = true;
             // 
             // chkTopMost
             // 
             this.chkTopMost.AutoSize = true;
-            this.chkTopMost.Location = new System.Drawing.Point(9, 16);
+            this.chkTopMost.Location = new System.Drawing.Point(6, 16);
             this.chkTopMost.Name = "chkTopMost";
             this.chkTopMost.Size = new System.Drawing.Size(71, 17);
             this.chkTopMost.TabIndex = 7;
@@ -68,7 +68,7 @@
             // 
             // btnOptionsOK
             // 
-            this.btnOptionsOK.Location = new System.Drawing.Point(102, 164);
+            this.btnOptionsOK.Location = new System.Drawing.Point(102, 107);
             this.btnOptionsOK.Name = "btnOptionsOK";
             this.btnOptionsOK.Size = new System.Drawing.Size(75, 23);
             this.btnOptionsOK.TabIndex = 9;
@@ -79,7 +79,7 @@
             // btnOptionsCancel
             // 
             this.btnOptionsCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnOptionsCancel.Location = new System.Drawing.Point(193, 164);
+            this.btnOptionsCancel.Location = new System.Drawing.Point(193, 107);
             this.btnOptionsCancel.Name = "btnOptionsCancel";
             this.btnOptionsCancel.Size = new System.Drawing.Size(75, 23);
             this.btnOptionsCancel.TabIndex = 10;
@@ -87,19 +87,19 @@
             this.btnOptionsCancel.UseVisualStyleBackColor = true;
             this.btnOptionsCancel.Click += new System.EventHandler(this.btnOptionsCancel_Click);
             // 
-            // frmOptions
+            // FrmOptions
             // 
             this.AcceptButton = this.btnOptionsOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnOptionsCancel;
-            this.ClientSize = new System.Drawing.Size(284, 204);
+            this.ClientSize = new System.Drawing.Size(284, 144);
             this.Controls.Add(this.btnOptionsCancel);
             this.Controls.Add(this.btnOptionsOK);
             this.Controls.Add(this.grpSettings);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.Name = "frmOptions";
+            this.Name = "FrmOptions";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
