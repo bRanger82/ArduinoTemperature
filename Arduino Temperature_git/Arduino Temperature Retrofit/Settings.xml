@@ -7,14 +7,14 @@
       <Bezeichnung>Tisch</Bezeichnung>
       <Protocol>COM</Protocol>
       <COM>
-        <Port>COM3</Port>
+        <Port>COM5</Port>
         <DtrEnabled>N</DtrEnabled>
         <Baudrate>9600</Baudrate>
       </COM>
       <HTTP></HTTP>
       <WriteToDatabase>Y</WriteToDatabase>
       <LogEnabled>N</LogEnabled>
-      <WriteHTML>Y</WriteHTML>
+      <WriteHTML>N</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
       <NumLogItems>610</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>

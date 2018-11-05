@@ -113,8 +113,8 @@ namespace Arduino_Temperature_Retrofit
                 };
                 lstData.Add(p);
             }
-
-            CalcTrendValues(lstData, out double slope);
+            double slope;
+            CalcTrendValues(lstData, out slope);
 
             return slope;
         }

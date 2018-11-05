@@ -65,7 +65,8 @@ namespace Arduino_Temperature_Retrofit
         /// <returns>If parse was successful DataObjectProtocol type is returned, otherwise DataObjectProtocol.NONE is returned</returns>
         public static DataObjectProtocol ConvertToDOP(int VersionNo)
         {
-            if (Enum.TryParse<DataObjectProtocol>(VersionNo.ToString(), out DataObjectProtocol dop))
+            DataObjectProtocol dop;
+            if (Enum.TryParse<DataObjectProtocol>(VersionNo.ToString(), out dop))
             {
                 return dop;
             }

@@ -208,8 +208,10 @@ namespace Arduino_Temperature_Retrofit
 
         private void Dobj_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            if (sender != null && sender is DataObject spTemp)
+            
+            if (sender != null && sender is DataObject)
             {
+                DataObject spTemp = (DataObject)sender;
                 string received = spTemp.ReadLine();
                 this.BeginInvoke(new DataReceiveEvent(DataReceived), received, spTemp.Name);
             }
@@ -255,7 +257,8 @@ namespace Arduino_Temperature_Retrofit
             }
 
             // try to get and parse the value to an int datatype
-            if (int.TryParse(foundItem.Substring(pos + 1), out int returnVal))
+            int returnVal;
+            if (int.TryParse(foundItem.Substring(pos + 1), out returnVal))
             {
                 return returnVal;
             }
@@ -676,13 +679,13 @@ namespace Arduino_Temperature_Retrofit
             if (dObjExt.DataAvailable && dObjExt.ItemExists(dobjcat) && DataObjectCategory.HasCapability(dObjExt.Items[dobjcat.Value].DataObjCategory, dObjExt.Protocol))
             {
                 string unit = DataObjectCategory.GetSensorValueUnit(dobjcat);
-
+                string trendInfo;
                 lblValue.Text = dObjExt.Items[dobjcat.Value].Value.ToString("F") + unit;
                 lblMinValue.Text = dObjExt.Items[dobjcat.Value].MinValue.ToString("F") + unit;
                 lblMaxValue.Text = dObjExt.Items[dobjcat.Value].MaxValue.ToString("F") + unit;
                 lblMinTime.Text = Common.GetCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MinTimepoint);
                 lblMaxTime.Text = Common.GetCurrentDateTimeFormattedNoSec(dObjExt.Items[dobjcat.Value].MaxTimepoint);
-                picTrend.Image = GetTrend(dObjExt, dobjcat, out string trendInfo);
+                picTrend.Image = GetTrend(dObjExt, dobjcat, out trendInfo);
                 frmMainToolTip.SetToolTip(picTrend, trendInfo);
                 lblValue.Parent.Enabled = true;
             }
@@ -1396,8 +1399,9 @@ namespace Arduino_Temperature_Retrofit
             {
                 if (result.ChartElementType == ChartElementType.DataPoint)
                 {
-                    if (result.Object is DataPoint prop)
+                    if (result.Object is DataPoint)
                     {
+                        DataPoint prop = (DataPoint)result.Object;
                         var pointXPixel = result.ChartArea.AxisX.ValueToPixelPosition(prop.XValue);
                         var pointYPixel = result.ChartArea.AxisY.ValueToPixelPosition(prop.YValues[0]);
 

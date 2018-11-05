@@ -63,7 +63,8 @@ namespace Arduino_Temperature_Retrofit
         public static int SQLFrequency()
         {
             string xmlValue = GetValue("/root/SQL/Frequency");
-            if (int.TryParse(xmlValue, out int frequency) && frequency >= 1) //minimum every 60 seconds / 1 Minute
+            int frequency;
+            if (int.TryParse(xmlValue, out frequency) && frequency >= 1) //minimum every 60 seconds / 1 Minute
             {
                 return frequency;
             }
@@ -107,8 +108,9 @@ namespace Arduino_Temperature_Retrofit
 
         public static int HttpUpdateFrequency()
         {
+            int frequency;
             string xmlValue = GetValue("/root/HTML/UpdateFrequency");
-            if (int.TryParse(xmlValue, out int frequency) && frequency > 0) //minimum every 1 seconds
+            if (int.TryParse(xmlValue, out frequency) && frequency > 0) //minimum every 1 seconds
             {
                 return frequency;
             }
@@ -215,7 +217,8 @@ namespace Arduino_Temperature_Retrofit
             tmpSensor.WriteToDatabase = CheckBool(GetInnerText(child, "WriteToDatabase"));
 
             tmpSensor.NumLogEntries = 50; //default
-            if (int.TryParse(GetInnerText(child, "NumLogItems"), out int numEntries))
+            int numEntries;
+            if (int.TryParse(GetInnerText(child, "NumLogItems"), out numEntries))
             {
                 if (numEntries >= 1 && numEntries <= 500000)
                     tmpSensor.NumLogEntries = numEntries;
@@ -228,8 +231,8 @@ namespace Arduino_Temperature_Retrofit
             }
 
 
-
-            if (long.TryParse(GetInnerText(child, "maxLogFileSize"), out long maxLogFileSize))
+            long maxLogFileSize;
+            if (long.TryParse(GetInnerText(child, "maxLogFileSize"), out maxLogFileSize))
             {
                 if (maxLogFileSize >= 1048576 && maxLogFileSize <= 1073741824)
                     tmpSensor.MaxLogFileSize = maxLogFileSize;
@@ -248,7 +251,8 @@ namespace Arduino_Temperature_Retrofit
             {
                 tmpSensor.DtrEnabled = CheckBool(GetInnerText(child, "COM/DtrEnabled"));
                 tmpSensor.Port = GetInnerText(child, "COM/Port");
-                if (int.TryParse(GetInnerText(child, "COM/Baudrate"), out int Baudrate))
+                int Baudrate;
+                if (int.TryParse(GetInnerText(child, "COM/Baudrate"), out Baudrate))
                 {
                     if (Baudrate >= 8)
                         tmpSensor.Baudrate = Baudrate;

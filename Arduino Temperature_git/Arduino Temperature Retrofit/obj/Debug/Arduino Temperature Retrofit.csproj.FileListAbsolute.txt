@@ -21,3 +21,14 @@ C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Te
 C:\Users\Hase\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csprojResolveAssemblyReference.cache
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csproj.CoreCompileInputs.cache
 C:\Users\bimi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csprojResolveAssemblyReference.cache
+C:\Users\michi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\bin\Debug\Arduino Temperature Retrofit.exe.config
+C:\Users\michi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csprojResolveAssemblyReference.cache
+C:\Users\michi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino_Temperature_Retrofit.frmMain.resources
+C:\Users\michi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino_Temperature_Retrofit.FrmOptions.resources
+C:\Users\michi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino_Temperature_Retrofit.Properties.Resources.resources
+C:\Users\michi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.csproj.GenerateResource.Cache
+C:\Users\michi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\bin\Debug\Settings.xml
+C:\Users\michi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\bin\Debug\Arduino Temperature Retrofit.exe
+C:\Users\michi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\bin\Debug\Arduino Temperature Retrofit.pdb
+C:\Users\michi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.exe
+C:\Users\michi\Source\Repos\ArduinoTemperature\Arduino Temperature_git\Arduino Temperature Retrofit\obj\Debug\Arduino Temperature Retrofit.pdb
