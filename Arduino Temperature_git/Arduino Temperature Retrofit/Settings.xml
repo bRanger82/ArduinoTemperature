@@ -7,12 +7,12 @@
       <Bezeichnung>Tisch</Bezeichnung>
       <Protocol>COM</Protocol>
       <COM>
-        <Port>COM5</Port>
+        <Port>COM7</Port>
         <DtrEnabled>N</DtrEnabled>
         <Baudrate>9600</Baudrate>
       </COM>
       <HTTP></HTTP>
-      <WriteToDatabase>Y</WriteToDatabase>
+      <WriteToDatabase>N</WriteToDatabase>
       <LogEnabled>N</LogEnabled>
       <WriteHTML>N</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Tisch.log</LogFile>
@@ -33,7 +33,7 @@
       </HTTP>
       <WriteToDatabase>Y</WriteToDatabase>
       <LogEnabled>N</LogEnabled>
-      <WriteHTML>Y</WriteHTML>
+      <WriteHTML>N</WriteHTML>
       <LogFile>C:\Temp\Temperatur\Boden.log</LogFile>
       <NumLogItems>680</NumLogItems>
       <maxLogFileSize>4194304</maxLogFileSize>
@@ -46,7 +46,7 @@
     <UpdateFrequency>15</UpdateFrequency>
   </HTML>
   <SQL>
-    <Active>Y</Active>
+    <Active>N</Active>
     <Server>10.16.41.59</Server>
     <DBUser>sa</DBUser>
     <DBPass>Test1234!</DBPass>

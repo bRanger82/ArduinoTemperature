@@ -15,7 +15,8 @@ namespace Arduino_Temperature_Retrofit
         HeatIndex = 1,
         Luftfeuchtigkeit = 2,
         Luftdruck = 3,
-        Lichtwert = 4
+        Lichtwert = 4,
+        Taupunkt = 5
     }
     
     public class DataObjectDetails
@@ -30,6 +31,8 @@ namespace Arduino_Temperature_Retrofit
         public DetailsTimePoint AirPressureDetail { get { return _AirPressureDetail; } set { _AirPressureDetail = value; } }
         private DetailsTimePoint _LUXDetail = new DetailsTimePoint();
         public DetailsTimePoint LUXDetail { get { return _LUXDetail; } set { _LUXDetail = value; } }
+        private DetailsTimePoint _DewPointDetail = new DetailsTimePoint();
+        public DetailsTimePoint DewPointDetail { get { return _DewPointDetail; } set { _DewPointDetail = value; } }
     }
 
     
@@ -61,6 +64,11 @@ namespace Arduino_Temperature_Retrofit
             return (dop == DataObjectProtocol.PROTOCOL_V3);
         }
 
+        public static bool CanCalcumateDewPoint(DataObjectProtocol dop)
+        {
+            return HasTemperature(dop) && HasHumidity(dop);
+        }
+
         public static bool HasCapability(string dobjCat, DataObjectProtocol dop)
         {
 
@@ -84,6 +92,10 @@ namespace Arduino_Temperature_Retrofit
             {
                 return HasTemperature(dop);
             }
+            else if (dobjCat == DataObjectCategory.Taupunkt.Value)
+            {
+                return CanCalcumateDewPoint(dop);
+            }
             else
             {
                 return false;
@@ -104,7 +116,8 @@ namespace Arduino_Temperature_Retrofit
                 lstProt.Add(DataObjectCategory.Temperatur);
             if (HasHumidity(dobj.Protocol))
                 lstProt.Add(DataObjectCategory.Luftfeuchtigkeit);
-
+            if (CanCalcumateDewPoint(dobj.Protocol))
+                lstProt.Add(DataObjectCategory.Taupunkt);
             return lstProt;
         }
 
@@ -130,6 +143,8 @@ namespace Arduino_Temperature_Retrofit
             {
                 return HasTemperature(dop);
             }
+            else if (dobjCat.Value == DataObjectCategory.Taupunkt.Value)
+                return CanCalcumateDewPoint(dop);
             else
             {
                 return false;
@@ -147,6 +162,8 @@ namespace Arduino_Temperature_Retrofit
             if (DataObjectCat == DataObjectCategory.Luftdruck.Value)
                 return ret + "mb";
             else if (DataObjectCat == DataObjectCategory.Temperatur.Value)
+                return ret + "°C";
+            else if (DataObjectCat == DataObjectCategory.Taupunkt.Value)
                 return ret + "°C";
             else if (DataObjectCat == DataObjectCategory.HeatIndex.Value)
                 return ret + "°C";
@@ -172,6 +189,8 @@ namespace Arduino_Temperature_Retrofit
                 return ret + "%";
             else if (typ.Value == DataObjectCategory.Lichtwert.Value)
                 return ret + "lux";
+            else if (typ.Value == DataObjectCategory.Taupunkt.Value)
+                return ret + "°C";
             else
                 return "N/A";
         }
@@ -208,6 +227,7 @@ namespace Arduino_Temperature_Retrofit
         public static DataObjectCategory Luftfeuchtigkeit { get { return new DataObjectCategory(Items[(int)DataObjectType.Luftfeuchtigkeit]); } }
         public static DataObjectCategory Luftdruck { get { return new DataObjectCategory(Items[(int)DataObjectType.Luftdruck]); } }
         public static DataObjectCategory Lichtwert { get { return new DataObjectCategory(Items[(int)DataObjectType.Lichtwert]); } }
+        public static DataObjectCategory Taupunkt { get { return new DataObjectCategory(Items[(int)DataObjectType.Taupunkt]); } }
     }
 
     public class LogObject

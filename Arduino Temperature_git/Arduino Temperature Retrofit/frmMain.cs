@@ -541,6 +541,14 @@ namespace Arduino_Temperature_Retrofit
                 dobj.AdditionalInformation = "Datenprotokoll-Version 1: Datenfehler!";
             }
         }
+        private double CalculateDewPoint(double humidtiy, double temperature, bool isCelsius = true)
+        {
+            double VapourPressureValue = humidtiy * 0.01 * 6.112 * Math.Exp((17.62 * temperature) / (temperature + 243.12));
+            double Numerator = 243.12 * Math.Log(VapourPressureValue) - 440.1;
+            double Denominator = 19.43 - (Math.Log(VapourPressureValue));
+            return Numerator / Denominator;
+            
+        }
 
         private void ProcessDataProtocolV2Ext(string[] data, ref DataObject dobj)
         {
@@ -550,6 +558,7 @@ namespace Arduino_Temperature_Retrofit
                 dobj.AddDataItem(DataObjectCategory.Temperatur.Value, GetDataParameterValue(data, ARD_PROT_V2.IDX_TEMPERATURE), DataObjectCategory.Temperatur);
                 dobj.AddDataItem(DataObjectCategory.HeatIndex.Value, GetDataParameterValue(data, ARD_PROT_V2.IDX_HEATINDEX), DataObjectCategory.HeatIndex);
                 dobj.AddDataItem(DataObjectCategory.Luftdruck.Value, GetDataParameterValue(data, ARD_PROT_V2.IDX_AIRPRESURE), DataObjectCategory.Luftdruck);
+                dobj.AddDataItem(DataObjectCategory.Taupunkt.Value, CalculateDewPoint(GetDataParameterValue(data, ARD_PROT_V3.IDX_HUMIDITY), GetDataParameterValue(data, ARD_PROT_V3.IDX_TEMPERATURE), true), DataObjectCategory.Taupunkt);
 
                 dobj.LastUpdated = DateTime.Now;
                 dobj.DataAvailable = true;
@@ -575,7 +584,7 @@ namespace Arduino_Temperature_Retrofit
                 dobj.AddDataItem(DataObjectCategory.HeatIndex.Value, GetDataParameterValue(data, ARD_PROT_V3.IDX_HEATINDEX), DataObjectCategory.HeatIndex);
                 dobj.AddDataItem(DataObjectCategory.Luftdruck.Value, GetDataParameterValue(data, ARD_PROT_V3.IDX_AIRPRESURE), DataObjectCategory.Luftdruck);
                 dobj.AddDataItem(DataObjectCategory.Lichtwert.Value, GetDataParameterValue(data, ARD_PROT_V3.IDX_LUMINOSITY), DataObjectCategory.Lichtwert);
-
+                dobj.AddDataItem(DataObjectCategory.Taupunkt.Value, CalculateDewPoint(GetDataParameterValue(data, ARD_PROT_V3.IDX_HUMIDITY), GetDataParameterValue(data, ARD_PROT_V3.IDX_TEMPERATURE), true), DataObjectCategory.Taupunkt);
                 dobj.LastUpdated = DateTime.Now;
                 dobj.DataAvailable = true;
                 dobj.AdditionalInformation = "-";
@@ -596,6 +605,8 @@ namespace Arduino_Temperature_Retrofit
             dobj.AddDataItem(DataObjectCategory.Luftfeuchtigkeit.Value, double.Parse(Common.ReplaceDecPoint(data[1].ToString())), DataObjectCategory.Luftfeuchtigkeit);
             dobj.AddDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.ReplaceDecPoint(data[2].ToString())), DataObjectCategory.Temperatur);
             dobj.AddDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.ReplaceDecPoint(data[3].ToString())), DataObjectCategory.HeatIndex);
+            dobj.AddDataItem(DataObjectCategory.Taupunkt.Value, CalculateDewPoint(double.Parse(Common.ReplaceDecPoint(data[1].ToString())), double.Parse(Common.ReplaceDecPoint(data[2].ToString())), true), DataObjectCategory.Taupunkt);
+
             dobj.LastUpdated = DateTime.Now;
             dobj.DataAvailable = true;
             dobj.AdditionalInformation = "-";
@@ -609,6 +620,8 @@ namespace Arduino_Temperature_Retrofit
             dobj.AddDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.ReplaceDecPoint(data[3].ToString())), DataObjectCategory.Temperatur);
             dobj.AddDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.ReplaceDecPoint(data[4].ToString())), DataObjectCategory.HeatIndex);
             dobj.AddDataItem(DataObjectCategory.Luftdruck.Value, double.Parse(Common.ReplaceDecPoint(data[5].ToString())), DataObjectCategory.Luftdruck);
+            dobj.AddDataItem(DataObjectCategory.Taupunkt.Value, double.Parse(Common.ReplaceDecPoint(data[2].ToString())), double.Parse(Common.ReplaceDecPoint(data[3].ToString())), true), DataObjectCategory.Taupunkt);
+
             dobj.LastUpdated = DateTime.Now;
             dobj.DataAvailable = true;
             dobj.AdditionalInformation = "-";
@@ -623,6 +636,7 @@ namespace Arduino_Temperature_Retrofit
             dobj.AddDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.ReplaceDecPoint(data[4].ToString())), DataObjectCategory.HeatIndex);
             dobj.AddDataItem(DataObjectCategory.Luftdruck.Value, double.Parse(Common.ReplaceDecPoint(data[5].ToString())), DataObjectCategory.Luftdruck);
             dobj.AddDataItem(DataObjectCategory.Lichtwert.Value, double.Parse(Common.ReplaceDecPoint(data[6].ToString())), DataObjectCategory.Lichtwert);
+            dobj.AddDataItem(DataObjectCategory.Taupunkt.Value, CalculateDewPoint(double.Parse(Common.ReplaceDecPoint(data[2].ToString())), double.Parse(Common.ReplaceDecPoint(data[3].ToString())), true), DataObjectCategory.Taupunkt);
 
             dobj.LastUpdated = DateTime.Now; 
             dobj.DataAvailable = true;
@@ -1170,7 +1184,8 @@ namespace Arduino_Temperature_Retrofit
                     min -= 5;
                     max += 5;
                 }
-                    
+                min = Math.Round(min, 2);
+                max = Math.Round(max, 2);    
 
                 //Set minimum Value to 0 evept for Temperature values (HeatIndex and Temperature -> it can be colder than 0 degrees ;) )
                 if (min < 0 && !(dbo.Value == DataObjectCategory.HeatIndex.Value || dbo.Value == DataObjectCategory.Temperatur.Value))
