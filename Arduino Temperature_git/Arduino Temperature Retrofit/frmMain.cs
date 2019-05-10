@@ -620,7 +620,7 @@ namespace Arduino_Temperature_Retrofit
             dobj.AddDataItem(DataObjectCategory.Temperatur.Value, double.Parse(Common.ReplaceDecPoint(data[3].ToString())), DataObjectCategory.Temperatur);
             dobj.AddDataItem(DataObjectCategory.HeatIndex.Value, double.Parse(Common.ReplaceDecPoint(data[4].ToString())), DataObjectCategory.HeatIndex);
             dobj.AddDataItem(DataObjectCategory.Luftdruck.Value, double.Parse(Common.ReplaceDecPoint(data[5].ToString())), DataObjectCategory.Luftdruck);
-            dobj.AddDataItem(DataObjectCategory.Taupunkt.Value, double.Parse(Common.ReplaceDecPoint(data[2].ToString())), double.Parse(Common.ReplaceDecPoint(data[3].ToString())), true), DataObjectCategory.Taupunkt);
+            dobj.AddDataItem(DataObjectCategory.Taupunkt.Value, CalculateDewPoint(double.Parse(Common.ReplaceDecPoint(data[2].ToString())), double.Parse(Common.ReplaceDecPoint(data[3].ToString())), true), DataObjectCategory.Taupunkt);
 
             dobj.LastUpdated = DateTime.Now;
             dobj.DataAvailable = true;
